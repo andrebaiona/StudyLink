@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Study Link</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #d2b48c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        margin-top: 5%;
+      }
+      .login-container {
+        background: #e1d9ce;
+        padding: 5%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+      }
+      .logo {
+        margin-bottom: 5%;
+      }
+      .logo img {
+        width: 50%;
+      }
+      h1 {
+        font-size: 1.5em;
+        color: #cd853f;
+        margin-bottom: 5%;
+      }
+      .form-group {
+        margin-bottom: 5%;
+        text-align: left;
+      }
+      label {
+        display: block;
+        margin-bottom: 2%;
+        color: #555;
+      }
+      input[type='email'],
+      input[type='password'] {
+        width: 100%;
+        padding: 3%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+      }
+      .botao {
+        background: #cd853f;
+        color: #fff;
+        padding: 3%;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+      }
+      .botao:hover {
+        background: #a0522d;
+      }
+      .link-registo {
+        margin-top: 5%;
+        font-size: 0.9em;
+      }
+      .link-registo a {
+        color: #cd853f;
+        text-decoration: none;
+      }
+      .link-registo a:hover {
+        text-decoration: underline;
+        color: #a0522d;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-container">
+      <div class="logo">
+        <img src="logo.png" alt="Logo Study Link" />
+      </div>
+      <h1>Bem-vindo</h1>
+      <form>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Introduza o seu email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Palavra-passe:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Introduza a sua palavra-passe"
+            required
+          />
+        </div>
+        <button type="submit" class="botao">Entrar</button>
+      </form>
+      <div class="link-registo">
+        Ainda não tem conta? <a href="#">Registe-se aqui</a>
+      </div>
+    </div>
+  </body>
+</html>
