@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre - Study Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #d2b48c;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #e1d9ce;
+            color: #000;
+            padding: 20px 10%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            height: 50px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            flex-grow: 1;
+            text-align: center;
+        }
+        nav {
+            background: #a0522d;
+            padding: 10px 10%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.1em;
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        nav a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 0;
+            background: #fff;
+            transition: width 0.3s ease;
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        nav a:hover {
+            color: #ffebcd;
+            transform: scale(1.1);
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        .container {
+            padding: 20px 10%;
+            flex-grow: 1;
+        }
+        .about-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .about-section h2 {
+            color: #a0522d;
+            margin-bottom: 10px;
+        }
+        .about-section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .about-section ul {
+            list-style: none;
+            padding-left: 0;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .about-section li {
+            margin-bottom: 10px;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            margin-top: auto;
+        }
+        footer a {
+            color: #cd853f;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Study Link Logo">
+        <h1>Study Link</h1>
+    </header>
+    <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="contacto.html">Contacto</a>
+    </nav>
+
+    <div class="container">
+        <section class="about-section">
+            <h2>Sobre o Study Link</h2>
+            <p>O Study Link é uma plataforma inovadora criada para conectar estudantes universitários e proporcionar um ambiente onde a troca de conhecimentos e a colaboração acadêmica sejam prioridades. A nossa missão é criar uma comunidade de apoio mútuo, onde os estudantes possam partilhar recursos, dicas e experiências para aprimorar a sua jornada educacional.</p>
+            
+            <h3>Missão</h3>
+            <p>Facilitar o intercâmbio de conhecimento, apoiar o desenvolvimento acadêmico e criar uma rede de suporte entre estudantes.</p>
+
+            <h3>Objetivos</h3>
+            <ul>
+                <li>Conectar estudantes de diferentes universidades e cursos.</li>
+                <li>Fornecer uma plataforma para partilha de materiais de estudo, dicas e recursos úteis.</li>
+                <li>Promover a colaboração em projetos e estudos em grupo.</li>
+                <li>Oferecer suporte flexível para estudantes em busca de ajuda.</li>
+            </ul>
+
+            <h3>Como Funciona</h3>
+            <p>Os estudantes podem se registar na plataforma, criar perfis, procurar por colegas de curso ou áreas de interesse, e interagir através de fóruns, chats e grupos de estudo. A nossa plataforma também oferece ferramentas para criar e partilhar conteúdos educativos personalizados.</p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+    </footer>
+</body>
+</html>

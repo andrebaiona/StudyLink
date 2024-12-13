@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Definições - Study Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #d2b48c;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #e1d9ce;
+            color: #000;
+            padding: 20px 10%;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        header img {
+            height: 50px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            flex-grow: 1;
+            text-align: center;
+        }
+        nav {
+            background: #a0522d;
+            padding: 10px 10%;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.1em;
+            position: relative;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        nav a::after {
+            content: '';
+            display: block;
+            height: 2px;
+            width: 0;
+            background: #fff;
+            transition: width 0.3s ease;
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        nav a:hover {
+            color: #ffebcd;
+            transform: scale(1.1);
+        }
+        nav a:hover::after {
+            width: 100%;
+        }
+        .container {
+            padding: 20px 10%;
+            flex-grow: 1;
+        }
+        .settings-section {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+        .settings-section h2 {
+            color: #a0522d;
+            margin-bottom: 20px;
+        }
+        .settings-section label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .settings-section input, .settings-section select {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .settings-section button {
+            padding: 10px 20px;
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .settings-section button:hover {
+            background: #8b4513;
+            transform: scale(1.05);
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            margin-top: auto;
+        }
+        footer a {
+            color: #cd853f;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Study Link Logo">
+        <h1>Study Link</h1>
+    </header>
+    <nav>
+        <a href="sobre.html">Sobre</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="contacto.html">Contacto</a>
+    </nav>
+
+    <div class="container">
+        <section class="settings-section">
+            <h2>Definições da Conta</h2>
+            <form action="#" method="post">
+                <label for="notificacoes">Notificações</label>
+                <select id="notificacoes" name="notificacoes">
+                    <option value="todos">Todos</option>
+                    <option value="importante">Somente importantes</option>
+                    <option value="nenhuma">Nenhuma</option>
+                </select>
+
+                <label for="idioma">Idioma</label>
+                <select id="idioma" name="idioma">
+                    <option value="portugues">Português</option>
+                    <option value="ingles">Inglês</option>
+                    <option value="espanhol">Espanhol</option>
+                </select>
+
+                <label for="tema">Tema</label>
+                <select id="tema" name="tema">
+                    <option value="claro">Claro</option>
+                    <option value="escuro">Escuro</option>
+                </select>
+
+                <label for="verificacao">Verificação em 2 Etapas</label>
+                <select id="verificacao" name="verificacao">
+                    <option value="ativa">Ativada</option>
+                    <option value="desativa">Desativada</option>
+                </select>
+
+                <button type="submit">Salvar Definições</button>
+            </form>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+    </footer>
+</body>
+</html>
