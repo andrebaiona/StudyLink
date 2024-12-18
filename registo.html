@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Registo - Study Link</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #d2b48c;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        margin-top: 5%;
+      }
+      .register-container {
+        background: #e1d9ce;
+        padding: 5%;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+      }
+      .logo {
+        margin-bottom: 5%;
+      }
+      .logo img {
+        width: 50%;
+      }
+      h1 {
+        font-size: 1.5em;
+        color: #cd853f;
+        margin-bottom: 5%;
+      }
+      .form-group {
+        margin-bottom: 5%;
+        text-align: left;
+      }
+      label {
+        display: block;
+        margin-bottom: 2%;
+        color: #555;
+      }
+      input[type='text'],
+      input[type='email'],
+      input[type='number'],
+      input[type='password'],
+      input[type='tel'] {
+        width: 100%;
+        padding: 3%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1em;
+      }
+      .botao {
+        background: #cd853f;
+        color: #fff;
+        padding: 3%;
+        border: none;
+        border-radius: 5px;
+        font-size: 1em;
+        cursor: pointer;
+        transition: background 0.3s;
+        width: 100%;
+      }
+      .botao:hover {
+        background: #a0522d;
+      }
+      .link-login {
+        margin-top: 5%;
+        font-size: 0.9em;
+      }
+      .link-login a {
+        color: #cd853f;
+        text-decoration: none;
+      }
+      .link-login a:hover {
+        text-decoration: underline;
+        color: #a0522d;
+      }
+      .sucesso {
+        color: green;
+        font-size: 1.2em;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="register-container">
+      <div class="logo">
+        <img src="logo.png" alt="Logo Study Link" />
+      </div>
+      <h1>Criar Conta</h1>
+      <form id="registerForm" onsubmit="handleSubmit(event)">
+        <div class="form-group">
+          <label for="first-name">Nome:</label>
+          <input
+            type="text"
+            id="first-name"
+            name="first-name"
+            placeholder="Introduza o seu nome"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="last-name">Sobrenome:</label>
+          <input
+            type="text"
+            id="last-name"
+            name="last-name"
+            placeholder="Introduza o seu sobrenome"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="age">Idade:</label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            placeholder="Introduza a sua idade"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="username">Nome de Utilizador:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Escolha um nome de utilizador"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Introduza o seu email"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="phone">Número de Telefone:</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="Introduza o seu número de telefone"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Palavra-passe:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Escolha uma palavra-passe"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="confirm-password">Confirmar Palavra-passe:</label>
+          <input
+            type="password"
+            id="confirm-password"
+            name="confirm-password"
+            placeholder="Confirme a sua palavra-passe"
+            required
+          />
+        </div>
+        <button type="submit" class="botao">Criar Conta</button>
+      </form>
+      <div class="link-login">
+        Já tem conta? <a href="login.html">Entrar aqui</a>
+      </div>
+      <div id="sucesso" class="sucesso"></div>
+    </div>
+
+    <script>
+      function handleSubmit(event) {
+        event.preventDefault();
+
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirm-password").value;
+        
+        if (password !== confirmPassword) {
+          alert("As senhas não coincidem. Tente novamente.");
+          return;
+        }
+        
+        document.getElementById("sucesso").textContent = "Conta criada com sucesso!";
+        document.getElementById("registerForm").reset();
+      }
+    </script>
+  </body>
+</html>

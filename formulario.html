@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png"> 
+    <title>Criar Tópico - Study Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        header {
+            background: #e1d9ce;
+            color: #000;
+            padding: 20px 10%;
+            text-align: center;
+        }
+        header img {
+            height: 50px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        nav {
+            background: #a0522d;
+            padding: 10px 10%;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        nav a {
+            color: #fff;
+            margin: 0 15px;
+            text-decoration: none;
+            font-size: 1.1em;
+        }
+        .container {
+            padding: 20px 10%;
+            flex-grow: 1;
+        }
+        .form-container {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-container input, .form-container textarea, .form-container button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        .form-container button {
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+        .form-container button:hover {
+            background: #8b4513;
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #cd853f;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="logo.png" alt="Study Link Logo">
+        <h1>Criar Tópico</h1>
+    </header>
+    <nav>
+        <a href="recursos.html">Recursos</a>
+        <a href="comunidade.html">Comunidade</a>
+        <a href="contacto.html">Contacto</a>
+    </nav>
+    <div class="container">
+        <div class="form-container">
+            <h2>Criar um Novo Tópico</h2>
+            <form id="topicForm">
+                <input type="text" id="authorName" placeholder="Nome do Autor" required>
+                <input type="text" id="topicTitle" placeholder="Título da Discussão" required>
+                <textarea id="topicText" placeholder="Texto da Discussão" rows="6" required></textarea>
+                <input type="file" id="topicImage" accept="image/*">
+                <input type="file" id="topicFile" accept="application/*">
+                <button type="submit">Guardar</button>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+    </footer>
+
+    <script>
+        function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            menu.classList.toggle('show');
+        }
+
+        // Função para adicionar o tópico ao LocalStorage
+        function addTopic() {
+            const authorInput = document.getElementById("authorName");  // Novo campo para o nome do autor
+            const titleInput = document.getElementById("topicTitle");
+            const textInput = document.getElementById("topicText");
+            const imageInput = document.getElementById("topicImage");
+            const fileInput = document.getElementById("topicFile");
+
+            // Criar a URL para a imagem e o arquivo, se existirem
+            const imageURL = imageInput.files.length > 0 ? URL.createObjectURL(imageInput.files[0]) : null;
+            const fileURL = fileInput.files.length > 0 ? URL.createObjectURL(fileInput.files[0]) : null;
+
+            // Criar o objeto do tópico
+            const topic = {
+                author: authorInput.value,  // Nome do autor
+                title: titleInput.value,
+                text: textInput.value,
+                image: imageURL, // Salvar a URL da imagem, se existir
+                file: fileURL // Salvar a URL do arquivo, se existir
+            };
+
+            // Recuperar tópicos armazenados, ou criar um array vazio se não houver nada
+            const storedTopics = JSON.parse(localStorage.getItem('topics')) || [];
+
+            // Adicionar o novo tópico ao array
+            storedTopics.push(topic);
+
+            // Salvar os tópicos de volta no localStorage
+            localStorage.setItem('topics', JSON.stringify(storedTopics));
+
+            // Redirecionar para a página de comunidade (ou recarregar a página atual)
+            window.location.href = "comunidade.html"; // Pode ser uma simples atualização de página
+        }
+
+        // Adicionar o evento de submit ao formulário
+        document.getElementById("topicForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Evitar o envio tradicional
+            addTopic(); // Chamar a função que adiciona o tópico
+        });
+    </script>
+    
+</body>
+</html>

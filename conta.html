@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png">
     <title>Conta - Study Link</title>
     <style>
         body {
@@ -32,6 +33,10 @@
             flex-grow: 1;
             text-align: center;
         }
+        header h1 a {
+            color: #000;
+            text-decoration: none;
+        }
         nav {
             background: #a0522d;
             padding: 10px 10%;
@@ -49,41 +54,24 @@
             position: relative;
             transition: color 0.3s ease, transform 0.3s ease;
         }
-        nav a::after {
-            content: '';
-            display: block;
-            height: 2px;
-            width: 0;
-            background: #fff;
-            transition: width 0.3s ease;
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
         nav a:hover {
             color: #ffebcd;
-            transform: scale(1.1);
-        }
-        nav a:hover::after {
-            width: 100%;
         }
         .container {
             padding: 20px 10%;
             flex-grow: 1;
         }
         .account-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
+            max-width: 500px;
+            margin: 0 auto;
         }
         .account-section h2 {
             color: #a0522d;
+            text-align: center;
             margin-bottom: 20px;
         }
         .account-section .profile-image {
@@ -91,13 +79,25 @@
             width: 120px;
             height: 120px;
             background-color: #e1d9ce;
-            margin-bottom: 20px;
+            margin: 0 auto 20px auto;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .account-section .profile-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .account-section label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
         }
         .account-section input {
             padding: 10px;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 300px;
+            width: 95%;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1em;
@@ -111,10 +111,95 @@
             font-size: 1em;
             cursor: pointer;
             transition: background 0.3s, transform 0.3s;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
         }
         .account-section button:hover {
             background: #8b4513;
             transform: scale(1.05);
+        }
+        .account-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #deb887;
+            color: #333;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .account-btn:hover {
+            background: #8b4513;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .account-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            padding: 10px;
+            z-index: 1100;
+        }
+        .account-menu a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .account-menu a:hover {
+            background: #f0e68c;
+        }
+        .account-menu.show {
+            display: flex;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .upload-container {
+        text-align: center;
+        margin-top: 15px;
+        }
+
+        .upload-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+            text-align: center;
+        }
+
+        .upload-label:hover {
+            background: #8b4513;
+            transform: scale(1.05);
+        }
+
+        #profileUpload {
+            display: none;
         }
         footer {
             background: #333;
@@ -136,22 +221,33 @@
 <body>
     <header>
         <img src="logo.png" alt="Study Link Logo">
-        <h1>Study Link</h1>
+        <h1><a href="pagina_principal.html">StudyLink</a></h1>
     </header>
     <nav>
-        <a href="sobre.html">Sobre</a>
         <a href="recursos.html">Recursos</a>
+        <a href="comunidade.html">Comunidade</a>
         <a href="contacto.html">Contacto</a>
     </nav>
-
+    <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
+    <div class="account-menu" id="accountMenu">
+        <a href="disciplinas.html">Discplinas</a>
+        <a href="conta.html">Conta</a>
+        <a href="definicoes.html">Definições</a>
+        <a href="ajuda.html">Ajuda</a>
+    </div>
     <div class="container">
         <section class="account-section">
             <h2>Minha Conta</h2>
-            <div class="profile-image">
-                <!-- Aqui pode ser colocada uma imagem de perfil do utilizador -->
-                <img src="perfil.jpg" alt="Imagem de Perfil" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+            <div class="profile-image" id="profileImage">
+                <img src="perfil.jpg" alt="Imagem de Perfil" id="profilePreview">
             </div>
-            <form action="#" method="post">
+            <div class="upload-container">
+                <label for="profileUpload" class="upload-label">
+                    Escolher imagem de perfil
+                </label>
+                <input type="file" id="profileUpload" accept="image/*" onchange="uploadProfileImage()">
+            </div>
+            <form id="accountForm">
                 <label for="nome">Nome:</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
 
@@ -167,13 +263,65 @@
                 <label for="confirm-password">Confirmar Senha:</label>
                 <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
 
-                <button type="submit">Atualizar</button>
+                <button type="button" onclick="salvarConta()">Atualizar</button>
             </form>
         </section>
     </div>
-
     <footer>
         <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
     </footer>
+    <script>
+
+        function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            menu.classList.toggle('show');
+        }
+
+        function salvarConta() {
+            const form = document.getElementById('accountForm');
+            const formData = new FormData(form);
+
+            // Salvar dados no localStorage
+            for (const [key, value] of formData.entries()) {
+                localStorage.setItem(key, value);
+            }
+            alert('Conta atualizada com sucesso!');
+        }
+
+        function carregarConta() {
+            // Carregar dados do localStorage
+            const inputs = document.querySelectorAll('#accountForm input');
+            inputs.forEach(input => {
+                const savedValue = localStorage.getItem(input.id);
+                if (savedValue) input.value = savedValue;
+            });
+        }
+
+        function uploadProfileImage() {
+            const fileInput = document.getElementById('profileUpload');
+            const file = fileInput.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profilePreview').src = e.target.result;
+                    localStorage.setItem('profileImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function carregarImagemPerfil() {
+            const savedImage = localStorage.getItem('profileImage');
+            if (savedImage) {
+                document.getElementById('profilePreview').src = savedImage;
+            }
+        }
+
+        // Carregar informações ao iniciar
+        window.onload = function () {
+            carregarConta();
+            carregarImagemPerfil();
+        };
+    </script>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="logo.png">
     <title>Recursos - Study Link</title>
     <style>
         body {
@@ -31,6 +32,10 @@
             font-size: 2.5em;
             flex-grow: 1;
             text-align: center;
+        }
+        header h1 a {
+            color: #000;
+            text-decoration: none;
         }
         nav {
             background: #a0522d;
@@ -69,7 +74,7 @@
             width: 100%;
         }
         .container {
-            padding: 20px 10%;
+            padding: 40px 10%;
             flex-grow: 1;
         }
         .resources-section {
@@ -86,17 +91,21 @@
         }
         .resources-list {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Ajustado para melhorar a responsividade */
+            gap: 30px; /* Aumentado para garantir mais espaçamento entre os itens */
+            justify-items: center; /* Alinha os itens ao centro */
+            margin-top: 30px; /* Aumentado o espaçamento superior */
         }
         .resource {
             background: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            padding: 25px;
             text-align: center;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 320px;
+            min-height: 250px;
+            margin-bottom: 30px; /* Adicionado espaçamento inferior entre as cartas */
         }
         .resource:hover {
             transform: scale(1.05);
@@ -109,6 +118,62 @@
         .resource p {
             font-size: 1em;
             line-height: 1.5;
+        }
+        .account-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #deb887;
+            color: #333;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s, transform 0.3s;
+        }
+        .account-btn:hover {
+            background: #8b4513;
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .account-menu {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+            flex-direction: column;
+            padding: 10px;
+            z-index: 1100;
+        }
+        .account-menu a {
+            color: #333;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+        .account-menu a:hover {
+            background: #f0e68c;
+        }
+        .account-menu.show {
+            display: flex;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         footer {
             background: #333;
@@ -130,19 +195,26 @@
 <body>
     <header>
         <img src="logo.png" alt="Study Link Logo">
-        <h1>Study Link</h1>
+        <h1><a href="pagina_principal.html">StudyLink</a></h1>
     </header>
     <nav>
-        <a href="sobre.html">Sobre</a>
         <a href="recursos.html">Recursos</a>
+        <a href="comunidade.html">Comunidade</a>
         <a href="contacto.html">Contacto</a>
     </nav>
-
+    <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
+    <div class="account-menu" id="accountMenu">
+        <a href="disciplinas.html">Discplinas</a>
+        <a href="conta.html">Conta</a>
+        <a href="definicoes.html">Definições</a>
+        <a href="ajuda.html">Ajuda</a>
+    </div>
     <div class="container">
         <section class="resources-section">
             <h2>Recursos Disponíveis</h2>
-            <p>Na plataforma **Study Link**, oferecemos uma vasta gama de recursos para ajudar os estudantes a atingir seus objetivos acadêmicos. Desde materiais de estudo compartilhados, até fóruns de discussão, tudo foi criado para facilitar a aprendizagem colaborativa.</p>
-            
+            <p>A plataforma <strong>Study Link</strong> oferece uma variedade de recursos para apoiar o estudo autónomo e colaborativo. Os estudantes têm acesso a materiais de estudo, como resumos, guias, artigos académicos e muito mais. Além disso, podem participar em fóruns de discussão, realizar exercícios e testes, aceder a guias de preparação para exames, artigos académicos e receber consultoria académica.</p>
+            <p>Outros recursos incluem workshops e cursos online, livros e eBooks, grupos de estudo virtuais, resumos de aulas, vídeos educacionais, ferramentas de gestão de tempo, simuladores de exames, plataformas de tutoria, feedback e avaliações, e podcasts educativos.</p>
+                
             <h3>Explore os nossos principais recursos:</h3>
 
             <div class="resources-list">
@@ -155,12 +227,60 @@
                     <p>Participe em fóruns de discussão sobre diversos tópicos académicos. Pergunte, responda e aprenda com outros estudantes.</p>
                 </div>
                 <div class="resource">
-                    <h3>Grupos de Estudo</h3>
-                    <p>Junte-se a grupos de estudo, onde pode colaborar com outros estudantes em projetos ou se preparar para exames.</p>
+                    <h3>Exercícios e Testes</h3>
+                    <p>Pratique com exercícios e testes de exemplo para se preparar para exames e melhorar seu desempenho académico.</p>
                 </div>
                 <div class="resource">
-                    <h3>Consultoria Acadêmica</h3>
-                    <p>Receba orientação de colegas mais experientes sobre temas acadêmicos específicos ou técnicas de estudo.</p>
+                    <h3>Guias de Preparação para Exames</h3>
+                    <p>Encontre guias úteis para se preparar eficazmente para os seus exames em diversas disciplinas.</p>
+                </div>
+                <div class="resource">
+                    <h3>Artigos Académicos</h3>
+                    <p>Aceda a artigos académicos relevantes para a sua área de estudo e expanda os seus conhecimentos.</p>
+                </div>
+                <div class="resource">
+                    <h3>Consultoria Académica</h3>
+                    <p>Receba orientação de colegas mais experientes sobre temas académicos específicos ou técnicas de estudo.</p>
+                </div>
+                <div class="resource">
+                    <h3>Workshops e Cursos Online</h3>
+                    <p>Participe em workshops e cursos online sobre temas complementares à sua área de estudo, como gestão de tempo, técnicas de memorização e habilidades de estudo.</p>
+                </div>
+                <div class="resource">
+                    <h3>Livros e eBooks</h3>
+                    <p>Aceda a uma vasta coleção de livros e eBooks, abrangendo uma variedade de áreas académicas, de modo a complementar o seu aprendizado.</p>
+                </div>
+                <div class="resource">
+                    <h3>Grupo de Estudo Virtual</h3>
+                    <p>Forme ou junte-se a um grupo de estudo virtual, onde pode colaborar com outros estudantes para revisar materiais e discutir tópicos importantes.</p>
+                </div>
+                <div class="resource">
+                    <h3>Resumo de Aulas</h3>
+                    <p>Consulte resumos e anotações detalhadas das aulas ministradas, organizadas por tópicos e disciplinas, para facilitar o seu estudo e revisão.</p>
+                </div>
+                <div class="resource">
+                    <h3>Vídeos Educacionais</h3>
+                    <p>Assista a vídeos educacionais sobre uma variedade de tópicos académicos, com explicações visuais e tutoriais práticos.</p>
+                </div>
+                <div class="resource">
+                    <h3>Ferramentas de Gestão de Tempo</h3>
+                    <p>Aceda a ferramentas e templates para ajudá-lo a gerir o seu tempo de estudo de forma mais eficaz, como agendas, cronogramas e planificadores de tarefas.</p>
+                </div>
+                <div class="resource">
+                    <h3>Simuladores de Exames</h3>
+                    <p>Utilize simuladores de exames para testar os seus conhecimentos e praticar sob pressão, ajudando a reduzir a ansiedade antes dos exames reais.</p>
+                </div>
+                <div class="resource">
+                    <h3>Plataforma de Tutoria</h3>
+                    <p>Encontre tutores disponíveis para fornecer apoio individualizado nas suas áreas de estudo, com foco em tópicos que necessitam de mais atenção.</p>
+                </div>
+                <div class="resource">
+                    <h3>Feedback e Avaliações</h3>
+                    <p>Receba feedback construtivo sobre o seu desempenho académico através de avaliações e correções de exercícios ou projetos realizados.</p>
+                </div>
+                <div class="resource">
+                    <h3>Podcast Educativos</h3>
+                    <p>Ouça podcasts educativos com discussões sobre temas académicos, dicas de estudo, entrevistas com especialistas e muito mais para enriquecer o seu conhecimento.</p>
                 </div>
             </div>
         </section>
@@ -169,5 +289,11 @@
     <footer>
         <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
     </footer>
+    <script>
+        function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            menu.classList.toggle('show');
+        }
+    </script>
 </body>
 </html>
