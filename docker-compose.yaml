@@ -27,7 +27,7 @@ services:
   
   db:
     image: mysql:latest
-    container_name: studylink_mysql_db 14
+    container_name: studylink_mysql_db
     restart: always
     env_file:
       - ./db/.env
