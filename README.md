@@ -49,9 +49,9 @@ O emparelhamento entre alunos é realizado por um **algoritmo de matching inteli
 
 ## 👥 Equipa de Desenvolvimento
 
-- 👤 [Henrique Dias] - Back-End & Security Developer
-- 👤 [Alexandre Sorochenko] - 
-- 👤 [André Baiona] - 
+- 👤 [Henrique Dias] - Full Stack & Security Developer
+- 👤 [Alexandre Sorochenko] - Full Stack Developer
+- 👤 [André Baiona] - Project Manager
 - 👤 [Rodrigo Caracol] - 
 - 👤 [Francisco Subtil] - 
 
