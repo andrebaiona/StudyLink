@@ -14,14 +14,14 @@ db = mysql.connector.connect(
 @app.route('/register', methods=['POST'])
 def register():
     try:
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
+        name = request.form['name']
+        username = request.form['username']
         email = request.form['email']
         password = request.form['password']
 
         cursor = db.cursor()
-        query = "INSERT INTO users (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
-        values = (first_name, last_name, email, password)
+        query = "INSERT INTO users (name, username, email, password) VALUES (%s, %s, %s, %s)"
+        values = (name, username, email, password)
         cursor.execute(query, values)
         db.commit()
         cursor.close()
