@@ -1,7 +1,7 @@
 
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, session
 import mysql.connector
-from argon2 import PasswordHasher  
+from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
 app = Flask(__name__)
 
@@ -14,7 +14,7 @@ db = mysql.connector.connect(
 )
 
 # Initialize Argon2 password hasher
-ph = PasswordHasher()
+
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -44,6 +44,37 @@ def register():
         print(f"General Error: {e}")
         return f"General Error: {e}", 500
 
+
+
+
+ph = PasswordHasher()
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT id, username, password FROM users WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        cursor.close()
+        
+        if user:
+            hashed_password = user['password']
+            try:
+                if ph.verify(hashed_password, password):
+                    session['user_id'] = user['id']
+                    session['username'] = user['username']
+                    return "Login successful!", 200
+                else:
+                    return "Invalid username or password.", 401
+            except argon2_exceptions.VerifyMismatchError:
+                return "Invalid username or password.", 401
+        else:
+            return "User not found.", 404
+
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

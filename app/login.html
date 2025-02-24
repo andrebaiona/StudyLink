@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -27,7 +28,7 @@
         margin-bottom: 5%;
       }
       .logo img {
-        width: 50%;
+        width: 40%;
       }
       h1 {
         font-size: 1.5em;
@@ -43,7 +44,7 @@
         margin-bottom: 2%;
         color: #555;
       }
-      input[type='email'],
+      input[type='text'],
       input[type='password'] {
         width: 100%;
         padding: 3%;
@@ -60,22 +61,28 @@
         font-size: 1em;
         cursor: pointer;
         transition: background 0.3s;
-        width: 100%;
+        width: 107%;
       }
       .botao:hover {
         background: #a0522d;
       }
-      .link-registo {
+      .link-register {
         margin-top: 5%;
         font-size: 0.9em;
       }
-      .link-registo a {
+      .link-register a {
         color: #cd853f;
         text-decoration: none;
       }
-      .link-registo a:hover {
+      .link-register a:hover {
         text-decoration: underline;
         color: #a0522d;
+      }
+      .error-message {
+        color: red;
+        font-size: 1.2em;
+        margin-top: 10px;
+        display: none;
       }
     </style>
   </head>
@@ -84,33 +91,44 @@
       <div class="logo">
         <img src="Imagens/logo.png" alt="Logo Study Link" />
       </div>
-      <h1>Bem-vindo</h1>
-      <form action="index.html" method="get">
+      <h1>Iniciar Sessão</h1>
+      <form action="/login" method="post">
         <div class="form-group">
-          <label for="email">Email ou Nome de Utilizador:</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="Introduza o seu email"
-            required
-          />
+          <label for="username">Nome de Utilizador:</label>
+          <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" required>
         </div>
+
         <div class="form-group">
-          <label for="password">Palavra-passe:</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Introduza a sua palavra-passe"
-            required
-          />
+          <label for="password">Password:</label>
+          <input type="password" id="password" name="password" placeholder="Introduza a sua password" required>
         </div>
+
         <button type="submit" class="botao">Entrar</button>
+        <div id="error-message" class="error-message">Nome de utilizador ou senha incorretos.</div>
       </form>
-      <div class="link-registo">
-        Ainda não tem conta? <a href="registo.html">Registe-se aqui</a>
+
+      <div class="link-register">
+        Não tem conta? <a href="registo.html">Registe-se aqui</a>
       </div>
     </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const errorMessage = document.getElementById('error-message');
+
+        form.addEventListener('submit', function (event) {
+          const username = document.getElementById('username').value;
+          const password = document.getElementById('password').value;
+
+          if (!username || !password) {
+            event.preventDefault();
+            errorMessage.style.display = 'block';
+          } else {
+            errorMessage.style.display = 'none';
+          }
+        });
+      });
+    </script>
   </body>
 </html>

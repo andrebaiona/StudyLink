@@ -333,10 +333,9 @@
         </section>
     </div>
     <script>
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
+          if (window.location.pathname === "/homepage") {
+          window.location.href = "index.html";
+  }
     </script>
 
     <footer>

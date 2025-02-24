@@ -52,12 +52,12 @@ for url in course_urls:
         except Exception as e:
             print(f"Error extracting data: {e}")
 
-# Close the browser
+
 driver.quit()
 
 # Convert all extracted data into a DataFrame
 df = pd.DataFrame(all_data)
 
 # Save to CSV
-df.to_csv('iscte_courses_units.csv', index=False, encoding='utf-8')
-print("Scraping completed. Data saved to 'iscte_courses_units.csv'.")
+df.to_csv('ScriptFiles/iscte_courses_units.csv', index=False, encoding='utf-8')
+print("Scraping completed. Data saved to 'ScriptFiles/iscte_courses_units.csv'.")
