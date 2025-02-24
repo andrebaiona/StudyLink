@@ -5,6 +5,9 @@ from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
 app = Flask(__name__)
 
+app.secret_key = 'your_very_secret_key'
+
+
 # MySQL database connection
 db = mysql.connector.connect(
     host="studylink_mysql_db",  # Match the service name from docker-compose
@@ -14,7 +17,7 @@ db = mysql.connector.connect(
 )
 
 # Initialize Argon2 password hasher
-
+ph = PasswordHasher()
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -46,35 +49,35 @@ def register():
 
 
 
-
-ph = PasswordHasher()
-
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
+    try:
         username = request.form['username']
         password = request.form['password']
-        
+
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT id, username, password FROM users WHERE username = %s", (username,))
+        query = "SELECT password FROM users WHERE username = %s"
+        cursor.execute(query, (username,))
         user = cursor.fetchone()
         cursor.close()
-        
-        if user:
-            hashed_password = user['password']
-            try:
-                if ph.verify(hashed_password, password):
-                    session['user_id'] = user['id']
-                    session['username'] = user['username']
-                    return "Login successful!", 200
-                else:
-                    return "Invalid username or password.", 401
-            except argon2_exceptions.VerifyMismatchError:
-                return "Invalid username or password.", 401
-        else:
-            return "User not found.", 404
 
-    return render_template('login.html')
+        if user and ph.verify(user['password'], password):
+            return f'Logged in as "{username}"', 200
+
+        return "Invalid username or password", 401
+
+    except argon2_exceptions.VerifyMismatchError:
+        return "Invalid username or password", 401
+
+    except mysql.connector.Error as err:
+        print(f"MySQL Error: {err}")
+        return f"MySQL Error: {err}", 500
+
+    except Exception as e:
+        print(f"General Error: {e}")
+        return f"General Error: {e}", 500
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
+
