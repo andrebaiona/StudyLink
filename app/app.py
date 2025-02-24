@@ -1,5 +1,7 @@
+
 from flask import Flask, request, render_template, redirect, url_for
 import mysql.connector
+from argon2 import PasswordHasher  
 
 app = Flask(__name__)
 
@@ -11,6 +13,9 @@ db = mysql.connector.connect(
     database="studylink"
 )
 
+# Initialize Argon2 password hasher
+ph = PasswordHasher()
+
 @app.route('/register', methods=['POST'])
 def register():
     try:
@@ -19,9 +24,12 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
+        # Hash the password using Argon2
+        hashed_password = ph.hash(password)
+
         cursor = db.cursor()
         query = "INSERT INTO users (name, username, email, password) VALUES (%s, %s, %s, %s)"
-        values = (name, username, email, password)
+        values = (name, username, email, hashed_password)
         cursor.execute(query, values)
         db.commit()
         cursor.close()
@@ -35,8 +43,7 @@ def register():
     except Exception as e:
         print(f"General Error: {e}")
         return f"General Error: {e}", 500
-  # Redirect back to the form
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
-
