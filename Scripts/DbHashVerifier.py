@@ -28,17 +28,17 @@ def verify_user_password(username, input_password):
 
         if result:
             stored_hash = result['password']
-            print(f"✅ User found. Hash from DB: {stored_hash}")
+            print(f"✅ -  User '{username}' found. Hash from DB: {stored_hash}")
 
             # Verify the provided password against the stored hash
             try:
                 if ph.verify(stored_hash, input_password):
-                    print("🎉 Password is correct.")
+                    print("🎉 - Password input is correct.")
                     return True
             except exceptions.VerifyMismatchError:
-                print("❌ Incorrect password.")
+                print("❌ - Incorrect password.")
             except exceptions.VerificationError as e:
-                print(f"⚠️ Verification failed: {str(e)}")
+                print(f"⚠️  - Verification failed: {str(e)}")
         else:
             print("❌ Username not found in the database.")
 
@@ -49,12 +49,12 @@ def verify_user_password(username, input_password):
         if connection.is_connected():
             cursor.close()
             connection.close()
-            print("🔒 Database connection closed.")
+            print("🔒 - Database connection closed.")
 
     return False
 
 
 if __name__ == "__main__":
     username_input = input("Enter username: ")
-    password_input = getpass("Enter password securely: ")  
+    password_input = getpass("Enter password : ")  
     verify_user_password(username_input, password_input)

@@ -27,6 +27,7 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
+        username = username.lower()
         # Hash the password using Argon2
         hashed_password = ph.hash(password)
 
@@ -54,7 +55,7 @@ def login():
     try:
         username = request.form['username']
         password = request.form['password']
-
+        username = username.lower()
         cursor = db.cursor(dictionary=True)
         query = "SELECT password FROM users WHERE username = %s"
         cursor.execute(query, (username,))
