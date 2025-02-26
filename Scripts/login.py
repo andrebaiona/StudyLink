@@ -1,14 +1,21 @@
-
 import requests
 import urllib.parse
 import getpass
 
+# Define ANSI color codes
+RESET = "\033[0m"
+BOLD = "\033[1m"
+GREEN = "\033[92m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+BLUE = "\033[94m"
+
 def login():
     url = "http://127.0.0.1/login"
     
-    print("Enter your login details:")
-    username = input("Username: ")
-    password = getpass.getpass("Password: ")
+    print(f"{BOLD}{YELLOW}🔐 Login Portal{RESET}")
+    username = input(f"{BOLD}👤 Username: {RESET}")
+    password = getpass.getpass(f"{BOLD}🔑 Password: {RESET}")
     
     data = {
         "username": username,
@@ -35,13 +42,17 @@ def login():
     }
     
     try:
+        print(f"{YELLOW}🔄 Attempting to log in...{RESET}")
         response = requests.post(url, headers=headers, data=urllib.parse.urlencode(data))
+        
         if response.status_code == 200:
-            print("Login successful!")
+            print(f"{GREEN}✅ Login successful!{RESET}")
         else:
-            print(f"Failed to login. Status Code: {response.status_code}\nResponse: {response.text}")
+            print(f"{RED}❌ Failed to login. Status Code: {response.status_code}{RESET}")
+            print(f"{RED}📜 Response: {response.text}{RESET}")
     except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+        print(f"{RED}⚠️ Error: {e}{RESET}")
 
 if __name__ == "__main__":
     login()
+

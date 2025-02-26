@@ -1,20 +1,27 @@
-
 import requests
 import urllib.parse
 import getpass
 
+# Define ANSI color codes
+RESET = "\033[0m"
+BOLD = "\033[1m"
+GREEN = "\033[92m"
+RED = "\033[91m"
+YELLOW = "\033[93m"
+BLUE = "\033[94m"
+
 def register():
     url = "http://127.0.0.1/register"
     
-    print("Enter your registration details:")
-    name = input("Full Name: ")
-    username = input("Username: ")
-    email = input("Email: ")
-    password = getpass.getpass("Password: ")
-    confirm_password = getpass.getpass("Confirm Password: ")
+    print(f"{BOLD}{YELLOW}📝 Enter your registration details:{RESET}")
+    name = input(f"{BOLD}👤 Full Name: {RESET}")
+    username = input(f"{BOLD}🔑 Username: {RESET}")
+    email = input(f"{BOLD}📧 Email: {RESET}")
+    password = getpass.getpass(f"{BOLD}🔒 Password: {RESET}")
+    confirm_password = getpass.getpass(f"{BOLD}🔐 Confirm Password: {RESET}")
     
     if password != confirm_password:
-        print("Error: Passwords do not match!")
+        print(f"{RED}❌ Error: Passwords do not match!{RESET}")
         return
     
     data = {
@@ -47,11 +54,12 @@ def register():
     try:
         response = requests.post(url, headers=headers, data=urllib.parse.urlencode(data))
         if response.status_code == 200:
-            print("Registration successful!")
+            print(f"{GREEN}✅ Registration successful!{RESET}")
         else:
-            print(f"Failed to register. Status Code: {response.status_code}\nResponse: {response.text}")
+            print(f"{RED}❌ Failed to register. Status Code: {response.status_code}\nResponse: {response.text}{RESET}")
     except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+        print(f"{RED}❗ Error: {e}{RESET}")
 
 if __name__ == "__main__":
     register()
+
