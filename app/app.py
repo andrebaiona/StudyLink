@@ -5,12 +5,12 @@ from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
 app = Flask(__name__)
 
-app.secret_key = 'your_very_secret_key'
+#app.secret_key = 'your_very_secret_key'
 
 
 # MySQL database connection
 db = mysql.connector.connect(
-    host="studylink_mysql_db",  # Match the service name from docker-compose
+    host="studylink_mysql_db",  
     user="root",
     password="root",
     database="studylink"
