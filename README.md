@@ -5,7 +5,7 @@
   <img src="https://github.com/Alexadre-asoel/StudyLink/blob/main/app/Imagens/logo.png" alt="Buddy Mentoring App Logo" width="200"/>
 </p>
 
-🔍 **Projeto desenvolvido para a Unidade Curricular de Empreendedorismo e Inovação I e II**  
+🔍 **Projeto desenvolvido para a Unidade Curricular de Empreendedorismo e Inovação I e II, Programação para a Internet, Criptografia Aplicada e Sistemas Distribuidos e Segurança**  
 🏫 **ISCTE - Instituto Universitário de Lisboa**  
 📍 **Lisboa, Portugal 🇵🇹**
 
@@ -54,7 +54,7 @@ O emparelhamento entre alunos é realizado por um **algoritmo de matching inteli
 
 - 👤 [Henrique Dias] - Head of Development & Security
 - 👤 [Alexandre Sorochenko] - Full Stack Developer
-- 👤 [André Baiona] - Project Manager
+- 👤 [André Baiona] - Project Manager & DBA 
 - 👤 [Rodrigo Caracol] - 
 - 👤 [Francisco Subtil] - 
 
