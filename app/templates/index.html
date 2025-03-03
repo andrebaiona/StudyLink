@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="Imagens/logo.png"> 
+    <link rel="icon" href="/static/Imagens/logo.png"> 
     <title>Study Link - Homepage</title>
     <style>
         body {
@@ -242,7 +242,7 @@
 </head>
 <body>
     <header>
-        <img src="/Imagens/logo.png" alt="Study Link Logo">
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
         <h1><a href="index.html">StudyLink</a></h1>
     </header>
     <nav>
@@ -252,8 +252,8 @@
     </nav>
     <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
     <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
-        <a href="conta.html">Conta</a>
+        <a href="/registo_page">Registo</a>
+        <a href="/login_page">Login</a>
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
@@ -335,7 +335,11 @@
     <script>
           if (window.location.pathname === "/homepage") {
           window.location.href = "index.html";
-  }
+            }
+          function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            menu.classList.toggle('show');
+            }
     </script>
 
     <footer>

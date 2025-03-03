@@ -84,14 +84,39 @@
         margin-top: 10px;
         display: none;
       }
+      .flash-message {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        text-align: center;
+      }
+      .success {
+        background-color: #b3ffb3;
+        color: #060;
+      }
+      .error {
+        background-color: #ffb3b3;
+        color: #900;
+      }
     </style>
   </head>
   <body>
     <div class="login-container">
       <div class="logo">
-        <img src="Imagens/logo.png" alt="Logo Study Link" />
+        <img src="../static/Imagens/logo.png" alt="Logo Study Link" />
       </div>
       <h1>Iniciar Sessão</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div id="flash-container">
+              {% for category, message in messages %}
+                <div class="flash-message {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
       <form action="/login" method="post">
         <div class="form-group">
           <label for="username">Nome de Utilizador:</label>
@@ -111,24 +136,14 @@
         Não tem conta? <a href="registo.html">Registe-se aqui</a>
       </div>
     </div>
-
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const form = document.querySelector('form');
-        const errorMessage = document.getElementById('error-message');
-
-        form.addEventListener('submit', function (event) {
-          const username = document.getElementById('username').value;
-          const password = document.getElementById('password').value;
-
-          if (!username || !password) {
-            event.preventDefault();
-            errorMessage.style.display = 'block';
-          } else {
-            errorMessage.style.display = 'none';
-          }
-        });
+      document.addEventListener("DOMContentLoaded", function () {
+          let flashMessages = document.querySelectorAll(".flash-message");
+          flashMessages.forEach(msg => {
+              msg.style.display = "block";
+              setTimeout(() => msg.style.display = "none", 15000);
+          });
       });
-    </script>
+</script>
   </body>
 </html>

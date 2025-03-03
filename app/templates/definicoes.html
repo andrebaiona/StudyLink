@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="Imagens/logo.png">
-    <title>Ajuda - Study Link</title>
+    <link rel="icon" href="logo.png">
+    <title>Definições - Study Link</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,41 +77,44 @@
             padding: 20px 10%;
             flex-grow: 1;
         }
-        .help-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .help-section h2 {
-            color: #a0522d;
-            margin-bottom: 10px;
-        }
-        .help-section p {
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-        .help-section p a {
-            color: #cd853f;
-            text-decoration: none;            
-        }
-        .help-section p a:hover {
-            text-decoration: underline;          
-        }
-        .faq {
-            margin-top: 40px;
-        }
-        .faq h3 {
-            color: #a0522d;
-        }
-        .faq-item {
-            margin-bottom: 20px;
+        .settings-section {
             background: #fff;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
         }
-        .faq-item p {
+        .settings-section h2 {
+            color: #a0522d;
+            margin-bottom: 20px;
+        }
+        .settings-section label {
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .settings-section input, .settings-section select {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            max-width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 1em;
-            line-height: 1.5;
+        }
+        .settings-section button {
+            padding: 10px 20px;
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .settings-section button:hover {
+            background: #8b4513;
+            transform: scale(1.05);
         }
         .account-btn {
             position: fixed;
@@ -188,7 +191,7 @@
 </head>
 <body>
     <header>
-        <img src="Imagens/logo.png" alt="Study Link Logo">
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
         <h1><a href="index.html">StudyLink</a></h1>
     </header>
     <nav>
@@ -204,30 +207,37 @@
         <a href="ajuda.html">Ajuda</a>
     </div>
     <div class="container">
-        <section class="help-section">
-            <h2>Ajuda</h2>
-            <p>Está com dúvidas sobre como utilizar a plataforma <b>Study Link</b>? Aqui, respondemos às questões mais frequentes para que possa tirar o máximo proveito da nossa plataforma.</p>
-            <p>Se não encontrar a resposta para a sua dúvida, não hesite em contactar-nos através da página de <a href="contacto.html">Contacto</a>.</p>
+        <section class="settings-section">
+            <h2>Definições da Conta</h2>
+            <form action="#" method="post">
+                <label for="notificacoes">Notificações</label>
+                <select id="notificacoes" name="notificacoes">
+                    <option value="todos">Todos</option>
+                    <option value="importante">Somente importantes</option>
+                    <option value="nenhuma">Nenhuma</option>
+                </select>
 
-            <div class="faq">
-                <h3>Perguntas Frequentes</h3>
-                <div class="faq-item">
-                    <h4>Como criar uma conta?</h4>
-                    <p>Para criar uma conta, clique no botão "Registar" na página inicial, preencha os seus dados e clique em "Submeter". A partir daí, terá acesso a todos os recursos da plataforma.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Como aceder aos materiais de estudo?</h4>
-                    <p>Após entrar na sua conta, vá até à seção de "Recursos" onde poderá encontrar uma lista de materiais de estudo, incluindo resumos e guias criados por outros estudantes.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Como posso participar nos grupos de estudo?</h4>
-                    <p>Na seção "Recursos", clique na opção "Grupos de Estudo". Lá, poderá ver os grupos disponíveis ou criar um novo grupo de estudo com outros estudantes da sua área.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Posso falar com outros estudantes através da plataforma?</h4>
-                    <p>Sim, você pode interagir com outros estudantes através dos fóruns de discussão, mensagens diretas e grupos de estudo na plataforma.</p>
-                </div>
-            </div>
+                <label for="idioma">Idioma</label>
+                <select id="idioma" name="idioma">
+                    <option value="portugues">Português</option>
+                    <option value="ingles">Inglês</option>
+                    <option value="espanhol">Espanhol</option>
+                </select>
+
+                <label for="tema">Tema</label>
+                <select id="tema" name="tema">
+                    <option value="claro">Claro</option>
+                    <option value="escuro">Escuro</option>
+                </select>
+
+                <label for="verificacao">Verificação em 2 Etapas</label>
+                <select id="verificacao" name="verificacao">
+                    <option value="ativa">Ativada</option>
+                    <option value="desativa">Desativada</option>
+                </select>
+
+                <button type="submit">Salvar Definições</button>
+            </form>
         </section>
     </div>
 

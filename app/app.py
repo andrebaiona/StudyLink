@@ -1,11 +1,11 @@
 
-from flask import Flask, request, render_template, redirect, url_for, session
+from flask import Flask, request, render_template, redirect, url_for, session, flash
 import mysql.connector
 from argon2 import PasswordHasher, exceptions as argon2_exceptions
 
 app = Flask(__name__)
 
-#app.secret_key = 'your_very_secret_key'
+app.secret_key = 'your_very_secret_key'
 
 
 # MySQL database connection
@@ -19,15 +19,23 @@ db = mysql.connector.connect(
 # Initialize Argon2 password hasher
 ph = PasswordHasher()
 
-@app.route('/register', methods=['POST'])
+
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    if request.method == 'GET':
+        return render_template('registo.html')
+
     try:
         name = request.form['name']
-        username = request.form['username']
+        username = request.form['username'].lower()  # Normalize username
         email = request.form['email']
         password = request.form['password']
+        confirm_password = request.form['confirm-password']
 
-        username = username.lower()
+        if password != confirm_password:
+            flash("As passwords não coincidem.", "error")
+            return redirect(url_for('registo_page'))  
+
         # Hash the password using Argon2
         hashed_password = ph.hash(password)
 
@@ -38,15 +46,19 @@ def register():
         db.commit()
         cursor.close()
 
-        return "Registration successful!", 200
+        flash("Registo bem-sucedido! Agora pode fazer login.", "success")
+        return redirect(url_for('login_page'))  # Redirect to login page with success message
 
     except mysql.connector.Error as err:
-        print(f"MySQL Error: {err}")
-        return f"MySQL Error: {err}", 500
+        if err.errno == 1062:  # Duplicate entry error
+            flash("Erro: Nome de utilizador já existe!", "error")
+        else:
+            flash(f"Erro na base de dados: {err}", "error")
+        return redirect(url_for('registo_page'))
 
     except Exception as e:
-        print(f"General Error: {e}")
-        return f"General Error: {e}", 500
+        flash(f"Erro geral: {e}", "error")
+        return redirect(url_for('registo_page'))
 
 
 
@@ -56,28 +68,51 @@ def login():
         username = request.form['username']
         password = request.form['password']
         username = username.lower()
+        
         cursor = db.cursor(dictionary=True)
-        query = "SELECT password FROM users WHERE username = %s"
+        query = "SELECT username, password FROM users WHERE username = %s"
         cursor.execute(query, (username,))
         user = cursor.fetchone()
         cursor.close()
 
+        # Check if user exists and verify password
         if user and ph.verify(user['password'], password):
-            return f'Logged in as "{username}"', 200
+            session['username'] = user['username']  # Now this works!
+            return redirect(url_for('conta'))
 
-        return "Invalid username or password", 401
+        flash("Nome de utilizador ou password inválidos.", "error")
+        return render_template('login.html')
 
     except argon2_exceptions.VerifyMismatchError:
-        return "Invalid username or password", 401
+        flash("Nome de utilizador ou password inválidos.", "error")
+        return render_template('login.html')
 
     except mysql.connector.Error as err:
-        print(f"MySQL Error: {err}")
-        return f"MySQL Error: {err}", 500
+        flash(f"Erro na base de dados: {err}", "error")
+        return render_template('login.html')
 
     except Exception as e:
-        print(f"General Error: {e}")
-        return f"General Error: {e}", 500
+        flash(f"Erro geral: {e}", "error")
+        return render_template('login.html')
 
+@app.route('/conta')
+def conta():
+    if 'username' not in session:
+        return redirect(url_for('login_page'))
+    return render_template('conta.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect(url_for('login_page'))
+
+@app.route('/login_page')
+def login_page():
+    return render_template('login.html')
+
+@app.route('/registo_page')
+def registo_page():
+    return render_template('registo.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

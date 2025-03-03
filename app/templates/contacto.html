@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="logo.png">
-    <title>Definições - Study Link</title>
+    <title>Contacto - Study Link</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -77,44 +77,46 @@
             padding: 20px 10%;
             flex-grow: 1;
         }
-        .settings-section {
+        .contact-section {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .contact-section h2 {
+            color: #a0522d;
+            margin-bottom: 10px;
+        }
+        .contact-section p {
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        .form-container {
             background: #fff;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            margin-bottom: 40px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .settings-section h2 {
-            color: #a0522d;
-            margin-bottom: 20px;
-        }
-        .settings-section label {
-            font-size: 1.1em;
-            margin-bottom: 10px;
-            display: block;
-        }
-        .settings-section input, .settings-section select {
+        .form-container input, .form-container textarea {
+            width: 90%;
             padding: 10px;
-            margin: 10px 0;
-            width: 100%;
-            max-width: 300px;
+            margin: 15px 0;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 1em;
         }
-        .settings-section button {
-            padding: 10px 20px;
+        .form-container button {
             background: #a0522d;
             color: #fff;
+            padding: 10px 20px;
             border: none;
             border-radius: 5px;
-            font-size: 1em;
+            font-size: 1.1em;
             cursor: pointer;
-            transition: background 0.3s, transform 0.3s;
+            transition: background 0.3s;
         }
-        .settings-section button:hover {
+        .form-container button:hover {
             background: #8b4513;
-            transform: scale(1.05);
         }
         .account-btn {
             position: fixed;
@@ -191,7 +193,7 @@
 </head>
 <body>
     <header>
-        <img src="Imagens/logo.png" alt="Study Link Logo">
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
         <h1><a href="index.html">StudyLink</a></h1>
     </header>
     <nav>
@@ -199,50 +201,32 @@
         <a href="comunidade.html">Comunidade</a>
         <a href="contacto.html">Contacto</a>
     </nav>
-    <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
-    <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
-        <a href="conta.html">Conta</a>
-        <a href="definicoes.html">Definições</a>
-        <a href="ajuda.html">Ajuda</a>
-    </div>
+
     <div class="container">
-        <section class="settings-section">
-            <h2>Definições da Conta</h2>
+        <section class="contact-section">
+            <h2>Contacto</h2>
+            <p>Bem-vindo à página de contacto do Study Link. Este é um projeto criado para conectar estudantes universitários, promover a partilha de conhecimentos e apoiar a colaboração académica. Se tem alguma dúvida ou gostaria de saber mais sobre como participar na nossa comunidade, entre em contacto connosco através do formulário abaixo.</p>
+        </section>
+        <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
+        <div class="account-menu" id="accountMenu">
+            <a href="disciplinas.html">Discplinas</a>
+            <a href="conta.html">Conta</a>
+            <a href="definicoes.html">Definições</a>
+            <a href="ajuda.html">Ajuda</a>
+        </div>
+        <section class="form-container">
+            <h3>Formulário de Contacto</h3>
             <form action="#" method="post">
-                <label for="notificacoes">Notificações</label>
-                <select id="notificacoes" name="notificacoes">
-                    <option value="todos">Todos</option>
-                    <option value="importante">Somente importantes</option>
-                    <option value="nenhuma">Nenhuma</option>
-                </select>
-
-                <label for="idioma">Idioma</label>
-                <select id="idioma" name="idioma">
-                    <option value="portugues">Português</option>
-                    <option value="ingles">Inglês</option>
-                    <option value="espanhol">Espanhol</option>
-                </select>
-
-                <label for="tema">Tema</label>
-                <select id="tema" name="tema">
-                    <option value="claro">Claro</option>
-                    <option value="escuro">Escuro</option>
-                </select>
-
-                <label for="verificacao">Verificação em 2 Etapas</label>
-                <select id="verificacao" name="verificacao">
-                    <option value="ativa">Ativada</option>
-                    <option value="desativa">Desativada</option>
-                </select>
-
-                <button type="submit">Salvar Definições</button>
+                <input type="text" name="nome" placeholder="Nome Completo" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <textarea name="mensagem" placeholder="Escreva sua mensagem aqui..." rows="4" required></textarea>
+                <button type="submit">Enviar Mensagem</button>
             </form>
         </section>
     </div>
 
     <footer>
-        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contate-nos</a></p>
     </footer>
     <script>
         function toggleAccountMenu() {

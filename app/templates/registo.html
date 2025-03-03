@@ -1,4 +1,3 @@
-        
 <!DOCTYPE html>
 <html lang="pt">
   <head>
@@ -65,7 +64,6 @@
         cursor: pointer;
         transition: background 0.3s;
         width: 107%;
-
       }
       .botao:hover {
         background: #a0522d;
@@ -82,74 +80,77 @@
         text-decoration: underline;
         color: #a0522d;
       }
-      .sucesso {
-        color: green;
-        font-size: 1.2em;
-        margin-top: 10px;
+      .flash-message {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+        display: none;
+      }
+      .error {
+        background-color: #ffb3b3;
+        color: #900;
+      }
+      .success {
+        background-color: #b3ffb3;
+        color: #060;
       }
     </style>
   </head>
   <body>
     <div class="register-container">
       <div class="logo">
-        <img src="Imagens/logo.png" alt="Logo Study Link" />
+        <img src="../static/Imagens/logo.png" alt="Logo Study Link" />
       </div>
       <h1>Criar Conta</h1>
-      <form action="/register" method="post" >
+
+      <!-- Flash Messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div id="flash-container">
+            {% for category, message in messages %}
+              <div class="flash-message {{ category }}">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      
+     
+          <form action="{{ url_for('register') }}" method="post">
+
           <div class="form-group">
               <label for="name">Nome:</label>
-              <input type="text" id="name" name="name" placeholder="Introduza o seu nome" required>
+              <input type="text" id="name" name="name" required>
           </div>
-
           <div class="form-group">
               <label for="username">Nome de Utilizador:</label>
-              <input type="text" id="username" name="username" placeholder="Introduza o seu nome de Utilizador" required>
+              <input type="text" id="username" name="username" required>
           </div>
-
           <div class="form-group">
               <label for="email">E-mail:</label>
-              <input type="email" id="email" name="email" placeholder="Introduza o seu e-mail" required>
+              <input type="email" id="email" name="email" required>
           </div>
-
           <div class="form-group">
               <label for="password">Password:</label>
-              <input type="password" id="password" name="password" placeholder="Introduza a sua password" required>
-          
+              <input type="password" id="password" name="password" required>
           </div>
-          
           <div class="form-group">
               <label for="confirm-password">Confirmar Password:</label>
-              <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme a sua password" required>
+              <input type="password" id="confirm-password" name="confirm-password" required>
           </div>
-   
           <button type="submit" class="botao">Registar</button>
-          <div id="mensagem-erro" class="sucesso" style="display: none; color: red;">
-            As passwords não coincidem.
-          </div>
-        
-        <div class="link-login">
+      </form>
+      <div class="link-login">
         Já possui conta? <a href="login.html">Autentique-se aqui</a>
       </div>
-        </form>
-      
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form');
-
-    form.addEventListener('submit', function (event) {
-      const password = document.getElementById('password').value;
-      const confirmPassword = document.getElementById('confirm-password').value;
-      const mensagemErro = document.getElementById('mensagem-erro');
-
-      if (password !== confirmPassword) {
-        event.preventDefault(); // Impede o envio do formulário
-        mensagemErro.style.display = 'block'; // Mostra a mensagem de erro
-      } else {
-        mensagemErro.style.display = 'none'; // Esconde a mensagem de erro
-      }
-    });
-  });
-</script>
     </div>
-</body>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+          let flashMessages = document.querySelectorAll(".flash-message");
+          flashMessages.forEach(msg => {
+              msg.style.display = "block";
+              setTimeout(() => msg.style.display = "none", 15000);
+          });
+      });
+    </script>
+  </body>
 </html>
