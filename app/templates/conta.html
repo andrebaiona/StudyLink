@@ -216,6 +216,19 @@
         footer a:hover {
             text-decoration: underline;
         }
+        .message p {
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #dff0d8;
+            color: #3c763d;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        input:disabled {
+                background-color: #e9ecef; /* Light gray background */
+                cursor: not-allowed;      /* Show not-allowed cursor */
+                color: #6c757d;          /* Dark gray text */
+            }
     </style>
 </head>
 <body>
@@ -235,38 +248,48 @@
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
+   
+   
     <div class="container">
         <section class="account-section">
             <h2>Minha Conta</h2>
-            <div class="profile-image" id="profileImage">
-                <img src="perfil.jpg" alt="Imagem de Perfil" id="profilePreview">
+            
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+            <div class="message">
+                {% for message in messages %}
+                <p style="color: green; text-align: center;">{{ message }}</p>
+                {% endfor %}
             </div>
-            <div class="upload-container">
-                <label for="profileUpload" class="upload-label">
-                    Escolher imagem de perfil
-                </label>
-                <input type="file" id="profileUpload" accept="image/*" onchange="uploadProfileImage()">
-            </div>
-            <form id="accountForm">
-                <label for="nome">Nome:</label>
-                <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+            {% endif %}
+            {% endwith %}
+            
+            <form action="/update_account" method="POST">
 
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" value="{{ session['name'] }}"required>
 
                 <label for="username">Nome de Utilizador:</label>
-                <input type="text" id="username" name="username" placeholder="Digite seu nome de utilizador" required>
+                <input type="text" id="username" name="username" value="{{ session['username'] }}" disabled>
+                
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" value="{{ session['email'] }}" disabled>
+                
+                <label for="password">Password Atual:</label>
+                <input type="password" id="password" name="password" required placeholder="Digite a sua password atual">
+                
+                <label for="new_password">Nova Password:</label>
+                <input type="password" id="new_password" name="new_password" placeholder="Nova password">
 
-                <label for="password">Senha:</label>
-                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
-
-                <label for="confirm-password">Confirmar Senha:</label>
-                <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
-
-                <button type="button" onclick="salvarConta()">Atualizar</button>
+                <label for="confirm_password">Confirmar Nova Password:</label>
+                <input type="password" id="confirm_password" name="confirm_new_password" placeholder="Confirme a nova password">
+                
+                <button type="submit">Atualizar Conta</button>
             </form>
         </section>
     </div>
+
     <footer>
         <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
     </footer>

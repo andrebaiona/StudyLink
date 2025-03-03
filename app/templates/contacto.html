@@ -189,6 +189,36 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        .flash {
+          padding: 15px;
+          margin-bottom: 20px;
+          border-radius: 5px;
+          text-align: center;
+          font-weight: bold;
+          animation: fadeIn 0.8s ease-in-out;
+        }
+
+        .flash.success {
+          background: #4CAF50; /* Verde */
+          color: white;
+        }
+
+        .flash.error {
+          background: #ff4444; /* Vermelho */
+          color: white;
+        }
+
+  @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
     </style>
 </head>
 <body>
@@ -203,26 +233,33 @@
     </nav>
 
     <div class="container">
-        <section class="contact-section">
-            <h2>Contacto</h2>
-            <p>Bem-vindo à página de contacto do Study Link. Este é um projeto criado para conectar estudantes universitários, promover a partilha de conhecimentos e apoiar a colaboração académica. Se tem alguma dúvida ou gostaria de saber mais sobre como participar na nossa comunidade, entre em contacto connosco através do formulário abaixo.</p>
-        </section>
-        <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
-        <div class="account-menu" id="accountMenu">
-            <a href="disciplinas.html">Discplinas</a>
-            <a href="conta.html">Conta</a>
-            <a href="definicoes.html">Definições</a>
-            <a href="ajuda.html">Ajuda</a>
-        </div>
-        <section class="form-container">
-            <h3>Formulário de Contacto</h3>
-            <form action="#" method="post">
-                <input type="text" name="nome" placeholder="Nome Completo" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <textarea name="mensagem" placeholder="Escreva sua mensagem aqui..." rows="4" required></textarea>
-                <button type="submit">Enviar Mensagem</button>
-            </form>
-        </section>
+       
+<section class="contact-section">
+    <h2>Contacto</h2>
+    <p>Bem-vindo à página de contacto do Study Link. Se tem alguma dúvida, entre em contacto connosco através do formulário abaixo.</p>
+</section>
+
+<div class="flash-messages">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="flash {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+
+<section class="form-container">
+    <h3>Formulário de Contacto</h3>
+    <form action="/contacto" method="post">
+        <input type="text" name="nome" placeholder="Nome Completo" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <textarea name="mensagem" placeholder="Escreva sua mensagem aqui..." rows="4" required></textarea>
+        <button type="submit">Enviar Mensagem</button>
+    </form>
+</section>
     </div>
 
     <footer>
