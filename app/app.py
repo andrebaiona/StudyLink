@@ -132,20 +132,39 @@ def conta():
         flash("Erro ao carregar dados do utilizador.", "error")
         return redirect(url_for('login_page'))
 
-
 @app.route('/update_account', methods=['POST'])
 def update_account():
     if 'username' not in session:
         return redirect(url_for('login_page'))
 
     try:
-        name = request.form['name']
-        email = request.form['email']
-        new_password = request.form.get('new_password')
-        confirm_password = request.form.get('confirm_new_password')
+        name = request.form.get('name', '')
+        email = request.form.get('email', '')
+        password = request.form.get('password', '')
+        new_password = request.form.get('new_password', '')
+        confirm_password = request.form.get('confirm_password', '')
 
-        cursor = db.cursor()
+        cursor = db.cursor(dictionary=True)
 
+        # Buscar o utilizador
+        query = "SELECT password, email FROM users WHERE username = %s"
+        cursor.execute(query, (session['username'],))
+        user = cursor.fetchone()
+
+        if not user:
+            flash("Erro: Utilizador não encontrado.", "error")
+            return redirect(url_for('conta'))
+
+        # Verificar se a password atual está correta
+        if not ph.verify(user['password'], password):
+            flash("Erro: Password atual incorreta.", "error")
+            return redirect(url_for('conta'))
+
+       
+        
+        email = user['email']
+
+        # Atualizar Password
         if new_password and confirm_password:
             if new_password == confirm_password:
                 hashed_password = ph.hash(new_password)
@@ -172,8 +191,8 @@ def update_account():
         flash(f"Erro na base de dados: {err}", "error")
         return redirect(url_for('conta'))
 
-    except Exception as e:
-        flash(f"Erro geral: {e}", "error")
+    except argon2_exceptions.VerifyMismatchError:
+        flash("Password atual incorreta.", "error")
         return redirect(url_for('conta'))
 
     except Exception as e:
@@ -219,4 +238,7 @@ def contacto():
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
+    app.run(debug=True)
 
+    
+    
