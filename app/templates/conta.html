@@ -216,13 +216,22 @@
         footer a:hover {
             text-decoration: underline;
         }
+        
         .message p {
             padding: 10px;
             border-radius: 5px;
-            background-color: #dff0d8;
-            color: #3c763d;
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        .message p.success {
+            background-color: #dff0d8; /* Green Background */
+            color: #3c763d; /* Dark Green Text */
+        }
+
+        .message p.error {
+            background-color: #ffb3b3; /* Red Background */
+            color: #900; /* Dark Red Text */
         }
         input:disabled {
                 background-color: #e9ecef; /* Light gray background */
@@ -250,46 +259,46 @@
     </div>
    
    
-    <div class="container">
-        <section class="account-section">
-            <h2>Minha Conta</h2>
+    
+<div class="container">
+    <section class="account-section">
+        <h2>Minha Conta</h2>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="message">
+            {% for category, message in messages %}
+            <p class="{{ category }}">{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <form action="/update_account" method="POST" onsubmit="return validateForm();">
             
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-            <div class="message">
-                {% for message in messages %}
-                <p style="color: green; text-align: center;">{{ message }}</p>
-                {% endfor %}
-            </div>
-            {% endif %}
-            {% endwith %}
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  
             
-            <form action="/update_account" method="POST">
+            <label for="name">Nome:</label>
+            <input type="text" id="name" name="name" value="{{ session['name'] }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required>
 
-
-                <label for="name">Nome:</label>
-                <input type="text" id="name" name="name" value="{{ session['name'] }}"required>
-
-                <label for="username">Nome de Utilizador:</label>
-                <input type="text" id="username" name="username" value="{{ session['username'] }}" disabled>
-                
-                <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" value="{{ session['email'] }}" disabled>
-                
-                <label for="password">Password Atual:</label>
-                <input type="password" id="password" name="password" required placeholder="Digite a sua password atual">
-                
-                <label for="new_password">Nova Password:</label>
-                <input type="password" id="new_password" name="new_password" placeholder="Nova password">
-
-                <label for="confirm_password">Confirmar Nova Password:</label>
-                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirme a nova password">
-                
-                <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
-
-            </form>
-        </section>
-    </div>
+            <label for="username">Nome de Utilizador:</label>
+            <input type="text" id="username" name="username" value="{{ session['username'] }}" disabled>
+            
+            <label for="email">E-mail:</label>
+            <input type="email" id="email" name="email" value="{{ session['email'] }}" disabled>
+            
+            <label for="password">Password Atual:</label>
+            <input type="password" id="password" name="password" required placeholder="Digite a sua password atual" required>
+            
+            <label for="new_password">Nova Password:</label>
+            <input type="password" id="new_password" name="new_password" pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{12,}" placeholder="Introduza a sua nova password" title="A password deve ter pelo menos 12 caracteres, 1 letra maiúscula e 1 número" required>
+            <label for="confirm_password">Confirmar Nova Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirme a nova password" required>
+            
+            <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
+        </form>
+    </section>
+</div>
 
     <footer>
         <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>

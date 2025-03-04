@@ -254,6 +254,9 @@
 <section class="form-container">
     <h3>Formulário de Contacto</h3>
     <form action="/contacto" method="post">
+
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
         <input type="text" name="nome" placeholder="Nome Completo" required>
         <input type="email" name="email" placeholder="Email" required>
         <textarea name="mensagem" placeholder="Escreva sua mensagem aqui..." rows="4" required></textarea>

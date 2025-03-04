@@ -1,19 +1,10 @@
 Flask
 mysql-connector-python
 argon2-cffi
-Flask-Login
-Flask-SQLAlchemy
-Flask-WTF
-greenlet
-idna
+Flask-WTF         # CSRF Protection + Forms Validation
+Flask-Limiter
+WTForms           # Advanced Form Validation
+bleach             # XSS Input Sanitization
+python-dotenv      # Environment Variables (Optional for Secrets)
 importlib-metadata
-itsdangerous
-Jinja2
-MarkupSafe
-pycparser
-six
-SQLAlchemy
-sqlparse
-Werkzeug
-WTForm
 

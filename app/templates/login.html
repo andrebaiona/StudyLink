@@ -141,19 +141,23 @@
   {% endif %}
   {% endwith %}
 
-  <form action="/login" method="post">
-    <div class="form-group">
-      <label for="username">Nome de Utilizador:</label>
-      <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" required />
-    </div>
+  <form action="/login" method="post"> 
+       
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-    <div class="form-group">
-      <label for="password">Password:</label>
-      <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
-    </div>
+      <div class="form-group">
+        <label for="username">Nome de Utilizador:</label>
+        <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" required />
+      </div>
 
-    <button type="submit" class="botao">Entrar</button>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
+      </div>
+
+      <button type="submit" class="botao">Entrar</button>
   </form>
+
 
   <div class="link-register">
     Não tem conta? <a href="/registo_page">Registe-se aqui</a>
