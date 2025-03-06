@@ -44,7 +44,6 @@ def html_redirect(page):
     if page in page_map:
         return redirect(url_for(page_map[page]), code=301)
 
-    # If not in page_map, serve the HTML file normally
     try:
         return render_template(f"{page}.html")
     except TemplateNotFound:
@@ -130,7 +129,7 @@ def login():
         flash("Nome de utilizador ou password inválidos.", "error")
         return redirect(url_for('login_page'))
 
-    except VerifyMismatchError:
+    except argon2_exceptions.VerifyMismatchError:
         flash("Nome de utilizador ou password inválidos.", "error")
         return redirect(url_for('login_page'))
 
