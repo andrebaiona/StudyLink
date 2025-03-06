@@ -1,0 +1,56 @@
+
+/* recursos.css – Specific styles for recursos.html */
+.container {
+    padding: 40px 10%;
+    flex-grow: 1;
+}
+
+.resources-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.resources-section h2 {
+    color: #a0522d;
+    margin-bottom: 10px;
+}
+
+.resources-section p {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.resources-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+    justify-items: center;
+    margin-top: 30px;
+}
+
+.resource {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    max-width: 320px;
+    min-height: 250px;
+    margin-bottom: 30px;
+}
+
+.resource:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.resource h3 {
+    color: #cd853f;
+    margin-bottom: 10px;
+}
+
+.resource p {
+    font-size: 1em;
+    line-height: 1.5;
+}

@@ -1,190 +1,13 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="Imagens/logo.png">
+    <link rel="icon" href="logo.png">
     <title>Ajuda - Study Link</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #d2b48c;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background: #e1d9ce;
-            color: #000;
-            padding: 20px 10%;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        header img {
-            height: 50px;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            flex-grow: 1;
-            text-align: center;
-        }
-        header h1 a{
-            color: #000;
-            text-decoration: none;
-        }
-        nav {
-            background: #a0522d;
-            padding: 10px 10%;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        nav a {
-            color: #fff;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 1.1em;
-            position: relative;
-            transition: color 0.3s ease, transform 0.3s ease;
-        }
-        nav a::after {
-            content: '';
-            display: block;
-            height: 2px;
-            width: 0;
-            background: #fff;
-            transition: width 0.3s ease;
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        nav a:hover {
-            color: #ffebcd;
-            transform: scale(1.1);
-        }
-        nav a:hover::after {
-            width: 100%;
-        }
-        .container {
-            padding: 20px 10%;
-            flex-grow: 1;
-        }
-        .help-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .help-section h2 {
-            color: #a0522d;
-            margin-bottom: 10px;
-        }
-        .help-section p {
-            font-size: 1.1em;
-            line-height: 1.6;
-        }
-        .help-section p a {
-            color: #cd853f;
-            text-decoration: none;            
-        }
-        .help-section p a:hover {
-            text-decoration: underline;          
-        }
-        .faq {
-            margin-top: 40px;
-        }
-        .faq h3 {
-            color: #a0522d;
-        }
-        .faq-item {
-            margin-bottom: 20px;
-            background: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .faq-item p {
-            font-size: 1em;
-            line-height: 1.5;
-        }
-        .account-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #deb887;
-            color: #333;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s, transform 0.3s;
-        }
-        .account-btn:hover {
-            background: #8b4513;
-            color: #fff;
-            transform: scale(1.05);
-        }
-        .account-menu {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            padding: 10px;
-            z-index: 1100;
-        }
-        .account-menu a {
-            color: #333;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .account-menu a:hover {
-            background: #f0e68c;
-        }
-        .account-menu.show {
-            display: flex;
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.9em;
-            margin-top: auto;
-        }
-        footer a {
-            color: #cd853f;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/ajuda.css">
 </head>
 <body>
     <header>
@@ -198,47 +21,19 @@
     </nav>
     <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
     <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
+        <a href="disciplinas.html">Disciplinas</a>
         <a href="conta.html">Conta</a>
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
     <div class="container">
         <section class="help-section">
-            <h2>Ajuda</h2>
-            <p>Está com dúvidas sobre como utilizar a plataforma <b>Study Link</b>? Aqui, respondemos às questões mais frequentes para que possa tirar o máximo proveito da nossa plataforma.</p>
-            <p>Se não encontrar a resposta para a sua dúvida, não hesite em contactar-nos através da página de <a href="contacto.html">Contacto</a>.</p>
-
-            <div class="faq">
-                <h3>Perguntas Frequentes</h3>
-                <div class="faq-item">
-                    <h4>Como criar uma conta?</h4>
-                    <p>Para criar uma conta, clique no botão "Registar" na página inicial, preencha os seus dados e clique em "Submeter". A partir daí, terá acesso a todos os recursos da plataforma.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Como aceder aos materiais de estudo?</h4>
-                    <p>Após entrar na sua conta, vá até à seção de "Recursos" onde poderá encontrar uma lista de materiais de estudo, incluindo resumos e guias criados por outros estudantes.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Como posso participar nos grupos de estudo?</h4>
-                    <p>Na seção "Recursos", clique na opção "Grupos de Estudo". Lá, poderá ver os grupos disponíveis ou criar um novo grupo de estudo com outros estudantes da sua área.</p>
-                </div>
-                <div class="faq-item">
-                    <h4>Posso falar com outros estudantes através da plataforma?</h4>
-                    <p>Sim, você pode interagir com outros estudantes através dos fóruns de discussão, mensagens diretas e grupos de estudo na plataforma.</p>
-                </div>
-            </div>
+            <h2>Precisa de Ajuda?</h2>
+            <p>Encontre respostas para suas dúvidas e descubra como tirar o máximo proveito do Study Link.</p>
         </section>
     </div>
-
     <footer>
-        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados.</p>
     </footer>
-    <script>
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
-    </script>
 </body>
 </html>

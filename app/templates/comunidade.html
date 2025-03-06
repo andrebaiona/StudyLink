@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt">
 <head>
@@ -5,194 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="logo.png"> 
     <title>Study Link - Comunidade</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #d2b48c;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background: #e1d9ce;
-            color: #000;
-            padding: 20px 10%;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        header img {
-            height: 50px;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-            flex-grow: 1;
-            text-align: center;
-        }
-        header h1 a{
-            color: #000;
-            text-decoration: none;
-        }
-        nav {
-            background: #a0522d;
-            padding: 10px 10%;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        nav a {
-            color: #fff;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 1.1em;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-        nav a:hover {
-            color: #ffebcd;
-        }
-        .container {
-            padding: 20px 10%;
-            flex-grow: 1;
-        }
-        .posts {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-        .post {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .post:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-        }
-        .post-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .post-header h3 {
-            margin: 0;
-            font-size: 1.2em;
-            color: #8b4513;
-        }
-        .post-header .author {
-            font-size: 0.9em;
-            color: #555;
-        }
-        .post-description {
-            font-size: 1em;
-            line-height: 1.5;
-            color: #333;
-        }
-        .account-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #deb887;
-            color: #333;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background 0.3s, transform 0.3s;
-        }
-        .account-btn:hover {
-            background: #8b4513;
-            color: #fff;
-            transform: scale(1.05);
-        }
-        .account-menu {
-            position: fixed;
-            top: 70px;
-            right: 20px;
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            display: none;
-            flex-direction: column;
-            padding: 10px;
-            z-index: 1100;
-        }
-        .account-menu a {
-            color: #333;
-            text-decoration: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            transition: background 0.3s;
-        }
-        .account-menu a:hover {
-            background: #f0e68c;
-        }
-        .account-menu.show {
-            display: flex;
-            animation: slideDown 0.3s ease-out;
-        }
-        @keyframes slideDown {
-            from {
-                transform: translateY(-10px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.9em;
-            margin-top: auto;
-        }
-        footer a {
-            color: #cd853f;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px 5%;
-            }
-        }
-        .create-topic-btn {
-            background: #a0522d;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-            transition: background 0.3s;
-            margin-bottom: 20px;
-        }
-        .create-topic-btn:hover {
-            background: #8b4513;
-        }
-        .create-topic-btn a{
-            text-decoration: none;
-            color: #000;
-        }
-    </style>
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <link rel="stylesheet" href="../static/css/comunidade.css">
 </head>
 <body>
     <header>
@@ -206,15 +21,13 @@
     </nav>
     <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
     <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
+        <a href="disciplinas.html">Disciplinas</a>
         <a href="conta.html">Conta</a>
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
     <div class="container">
-        <!-- Botão para Criar Tópico -->
-        <button class="create-topic-btn"><a href="formulario.html">Tópico</a> </button>
-        
+        <button class="create-topic-btn"><a href="formulario.html">Tópico</a></button>
         <section class="posts">
             <div class="post">
                 <div class="post-header">
@@ -223,129 +36,10 @@
                 </div>
                 <p class="post-description">Uma visão geral sobre os conceitos básicos de cibersegurança, incluindo ameaças comuns e boas práticas para proteger os seus dados.</p>
             </div>
-            <div class="post">
-                <div class="post-header">
-                    <h3>Como preparar-se para exames</h3>
-                    <span class="author">Maria Clara</span>
-                </div>
-                <p class="post-description">Dicas e estratégias para organizar os seus estudos e melhorar o desempenho nos exames finais.</p>
-            </div>
-            <div class="post">
-                <div class="post-header">
-                    <h3>Projeto de Redes - Configuração Básica</h3>
-                    <span class="author">Rafael Silva</span>
-                </div>
-                <p class="post-description">Um guia para configurar uma rede local simples, com exemplos de comandos e ferramentas úteis para iniciantes.</p>
-            </div>
-            <div class="post">
-                <div class="post-header">
-                    <h3>Estruturas de Dados em Python</h3>
-                    <span class="author">Ana Pereira</span>
-                </div>
-                <p class="post-description">Uma introdução às estruturas de dados fundamentais em Python, como listas, dicionários e conjuntos.</p>
-            </div>
-            <div class="post">
-                <div class="post-header">
-                    <h3>Algoritmos de Ordenação em Java</h3>
-                    <span class="author">Carlos Mendes</span>
-                </div>
-                <p class="post-description">Exploração de algoritmos de ordenação como Bubble Sort, Merge Sort e Quick Sort usando Java.</p>
-            </div>
-            
-            <div class="post">
-                <div class="post-header">
-                    <h3>Segurança de Redes: Conceitos Básicos</h3>
-                    <span class="author">João Silva</span>
-                </div>
-                <p class="post-description">Uma introdução aos conceitos básicos de segurança em redes, incluindo firewalls e VPNs.</p>
-            </div>
-            
-            <div class="post">
-                <div class="post-header">
-                    <h3>Desenvolvimento de APIs com Node.js</h3>
-                    <span class="author">Mariana Costa</span>
-                </div>
-                <p class="post-description">Guia para criar APIs RESTful utilizando Express.js e Node.js com autenticação básica.</p>
-            </div>
-            
-            <div class="post">
-                <div class="post-header">
-                    <h3>Introdução ao Machine Learning</h3>
-                    <span class="author">Tiago Ramos</span>
-                </div>
-                <p class="post-description">Exploração de conceitos básicos de Machine Learning e aplicação prática com Python e scikit-learn.</p>
-            </div>
-            
-            <div class="post">
-                <div class="post-header">
-                    <h3>Git e GitHub para Iniciantes</h3>
-                    <span class="author">Sofia Marques</span>
-                </div>
-                <p class="post-description">Aprenda os comandos básicos do Git e como usar o GitHub para colaborar em projetos.</p>
-            </div>
         </section>
     </div>
     <footer>
-        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+        <p>&copy; 2024 Study Link. Todos os direitos reservados.</p>
     </footer>
-    <script>
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
-    
-        // Função para carregar tópicos do LocalStorage e exibi-los
-        function loadTopics() {
-            const postsContainer = document.querySelector(".posts");
-            const topics = JSON.parse(localStorage.getItem('topics')) || [];
-    
-            topics.forEach(topic => {
-                const post = document.createElement("div");
-                post.classList.add("post");
-    
-                const postHeader = document.createElement("div");
-                postHeader.classList.add("post-header");
-    
-                const postTitle = document.createElement("h3");
-                postTitle.textContent = topic.title;
-                postHeader.appendChild(postTitle);
-    
-                const postAuthor = document.createElement("span");
-                postAuthor.classList.add("author");
-                postAuthor.textContent = "Autor: " + topic.author;  // Exibir o nome do autor
-                postHeader.appendChild(postAuthor);
-    
-                const postDescription = document.createElement("p");
-                postDescription.classList.add("post-description");
-                postDescription.textContent = topic.text;
-    
-                post.appendChild(postHeader);
-                post.appendChild(postDescription);
-    
-                // Mostrar a imagem, se existir
-                if (topic.image) {
-                    const img = document.createElement("img");
-                    img.src = topic.image; // Usar a URL criada
-                    img.alt = "Imagem do Tópico";
-                    img.style.width = "100%";
-                    post.appendChild(img);
-                }
-    
-                // Mostrar o ficheiro, se existir
-                if (topic.file) {
-                    const fileLink = document.createElement("a");
-                    fileLink.href = topic.file; // Usar a URL criada
-                    fileLink.textContent = "Ficheiro Anexo";
-                    fileLink.target = "_blank";
-                    post.appendChild(fileLink);
-                }
-    
-                postsContainer.appendChild(post);
-            });
-        }
-    
-        // Carregar tópicos quando a página carregar
-        window.onload = loadTopics;
-    </script>
 </body>
 </html>

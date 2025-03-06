@@ -1,0 +1,59 @@
+
+/* contacto.css – Specific styles for contacto.html */
+.container {
+    padding: 20px 10%;
+    flex-grow: 1;
+}
+
+.contact-section {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.contact-section h2 {
+    color: #a0522d;
+    margin-bottom: 10px;
+}
+
+.contact-section p {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.form-container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.form-container input, .form-container textarea {
+    width: 90%;
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.form-container button {
+    background: #a0522d;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.form-container button:hover {
+    background: #8b4513;
+}
+
+label {
+  display: block; /* Ensures labels appear above inputs */
+  margin-bottom: 5px; /* Adds spacing */
+}
