@@ -1,80 +1,59 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Study Link</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
-    <link rel="stylesheet" href="../static/css/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Study Link</title>
+  <link rel="stylesheet" href="../static/css/login.css">
+  <script src="../static/js/login.js" defer></script>
 </head>
 <body>
-<div class="login-container">
-  <div class="logo">
-    <img src="../static/Imagens/logo.png" alt="Logo Study Link" />
-  </div>
-  <h1>Iniciar Sessão</h1>
+  <div class="login-container">
+    <div class="logo">
+      <img src="../static/Imagens/logo.png" alt="Logo Study Link">
+    </div>
+    <h1>Iniciar Sessão</h1>
 
-  <!-- Flash Messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
+    
+{% with messages = get_flashed_messages(with_categories=true) %}
   {% if messages %}
-  <div id="flash-container">
-    {% for category, message in messages %}
-    <div class="flash-message {{ category }}">{{ message }}</div>
-    {% if category == "success" %}
-    <div class="spinner"></div> <!-- Spinner only for success -->
-    <script>
-      setTimeout(() => {
-        window.location.href = "{{ url_for('conta') }}";
-      }, 5000);
-      document.querySelector(".spinner").style.display = "block";
-    </script>
-    {% endif %}
-    {% endfor %}
-  </div>
+    <div id="flash-container">
+      {% for category, message in messages %}
+        <div class="flash-message {{ category }}">
+          {% if category == "success" %}
+        
+            {{ message }}           
+            <div id="loading-container">
+              <div class="spinner-circle"></div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+            </div>
+          {% else %}
+            
+            {{ message }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
   {% endif %}
-  {% endwith %}
+{% endwith %}
 
-  <form action="/login" method="post"> 
-       
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
+    <form action="{{ url_for('login') }}" method="post">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
         <label for="username">Nome de Utilizador:</label>
-        <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" required />
+        <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" value="{{ request.args.get('username', '') }}" required>
       </div>
-
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
+        <input type="password" id="password" name="password" placeholder="Introduza a sua password" required>
       </div>
-
       <button type="submit" class="botao">Entrar</button>
-  </form>
-
-
-  <div class="link-register">
-    Não tem conta? <a href="/registo_page">Registe-se aqui</a>
+    </form>
+    <div class="link-register">
+      Não tem conta? <a href="{{ url_for('registo_page') }}">Registe-se aqui</a>
+    </div>
   </div>
-</div>
-
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    let flashMessages = document.querySelectorAll(".flash-message");
-    flashMessages.forEach((msg) => {
-      msg.style.display = "block";
-      setTimeout(() => (msg.style.display = "none"), 15000); // Messages disappear after 15 seconds
-
-     
-      if (msg.classList.contains("success")) {
-        setTimeout(() => {
-          window.location.href = "/conta"; // Redirect to the account page
-        }, 2000); 
-      }
-    });
-  });
-</script>
-
 </body>
 </html>

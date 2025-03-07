@@ -19,6 +19,7 @@ app.config['PERMANENT_SESSION_LIFETIME'] = 3600  # Session expires in 1 hour
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  
 
 limiter = Limiter(get_remote_address, app=app, default_limits=["200 per minute"])
+
 def sanitize_input(data):
     return bleach.clean(data, strip=True)
 
@@ -50,58 +51,63 @@ def html_redirect(page):
         flash("Página não encontrada!", "error")
         return redirect(url_for('login_page'))
 
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('registo.html')
 
     try:
-        # Sanitize Inputs
+        
         name = bleach.clean(request.form['name'])
         username = bleach.clean(request.form['username'].strip().lower())
         email = bleach.clean(request.form['email'].strip().lower())
         password = bleach.clean(request.form['password'])
-        confirm_password = bleach.clean(request.form['confirm-password']) 
+        confirm_password = bleach.clean(request.form['confirm-password'])
+
+        
+        session['form_data'] = {
+            'name': name,
+            'username': username,
+            'email': email
+        }
 
         if password != confirm_password:
             flash("As passwords não coincidem.", "error")
-            return render_template('registo.html', form=request.form)
+            return redirect(url_for('registo_page'))
 
-
-        # Check Username or Email Exist
+        
         cursor = db.cursor()
         cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (username, email))
         existing_user = cursor.fetchone()
+        cursor.close()
 
         if existing_user:
             flash("Nome de utilizador ou email já estão registados!", "error")
             return redirect(url_for('registo_page'))
 
-        # Hash Password
+        
         hashed_password = ph.hash(password)
 
-        # Insert into Database
+    
+        cursor = db.cursor()
         query = "INSERT INTO users (name, username, email, password) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (name, username, email, hashed_password))
         db.commit()
         cursor.close()
 
-        flash("Registo bem-sucedido! Agora pode fazer login.", "success")
-        return redirect(url_for('login_page'))
+        # Limpar os dados da sessão após sucesso
+        session.pop('form_data', None)
+
+        flash("Registo bem-sucedido!", "success")
+        return redirect(url_for('registo_page'))
 
     except mysql.connector.Error as err:
-        if err.errno == 1062:
-            flash("Erro: Nome de utilizador ou email já existe!", "error")
-        else:
-            flash(f"Erro na base de dados: {err}", "error")
+        flash(f"Erro na base de dados: {err}", "error")
         return redirect(url_for('registo_page'))
 
     except Exception as e:
         flash(f"Erro inesperado: {e}", "error")
         return redirect(url_for('registo_page'))
-
-
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -111,35 +117,35 @@ def login():
 
         if not username or not password:
             flash('Todos os campos são obrigatórios!', 'error')
-            return redirect(url_for('login_page'))
+            return redirect(url_for('login_page', username=username))
 
-        username = username.lower()  # Normalize username    
+        username = username.lower()
         cursor = db.cursor(dictionary=True)
         query = "SELECT username, password FROM users WHERE username = %s"
         cursor.execute(query, (username,))
         user = cursor.fetchone()
         cursor.close()
 
-        # Check if user exists and verify password
         if user and ph.verify(user['password'], password):
             session['username'] = user['username']
-            flash("Login bem-sucedido! Estamos a iniciar a sua sessão...", "success") 
-            return redirect(url_for('login_page'))  # This will trigger the animation
+            flash("🎓Credenciais Aceites! A fazer login...", "success")  
+            return redirect(url_for('login_page'))  
 
-        flash("Nome de utilizador ou password inválidos.", "error")
-        return redirect(url_for('login_page'))
+        else:
+            flash("Nome de utilizador ou password inválidos.", "error")
+            return redirect(url_for('login_page', username=username))
 
     except argon2_exceptions.VerifyMismatchError:
         flash("Nome de utilizador ou password inválidos.", "error")
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login_page', username=username))
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login_page', username=username))
 
     except Exception as e:
         flash(f"Erro geral: {e}", "error")
-        return redirect(url_for('login_page'))
+        return redirect(url_for('login_page', username=username))
 
 @app.route('/conta')
 def conta():

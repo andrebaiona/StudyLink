@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registo - Study Link</title>
-
-    <link rel="stylesheet" href="../static/css/styles.css">
+    <title>Registo - Study Link</title> 
     <link rel="stylesheet" href="../static/css/registo.css">
+    <script src="../static/js/registo.js" defer></script>
+
      </head>
   <body>
     <div class="register-container">
@@ -15,12 +15,23 @@
       </div>
       <h1>Criar Conta</h1>
 
-      <!-- Flash Messages -->
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
         <div id="flash-container">
           {% for category, message in messages %}
-          <div class="flash-message {{ category }}">{{ message }}</div>
+          <div class="flash-message {{ category }}">
+            {{ message }}
+
+            {% if category == "success" %}
+            <div id="loading-container">
+              <div class="spinner-circle"></div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <p>🚀🎓 Poderá fazer login brevemente...</p>
+            </div>
+            {% endif %}
+          </div>
           {% endfor %}
         </div>
         {% endif %}
@@ -28,49 +39,45 @@
 
       
         <form action="{{ url_for('register') }}" method="post">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                   
+         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
+        <div class="form-group"> 
+          <label for="name">Nome:</label>
+          <input type="text" id="name" name="name" placeholder="Introduza o seu nome"
+              value="{{ session['form_data']['name'] if 'form_data' in session else '' }}" required />
+         </div>
+
+        <div class="form-group">
+          <label for="name">Username:</label>
+          <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador"
+              value="{{ session['form_data']['username'] if 'form_data' in session else '' }}" required />
+        </div>
+
+        <div class="form-group">
+          <label for="name">E-mail:</label>
+          <input type="email" id="email" name="email" placeholder="Introduza o seu email"
+              value="{{ session['form_data']['email'] if 'form_data' in session else '' }}" required />
+         </div>
+         
           <div class="form-group">
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" value="{{ form.name if form else '' }}" required>
+              <label for="password">Password:</label>
+              <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
+              <div class="password-strength">
+                  <div class="password-strength-bar"></div>
+              </div>
           </div>
 
           <div class="form-group">
-            <label for="username">Nome de Utilizador:</label>
-            <input type="text" id="username" name="username" value="{{ form.username if form else '' }}"required />
-          </div>
-
-          <div class="form-group">
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" value="{{ form.email if form else '' }}"required />
-          </div>
-
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{12,}" title="A password deve ter pelo menos 12 caracteres, 1 letra maiúscula e 1 número" required>
-          </div>
-
-          <div class="form-group">
-            <label for="confirm-password">Confirmar Password:</label>
-            <input type="password" id="confirm-password" name="confirm-password" required />
+              <label for="confirm-password">Confirmar Password:</label>
+              <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme a sua password" required />
           </div>
 
           <button type="submit" class="botao">Registar</button>
-      </form>
-
+</form>
       <div class="link-login">
         Já possui conta? <a href="/login_page">Autentique-se aqui</a>
       </div>
     </div>
-
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        let flashMessages = document.querySelectorAll(".flash-message");
-        flashMessages.forEach((msg) => {
-          msg.style.display = "block";
-          setTimeout(() => msg.style.display = "none", 15000);
-        });
-      });
-    </script>
   </body>
 </html>

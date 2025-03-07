@@ -78,3 +78,124 @@ input {
     text-decoration: underline;
     color: #a0522d;
 }
+/* Password Strength Container */
+.password-strength {
+    height: 6px;
+    width: 100%;
+    background: #ddd;
+    border-radius: 4px;
+    margin-top: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Strength Bar */
+.password-strength-bar {
+    height: 100%;
+    width: 0%;
+    border-radius: 4px;
+    transition: width 0.4s ease-in-out, background-color 0.4s ease-in-out;
+}
+
+/* Strength Colors */
+.weak { background: #e74c3c; }       /* Red */
+.medium { background: #f1c40f; }     /* Yellow */
+.strong { background: #2ecc71; }     /* Green */
+.very-strong { background: #3498db; } /* Blue */
+
+
+/* Flash message styling */
+
+
+
+.flash-message {
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+
+/* Error (Red) */
+.flash-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+
+
+.flash-message.success {
+    background-color: #d4edda; 
+    color: #155724;           
+    border: 1px solid #c3e6cb;
+    padding: 15px;            
+    margin: 15px 0;           
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.flash-message.success #loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;        
+    background: transparent; 
+}
+
+
+.flash-message.success .spinner-circle {
+    width: 25px;
+    height: 25px;
+    border: 3px solid rgba(21, 87, 36, 0.3); 
+    border-top: 3px solid #155724;           
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 10px;
+}
+
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+
+.flash-message.success .progress-bar {
+    width: 80%;
+    height: 5px;
+    background-color: rgba(21, 87, 36, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.flash-message.success .progress-fill {
+    height: 100%;
+    width: 0;
+    background-color: #155724;
+    border-radius: 5px;
+    animation: fillBar 2s linear forwards;
+}
+
+
+@keyframes fillBar {
+    from { width: 0; }
+    to   { width: 100%; }
+}
+
+/* Texto abaixo da barra */
+
+.flash-message.success #loading-container p {
+    font-size: 16px; 
+    font-weight: bold; 
+    font-family: "Poppins", sans-serif; 
+    color: #155724; 
+    margin-top: 5px;
+}
+
+

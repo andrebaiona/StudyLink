@@ -8,6 +8,7 @@
     <title>Contacto - Study Link</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/contacto.css">
+    <script src="your-script.js" defer></script>
 </head>
 <body>
     <header>
@@ -19,6 +20,13 @@
         <a href="comunidade.html">Comunidade</a>
         <a href="contacto.html">Contacto</a>
     </nav>
+    <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
+        <div class="account-menu" id="accountMenu">
+            <a href="/registo_page">Registo</a>
+            <a href="/login_page">Login</a>
+            <a href="definicoes.html">Definições</a>
+            <a href="ajuda.html">Ajuda</a>
+        </div>
 
     <div class="container">
        
@@ -54,7 +62,7 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 Study Link. Todos os direitos reservados. <a href="contacto.html">Contate-nos</a></p>
+        <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contate-nos</a></p>
     </footer>
     <script>
         function toggleAccountMenu() {

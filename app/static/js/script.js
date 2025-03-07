@@ -4,3 +4,6 @@ function toggleAccountMenu() {
         menu.classList.toggle('show');
     }
 }
+
+
+
