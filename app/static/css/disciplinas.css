@@ -74,3 +74,4 @@
 
 .disciplina input[type="checkbox"]:checked::before {
     transform: translateX
+}
