@@ -54,6 +54,43 @@
 }
 
 label {
-  display: block; /* Ensures labels appear above inputs */
-  margin-bottom: 5px; /* Adds spacing */
+  display: block; 
+  margin-bottom: 5px; 
+}
+
+.flash-messages {
+    margin: 20px 0;
+    padding: 10px;
+}
+
+.flash {
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.flash.error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.flash.info {
+    background-color: #cce5ff;
+    color: #004085;
+    border: 1px solid #b8daff;
+}
+
+.flash.warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
 }
