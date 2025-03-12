@@ -12,20 +12,21 @@ body {
 header {
     background: #e1d9ce;
     color: #000;
-    padding: 20px 10%;
+    padding: 10px 5%;
     text-align: center;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 header img {
-    height: 50px;
+    height: 90px;
 }
 header h1 {
     margin: 0;
     font-size: 2.5em;
     flex-grow: 1;
     text-align: center;
+    text-shadow: #333;
 }
 header h1 a {
     color: #000;
@@ -111,7 +112,7 @@ footer {
     background: #333;
     color: #fff;
     text-align: center;
-    padding: 10px;
+    padding: 3px;
     font-size: 0.9em;
     margin-top: auto;
 }
