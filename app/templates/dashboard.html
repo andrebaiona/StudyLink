@@ -1,12 +1,267 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
+<html lang="pt">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard</title>
-    <link href="css/style.css" rel="stylesheet">
-  </head>
-  <body>
- <h1>Um Dashboard Nomrmal</h1> 
-  </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/Imagens/logo.png"> 
+    <title>Dashboard - Study Link</title>
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="script.js"></script>
+    <style>
+        html, body {
+            height: 100%;   /* Garante que o HTML e o body ocupem 100% da tela */
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f4f4;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        header {
+            background: #a79886;
+            color: #1b0d0d;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header img {
+            height: 80px;
+        }
+        .nav-links {
+            display: flex;
+            gap: 90px;
+            
+        }
+        .nav-links a {
+            text-decoration: solid;
+            color: #333;
+            font-size: 1.5em;
+            transition: color 0.3s ease;
+        }
+        .nav-links a:hover {
+            color: #a0522d;
+        }
+        .profile-menu {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+        .profile-menu img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid #a0522d;
+        }
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 150px;
+        }
+        .dropdown a {
+            display: block;
+            padding: 10px;
+            text-decoration: none;
+            color: #333;
+            transition: background 0.3s;
+        }
+        .dropdown a:hover {
+            background: #f4f4f4;
+        }
+        .profile-menu:hover .dropdown {
+            display: block;
+        }
+
+        /* Layout do Dashboard */
+        .dashboard-container {
+            flex: 1;
+            display: flex;
+            flex-grow: 1;
+        }
+        /* Sidebar sem flex para não empurrar o botão */
+        .sidebar {
+            width: 15%;
+            background: #a0522d;
+            padding: 20px;
+            color: white;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 0px 10px 0px 0px;
+        }
+        .profile {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .profile img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid #a0522d;
+            margin-bottom: 10px;
+        }
+        .profile p {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .menu-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            width: 100%;
+            border-bottom: #000 2px;
+        }
+        .menu-links li {
+            margin: 15px 0;
+            text-align: center;
+        }
+        .menu-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.2em;
+            padding: 10px;
+            display: block;
+            transition: background 0.3s, transform 0.2s;
+            border-radius: 8px;
+        }
+        .menu-links a:hover {
+            background: #58382a;
+            transform: scale(1.05);
+        }
+        /* Botão de Logout abaixo dos links */
+        .logout-container {
+            text-align: center;
+            margin-top: 70%;
+        }
+        .logout-btn {
+            background: #ff4c4c;
+            color: white;
+            font-size: 1.2em;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            width: 90%;
+        }
+        .logout-btn:hover {
+            background: #cc0000;
+            transform: scale(1.05);
+        }
+
+        /* Conteúdo principal */
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background: #e1d9ce;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .card {
+            background: #ffebcd;
+            padding: 15px;
+            border-radius: 8px;
+            width: 250px;
+            text-align: center;
+            font-size: 1.2em;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .calendar, .chart {
+            background: #f0e68c;
+            padding: 15px;
+            border-radius: 8px;
+            width: 80%;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+        }
+        footer a {
+            color: #cd853f;
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 30%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
+        <nav class="nav-links">
+            <a href="#">Início</a>
+            <a href="#">Recursos</a>
+            <a href="#">Comunidade</a>
+        </nav>
+        <div class="profile-menu">
+            <img src="../static/Imagens/perfil.jpg" alt="Perfil">
+            <div class="dropdown">
+                <a href="#">Perfil</a>
+                <a href="#">Sair</a>
+            </div>
+        </div>
+    </header>
+    <div class="dashboard-container">
+        <nav class="sidebar">
+            <div class="profile">
+                <img src="../static/Imagens/perfil.jpg" alt="Foto de Perfil">
+                <p>Nome do Usuário</p>
+            </div>
+            <ul class="menu-links">
+                <li><a href="#">🏠 Dashboard</a></li>
+                <li><a href="#">👤 Conta</a></li>
+                <li><a href="#">📊 Gráficos</a></li>
+                <li><a href="#">⚙️ Configurações</a></li>
+            </ul>
+            <div class="logout-container">
+                <button class="logout-btn">🚪 Sair</button>
+            </div>
+        </nav>
+        <main class="content">
+            <div class="card-container">
+                <div class="card">👥 Visitantes: 1,5876</div>
+                <div class="card">📌 Novos Tópicos: 24</div>
+                <div class="card">📩 Mensagens: 102</div>
+            </div>
+            <div class="calendar">📅 Calendário</div>
+            <div class="chart">📈 Gráfico de Atividade</div>
+        </main>
+    </div>
+    <footer>
+        <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href=contacto.html>Contacte-nos</a></p>
+    </footer>
+</body>
 </html>
