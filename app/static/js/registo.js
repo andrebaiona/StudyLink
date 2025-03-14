@@ -81,3 +81,24 @@ document.addEventListener("DOMContentLoaded", function () {
       }, 5000); 
     }
   });
+
+
+
+
+
+function togglePassword(fieldId, iconElement) {
+  const passwordField = document.getElementById(fieldId);
+  const eyeIcon = iconElement.querySelector('i');
+
+  if (passwordField.type === 'password') {
+    passwordField.type = 'text';
+    eyeIcon.classList.remove('fa-eye');
+    eyeIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordField.type = 'password';
+    eyeIcon.classList.remove('fa-eye-slash');
+    eyeIcon.classList.add('fa-eye');
+  }
+}
+
+

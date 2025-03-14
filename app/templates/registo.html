@@ -9,6 +9,11 @@
     <link rel="stylesheet" href="../static/css/styles.css">
     <script src="../static/js/registo.js" defer></script>
 
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+
      </head>
   <body>
     <div class="register-container">
@@ -56,19 +61,26 @@
               value="{{ session['form_data']['username'] if 'form_data' in session else '' }}" required />
         </div>
 
-        <div class="form-group">
+      <div class="form-group">
           <label for="name">E-mail:</label>
           <input type="email" id="email" name="email" placeholder="Introduza o seu email"
               value="{{ session['form_data']['email'] if 'form_data' in session else '' }}" required />
          </div>
          
+          
           <div class="form-group">
-              <label for="password">Password:</label>
+            <label for="password">Password:</label>
+            <div class="password-container">
               <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
+              <span class="toggle-password" onclick="togglePassword('password', this)">           
+              <i class="fa-solid fa-eye" id="eye-icon"></i>
+              </span>
+            </div>
               <div class="password-strength">
-                  <div class="password-strength-bar"></div>
+              <div class="password-strength-bar"></div>
               </div>
           </div>
+
 
           <div class="form-group">
               <label for="confirm-password">Confirmar Password:</label>
