@@ -409,15 +409,13 @@
     <script>
         function toggleDisciplinas(id) {
             let div = document.getElementById(id);
-            let currentDisplay = window.getComputedStyle(div).display;
-            div.style.display = (currentDisplay === "block") ? "none" : "block";
+            div.style.display = (div.style.display === "block") ? "none" : "block";
         }
     </script>
     <script>
         function toggleAno(id) {
             let div = document.getElementById(id);
-            let currentDisplay = window.getComputedStyle(div).display;
-            div.style.display = (currentDisplay === "block") ? "none" : "block";
+            div.style.display = (div.style.display === "block") ? "none" : "block";
         }
     </script>
 </body>
