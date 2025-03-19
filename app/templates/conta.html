@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/Imagens/logo.png">
-    <title>Conta - Study Link</title>
+    <title>Minha Conta - Study Link</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/conta.css">
 </head>
@@ -14,116 +13,86 @@
         <img src="../static/Imagens/logo.png" alt="Study Link Logo">
         <h1><a href="index.html">StudyLink</a></h1>
     </header>
+    
     <nav>
         <a href="recursos.html">Recursos</a>
         <a href="comunidade.html">Comunidade</a>
         <a href="contacto.html">Contacto</a>
     </nav>
+
     <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
     <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
+        <a href="disciplinas.html">Disciplinas</a>
         <a href="conta.html">Conta</a>
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
-   
-   
-    
-<div class="container">
-    <section class="account-section">
-        <h2>Minha Conta</h2>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="message">
-            {% for category, message in messages %}
-            <p class="{{ category }}">{{ message }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-        {% endwith %}
-        
-        <form action="/update_account" method="POST" onsubmit="return validateForm();">
-            
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  
-            
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" value="{{ session['name'] }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required>
 
-            <label for="username">Nome de Utilizador:</label>
-            <input type="text" id="username" name="username" value="{{ session['username'] }}" disabled>
-            
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" value="{{ session['email'] }}" disabled>
-            
-            <label for="password">Password Atual:</label>
-            <input type="password" id="password" name="password" required placeholder="Digite a sua password atual" required>
-            
-            <label for="new_password">Nova Password:</label>
-            <input type="password" id="new_password" name="new_password" pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{12,}" placeholder="Introduza a sua nova password" title="A password deve ter pelo menos 12 caracteres, 1 letra maiúscula e 1 número" required>
-            <label for="confirm_password">Confirmar Nova Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirme a nova password" required>
-            
-            <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
-        </form>
-    </section>
-</div>
+    <div class="container">
+        <section class="account-section">
+            <h2>Minha Conta</h2>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="message">
+                {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <form action="/update_profile" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="profile_pic">Foto de Perfil:</label>
+                <img id="profilePreview" src="/{{ user.profile_pic }}" alt="Foto de Perfil" width="100">
+
+                <input type="file" id="profile_pic" name="profile_pic" accept="image/*" onchange="previewProfileImage()">
+
+                <label for="name">Nome:</label>
+                <input type="text" id="name" name="name" value="{{ user.name }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required>
+
+                <label for="username">Nome de Utilizador:</label>
+                <input type="text" id="username" name="username" value="{{ user.username }}" disabled>
+
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" disabled>
+
+                <label for="bio">Biografia:</label>
+                <textarea id="bio" name="bio">{{ user.bio }}</textarea>
+
+                <label for="class_year">Ano de Curso:</label>
+                <input type="number" id="class_year" name="class_year" value="{{ user.class_year }}" min="1" max="10">
+
+                <label for="course">Curso:</label>
+                <input type="text" id="course" name="course" value="{{ user.course }}">
+
+                <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
+            </form>
+        </section>
+    </div>
 
     <footer>
         <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
     </footer>
-    <script>
 
+    <script>
         function toggleAccountMenu() {
             const menu = document.getElementById('accountMenu');
             menu.classList.toggle('show');
         }
 
-        function salvarConta() {
-            const form = document.getElementById('accountForm');
-            const formData = new FormData(form);
-
-            // Salvar dados no localStorage
-            for (const [key, value] of formData.entries()) {
-                localStorage.setItem(key, value);
-            }
-            alert('Conta atualizada com sucesso!');
-        }
-
-        function carregarConta() {
-            // Carregar dados do localStorage
-            const inputs = document.querySelectorAll('#accountForm input');
-            inputs.forEach(input => {
-                const savedValue = localStorage.getItem(input.id);
-                if (savedValue) input.value = savedValue;
-            });
-        }
-
-        function uploadProfileImage() {
-            const fileInput = document.getElementById('profileUpload');
-            const file = fileInput.files[0];
+        function previewProfileImage() {
+            const file = document.getElementById('profile_pic').files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function (e) {
                     document.getElementById('profilePreview').src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
                 };
                 reader.readAsDataURL(file);
             }
         }
-
-        function carregarImagemPerfil() {
-            const savedImage = localStorage.getItem('profileImage');
-            if (savedImage) {
-                document.getElementById('profilePreview').src = savedImage;
-            }
-        }
-
-        // Carregar informações ao iniciar
-        window.onload = function () {
-            carregarConta();
-            carregarImagemPerfil();
-        };
     </script>
 </body>
 </html>

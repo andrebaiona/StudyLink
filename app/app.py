@@ -4,11 +4,23 @@ from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import mysql.connector
 from argon2 import PasswordHasher, exceptions as argon2_exceptions
+from werkzeug.utils import secure_filename
 import bleach
 import re
 import secrets
+import os
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'static/uploads/ProfilePics'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 csrf = CSRFProtect(app)
 app.secret_key = secrets.token_hex(32)
@@ -25,12 +37,21 @@ def sanitize_input(data):
 
 
 # MySQL database connection
+
 db = mysql.connector.connect(
-    host="studylink_mysql_db",  
+    host="studylink_mysql_db",
     user="root",
     password="root",
-    database="studylink"
+    database="studylink",
+    charset='utf8mb4',
+    collation='utf8mb4_unicode_ci'
 )
+
+cursor = db.cursor()
+cursor.execute("SET NAMES utf8mb4")
+cursor.execute("SET CHARACTER SET utf8mb4")
+cursor.execute("SET character_set_connection=utf8mb4")
+cursor.close()
 
 # Initialize Argon2 password hasher
 ph = PasswordHasher()
@@ -92,6 +113,14 @@ def register():
         cursor = db.cursor()
         query = "INSERT INTO users (name, username, email, password) VALUES (%s, %s, %s, %s)"
         cursor.execute(query, (name, username, email, hashed_password))
+        user_id = cursor.lastrowid
+
+        # Create default user settings
+        cursor.execute(
+            "INSERT INTO user_settings (user_id, profile_pic, bio, class_year, course) VALUES (%s, %s, %s, %s, %s)",
+            (user_id, 'static/uploads/ProfilePics/default.jpg', None, None, None)
+        )
+
         db.commit()
         cursor.close()
 
@@ -109,7 +138,6 @@ def register():
         flash(f"Erro inesperado: {e}", "error")
         return redirect(url_for('registo_page'))
 
-
 @app.route('/login', methods=['POST'])
 def login():
     try:
@@ -124,20 +152,25 @@ def login():
         identifier = identifier.lower()
         cursor = db.cursor(dictionary=True)
 
-        # Determine whether the identifier is an e-mail or username
-        if "@" in identifier:
-            query = "SELECT username, password FROM users WHERE email = %s"
-        else:
-            query = "SELECT username, password FROM users WHERE username = %s"
         
+        if "@" in identifier:
+            query = "SELECT id, username, password FROM users WHERE email = %s"
+        else:
+            query = "SELECT id, username, password FROM users WHERE username = %s"
+
         cursor.execute(query, (identifier,))
         user = cursor.fetchone()
         cursor.close()
 
         if user and ph.verify(user['password'], password):
+            session['user_id'] = user['id']
             session['username'] = user['username']
+            # Store login success in session to trigger animation
+            session['login_success'] = True  
+
             flash("🎓Credenciais Aceites! A fazer login...", "success")  
-            return redirect(url_for('login_page'))
+            return redirect(url_for('login_page'))  # Stay on the login page to show animation
+
         else:
             flash("Nome de utilizador ou password inválidos.", "error")
             return redirect(url_for('login_page', identifier=identifier))
@@ -160,86 +193,91 @@ def conta():
     if 'username' not in session:
         return redirect(url_for('login_page'))
 
+    user_id = session.get('user_id')
+    if not user_id:
+        flash("Erro de autenticação. Faça login novamente.", "error")
+        return redirect(url_for('login_page'))
+
     cursor = db.cursor(dictionary=True)
-    query = "SELECT name, email FROM users WHERE username = %s"
-    cursor.execute(query, (session['username'],))
-    user = cursor.fetchone()
-    cursor.close()
-
-    if user:
-        session['name'] = user['name']
-        session['email'] = user['email']
-        return render_template('conta.html')
-    else:
-        flash("Erro ao carregar dados do utilizador.", "error")
-        return redirect(url_for('login_page'))
-
-@app.route('/update_account', methods=['POST'])
-def update_account():
-    if 'username' not in session:
-        return redirect(url_for('login_page'))
-
     try:
-        name = sanitize_input(request.form.get('name', ''))
-        email = sanitize_input(request.form.get('email', ''))
-        new_password = sanitize_input(request.form.get('new_password', ''))
-        confirm_password = sanitize_input(request.form.get('confirm_password', ''))
-
-        cursor = db.cursor(dictionary=True)
-
-       
-        query = "SELECT password, email FROM users WHERE username = %s"
+        query = """
+            SELECT u.name, u.email, u.username, IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic, 
+                   IFNULL(us.bio, '') AS bio, IFNULL(us.class_year, '') AS class_year, IFNULL(us.course, '') AS course
+            FROM users u
+            LEFT JOIN user_settings us ON u.id = us.user_id
+            WHERE u.username = %s
+        """
         cursor.execute(query, (session['username'],))
         user = cursor.fetchone()
 
-        if not user:
-            flash("Erro: Utilizador não encontrado.", "error")
-            return redirect(url_for('conta'))
+        cursor.fetchall()
 
-        # Verificar se a password atual está correta
-        
-        if not ph.verify(user['password'], request.form.get('current_password')):
-            flash("Erro: Password atual incorreta.", "error")
-            return redirect(url_for('conta'))
+        if user:
+            session['name'] = user['name']
+            session['email'] = user['email']
+            return render_template('conta.html', user=user)
 
-       
-        
-        email = user['email']
-
-        # Atualizar Password
-        if new_password and confirm_password:
-            if new_password == confirm_password:
-                hashed_password = ph.hash(new_password)
-                query = "UPDATE users SET name=%s, email=%s, password=%s WHERE username=%s"
-                values = (name, email, hashed_password, session['username'])
-            else:
-                flash("As passwords não coincidem.", "error")
-                return redirect(url_for('conta'))
         else:
-            query = "UPDATE users SET name=%s, email=%s WHERE username=%s"
-            values = (name, email, session['username'])
-
-        cursor.execute(query, values)
-        db.commit()
-        cursor.close()
-
-        session['name'] = name
-        session['email'] = email
-
-        flash("Conta atualizada com sucesso!", "success")
-        return redirect(url_for('conta'))
+            flash("Erro ao carregar dados do utilizador.", "error")
+            return redirect(url_for('login_page'))
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
-        return redirect(url_for('conta'))
-
-    except argon2_exceptions.VerifyMismatchError as err:
-        flash(f"Password atual incorreta: ", "error")
-        return redirect(url_for('conta'))
+        return redirect(url_for('login_page'))
 
     except Exception as e:
-        flash(f"Erro geral: {e}", "error")
-        return redirect(url_for('conta'))
+        flash(f"Erro inesperado: {e}", "error")
+        return redirect(url_for('login_page'))
+
+    finally:
+        cursor.close()
+
+
+
+
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    if 'username' not in session:
+        return redirect(url_for('login_page'))
+
+    user_id = session['user_id']
+    username = session['username']  
+    bio = request.form.get('bio', '')
+    class_year = request.form.get('class_year', '')
+    course = request.form.get('course', '')
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT profile_pic FROM user_settings WHERE user_id = %s", (user_id,))
+    user_settings = cursor.fetchone()
+    profile_pic_path = user_settings['profile_pic'] if user_settings else 'static/uploads/ProfilePics/default.jpg'
+
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(f"{username}.jpg")  
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(file_path)
+            profile_pic_path = file_path.replace("\\", "/")  
+
+    try:
+        query = """
+            UPDATE user_settings
+            SET profile_pic = %s, bio = %s, class_year = %s, course = %s
+            WHERE user_id = %s
+        """
+        cursor.execute(query, (profile_pic_path, bio, class_year, course, user_id))
+        db.commit()
+        flash("Conta atualizada com sucesso!", "success")
+
+    except mysql.connector.Error as err:
+        flash(f"Erro na base de dados: {err}", "error")
+
+    finally:
+        cursor.close()
+
+    return redirect(url_for('conta'))
+
+
 
 @app.route('/logout')
 def logout():
@@ -282,5 +320,3 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
     app.run(debug=True)
 
-    
-    
