@@ -109,43 +109,51 @@ def register():
         flash(f"Erro inesperado: {e}", "error")
         return redirect(url_for('registo_page'))
 
+
 @app.route('/login', methods=['POST'])
 def login():
     try:
-        username = bleach.clean(request.form.get('username'))
+        identifier = bleach.clean(request.form.get('identifier'))
         password = bleach.clean(request.form.get('password'))
 
-        if not username or not password:
+        if not identifier or not password:
             flash('Todos os campos são obrigatórios!', 'error')
-            return redirect(url_for('login_page', username=username))
+            return redirect(url_for('login_page', identifier=identifier))
 
-        username = username.lower()
+        # Normalize input to lowercase for consistent matching
+        identifier = identifier.lower()
         cursor = db.cursor(dictionary=True)
-        query = "SELECT username, password FROM users WHERE username = %s"
-        cursor.execute(query, (username,))
+
+        # Determine whether the identifier is an e-mail or username
+        if "@" in identifier:
+            query = "SELECT username, password FROM users WHERE email = %s"
+        else:
+            query = "SELECT username, password FROM users WHERE username = %s"
+        
+        cursor.execute(query, (identifier,))
         user = cursor.fetchone()
         cursor.close()
 
         if user and ph.verify(user['password'], password):
             session['username'] = user['username']
             flash("🎓Credenciais Aceites! A fazer login...", "success")  
-            return redirect(url_for('login_page'))  
-
+            return redirect(url_for('login_page'))
         else:
             flash("Nome de utilizador ou password inválidos.", "error")
-            return redirect(url_for('login_page', username=username))
+            return redirect(url_for('login_page', identifier=identifier))
 
     except argon2_exceptions.VerifyMismatchError:
         flash("Nome de utilizador ou password inválidos.", "error")
-        return redirect(url_for('login_page', username=username))
+        return redirect(url_for('login_page', identifier=identifier))
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
-        return redirect(url_for('login_page', username=username))
+        return redirect(url_for('login_page', identifier=identifier))
 
     except Exception as e:
         flash(f"Erro geral: {e}", "error")
-        return redirect(url_for('login_page', username=username))
+        return redirect(url_for('login_page', identifier=identifier))
+
 
 @app.route('/conta')
 def conta():

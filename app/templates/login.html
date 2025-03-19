@@ -7,10 +7,7 @@
   <title>Login - Study Link</title>
   <link rel="stylesheet" href="../static/css/login.css">
   <script src="../static/js/login.js" defer></script>
- <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
 </head>
 <body>
   <div class="login-container">
@@ -19,49 +16,47 @@
     </div>
     <h1>Iniciar Sessão</h1>
 
-    
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    <div id="flash-container">
-      {% for category, message in messages %}
-        <div class="flash-message {{ category }}">
-          {% if category == "success" %}
-        
-            {{ message }}           
-            <div id="loading-container">
-              <div class="spinner-circle"></div>
-              <div class="progress-bar">
-                <div class="progress-fill"></div>
-              </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="flash-container">
+          {% for category, message in messages %}
+            <div class="flash-message {{ category }}">
+              {% if category == "success" %}
+                {{ message }}           
+                <div id="loading-container">
+                  <div class="spinner-circle"></div>
+                  <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                  </div>
+                </div>
+              {% else %}
+                {{ message }}
+              {% endif %}
             </div>
-          {% else %}
-            
-            {{ message }}
-          {% endif %}
+          {% endfor %}
         </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
+      {% endif %}
+    {% endwith %}
 
     <form action="{{ url_for('login') }}" method="post">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
       <div class="form-group">
-        <label for="username">Nome de Utilizador:</label>
-        <input type="text" id="username" name="username" placeholder="Introduza o seu nome de utilizador" value="{{ request.args.get('username', '') }}" required>
+        <label for="identifier">Nome de Utilizador ou E-mail:</label>
+        <input type="text" id="identifier" name="identifier" placeholder="Introduza o seu nome de utilizador ou e-mail" value="{{ request.args.get('identifier', '') }}" required>
       </div>
       <div class="form-group">
-            <label for="password">Password:</label>
-            <div class="password-container">
-              <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
-              <span class="toggle-password" onclick="togglePassword('password', this)">           
-              <i class="fa-solid fa-eye" id="eye-icon"></i>
-              </span>
-            </div>
-          <br>
- <div class="form-group">
-      <button type="submit" class="botao">Entrar</button>
-          </div>
+        <label for="password">Password:</label>
+        <div class="password-container">
+          <input type="password" id="password" name="password" placeholder="Introduza a sua password" required />
+          <span class="toggle-password" onclick="togglePassword('password', this)">
+            <i class="fa-solid fa-eye" id="eye-icon"></i>
+          </span>
+        </div>
+      </div>
+      <br>
+      <div class="form-group">
+        <button type="submit" class="botao">Entrar</button>
+      </div>
     </form>
     <div class="link-register">
       Não tem conta? <a href="{{ url_for('registo_page') }}">Registe-se aqui</a>
