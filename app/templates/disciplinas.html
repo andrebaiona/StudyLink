@@ -8,6 +8,7 @@
     <title>Study Link - Disciplinas</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/disciplinas.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 <body>
     <header>
@@ -26,381 +27,480 @@
         <a href="definicoes.html">Definições</a>
         <a href="ajuda.html">Ajuda</a>
     </div>
-    <div class="container">                                 
 
-        <div class="curso" onclick="toggleDisciplinas('seguranca')">Segurança de Informação</div>
-            <div id="seguranca" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-seguranca')">1.º Ano</div>
-                    <div id="ano1-seguranca" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Introdução à Ciberegurança</label>
-                        <label class="disciplina"><input type="checkbox"> Sistemas Operativos e Virtualização</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução às Redes de Computadores</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+    <main>
+        <div class="container">  
+            <div class="row mb-50">
+                <div class="col">        
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://fia.com.br/wp-content/uploads/2022/04/Ciberseguranca-capa.png" class="card-img-top img-thumbnail" alt="Cibersegurança" style="height:90%">
+                        <div class="card-body">
+                        <h5 class="card-title">Segurança de Informação</h5>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Escolher Ano</button>
+                            <ul class="dropdown-menu">
+                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">1.º Ano</a></li>
+                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">2.º Ano</a></li>
+                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">3.º Ano</a></li>
+                            </ul>
+                          </div>
+                        </div>
                     </div>
-
-                <div class="ano" onclick="toggleAno('ano2-seguranca')">2.º Ano</div>
-                    <div id="ano2-seguranca" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Análise Forense Digital</label>
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Segurança</label>
-                        <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>
-                        <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
-                        <label class="disciplina"><input type="checkbox"> Segurança em Redes de Computadores</label>
-                        <label class="disciplina"><input type="checkbox"> Criptografia Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
-                        <label class="disciplina"><input type="checkbox"> Sistemas Distribuidos e Segurança</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
-                        <label class="disciplina"><input type="checkbox"> Ética e Legislação em Ciberegurança</label>
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://cdn.ceps.eu/wp-content/uploads/2024/07/vecteezy_ai-generated-ai-circuit-board-technology-background_37348385-1300x731.jpg" class="card-img-top img-thumbnail" alt="IA">
+                        <div class="card-body">
+                        <h5 class="card-title">Inteligência Artificial</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
                     </div>
-
-                <div class="ano" onclick="toggleAno('ano3-seguranca')">3.º Ano</div>
-                    <div id="ano3-seguranca" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Segurança de Informação I</label>
-                        <label class="disciplina"><input type="checkbox"> Segurança de Software e Aplicacional</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Segurança de Informação II</label>
-                        <label class="disciplina"><input type="checkbox"> Auditoria de Segurança em sistemas e Redes Digitais</label>
-                        <label class="disciplina"><input type="checkbox"> Operações de Segurança e Gestão de Incidentes</label>
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://informationage-production.s3.amazonaws.com/uploads/2022/10/how-ensure-faster-quality-code-ease-development-process.jpeg" class="card-img-top img-thumbnail" alt="DSA">
+                        <div class="card-body">
+                        <h5 class="card-title">Desenvolvimento de Software e Aplicações</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
                     </div>
+                </div>
             </div>
-
-        <div class="curso" onclick="toggleDisciplinas('ia')">Inteligencia Artificial</div>
-            <div id="ia" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-ia')">1.º Ano</div>
-                    <div id="ano1-ia" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Inteligência Artificial</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+            <div class="row">
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/164EE/production/_109347319_gettyimages-611195980.jpg" class="card-img-top" alt="Matemática">
+                        <div class="card-body">
+                        <h5 class="card-title">Matemática Aplicada</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
                     </div>
-                <div class="ano" onclick="toggleAno('ano2-ia')">2.º Ano</div>
-                    <div id="ano2-ia" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Programação Orientada para Objectos</label>
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>
-                        <label class="disciplina"><input type="checkbox"> Projetos em Ambientes Web e Cloud</label>
-                        <label class="disciplina"><input type="checkbox"> Programação e Análise de Dados em Excel</label>
-                        <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Não Supevizionada</label>
-                        <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Supervizionada</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
-                        <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
-                        <label class="disciplina"><input type="checkbox"> Agentes Autónomos</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-ia')">3.º Ano</div>
-                    <div id="ano3-ia" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Algoritmos Avançados de Procura</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Inteligência Artificial I</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Inteligência Artificial II</label>
-                        <label class="disciplina"><input type="checkbox"> Big Data</label>
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
-                        <label class="disciplina"><input type="checkbox"> Text Mining</label>
-                    </div>
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://assets.datamation.com/uploads/2023/05/dm-what-is-automation.png" class="card-img-top" alt="Automação">
+                        <div class="card-body">
+                        <h5 class="card-title">Automação</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>                
+                        </div>
+                    </div>    
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://www.erpflex.com.br/wp-content/uploads/2024/09/habilidades-organizacionais-obtidas-na-gestao-da-qualidade-scaled-1.webp" class="card-img-top" alt="Gestão">
+                        <div class="card-body">
+                        <h5 class="card-title">Gestão</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
+                    </div>    
+                </div>
             </div>
+            <div class="row">
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://img.odcdn.com.br/wp-content/uploads/2023/07/medicina_ia.jpg" class="card-img-top" alt="Saúde">
+                        <div class="card-body">
+                        <h5 class="card-title">Saúde</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
+                    </div> 
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://cdn.elearningindustry.com/wp-content/uploads/2016/07/technology-benefits-learning.png" class="card-img-top" alt="Educativas">
+                        <div class="card-body">
+                        <h5 class="card-title">T.D.Educativas</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card" style="width: 18rem;">
+                        <img src="https://evercam.com/wp-content/uploads/sites/11/2023/04/construction-tech.jpg" class="card-img-top" alt="ECS">
+                        <div class="card-body">
+                        <h5 class="card-title">Edificios e Contrução Sustentável</h5>
+                        <button class="btn btn-primary">Escolher Ano</button>
+                        </div>
+                    </div>
+                </div>
+            </div>                               
+        </div>    
+        <div class="container">                                 
 
-        <div class="curso" onclick="toggleDisciplinas('dsa')">Desenvolvimentos de Software e Aplicações</div>
-            <div id="dsa" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-dsa')">1.º Ano</div>
-                    <div id="ano1-dsa" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Desenho Centrado no Utilizador</label>
-                        <label class="disciplina"><input type="checkbox"> Sistemas Operativos e Virtualização</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução às Redes de Computadores</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-dsa')">2.º Ano</div>
-                    <div id="ano2-dsa" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Desenvolvimento Ági de Software</label>
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestçao de Informação</label>
-                        <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>
-                        <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
-                        <label class="disciplina"><input type="checkbox"> Programação Orientada para Objectos</label>
-                        <label class="disciplina"><input type="checkbox"> Criptografia Aplicada</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
-                        <label class="disciplina"><input type="checkbox"> Programação para Ciência dos Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
-                        <label class="disciplina"><input type="checkbox"> Ética e Legislação em Ciberegurança</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-dsa')">3.º Ano</div>
-                    <div id="ano3-dsa" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Big Data</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Software e Aplicações I</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução à Ciberegurança</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Software e Aplicações II</label>
-                        <label class="disciplina"><input type="checkbox"> Programação para Mobilidade</label>
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
-                    </div>
-            </div>
+            <div class="curso" onclick="toggleDisciplinas('seguranca')">Segurança de Informação</div>
+                <div id="seguranca" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-seguranca')">1.º Ano</div>
+                        <div id="ano1-seguranca" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Introdução à Ciberegurança</label>
+                            <label class="disciplina"><input type="checkbox"> Sistemas Operativos e Virtualização</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução às Redes de Computadores</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
 
-        <div class="curso" onclick="toggleDisciplinas('mat')">Matemática Aplicada</div>
-            <div id="mat" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-mat')">1.º Ano</div>
-                    <div id="ano1-mat" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Álgebra Linear e Aplicações</label>
-                        <label class="disciplina"><input type="checkbox"> Cálculo a uma Variável</label>
-                        <label class="disciplina"><input type="checkbox"> Álgebra Linear Númérica</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Cálculo a Múltiplas Variáveis</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-mat')">2.º Ano</div>
-                    <div id="ano2-mat" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação I</label>
-                        <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Supervizionada</label>
-                        <label class="disciplina"><input type="checkbox"> Inteligência Artificial</label>
-                        <label class="disciplina"><input type="checkbox"> Otimização Matemática</label>
-                        <label class="disciplina"><input type="checkbox"> Análise Numérica</label>
-                        <label class="disciplina"><input type="checkbox"> Grafos e Redes Complexas</label>
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
-                        <label class="disciplina"><input type="checkbox"> Modelação Financeira</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução à Estatística e Probabilidades</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-mat')">3.º Ano</div>
-                    <div id="ano3-mat" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Tomada de Decisão Apoiada em Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
-                        <label class="disciplina"><input type="checkbox"> Matemática Computacional</label>
-                        <label class="disciplina"><input type="checkbox"> Processos Estocásticos e Simulação</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto de Matemática Aplicada I</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto de Matemática Apliacada II</label>
-                    </div>
-            </div>
+                    <div class="ano" onclick="toggleAno('ano2-seguranca')">2.º Ano</div>
+                        <div id="ano2-seguranca" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Análise Forense Digital</label>
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Segurança</label>
+                            <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>
+                            <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
+                            <label class="disciplina"><input type="checkbox"> Segurança em Redes de Computadores</label>
+                            <label class="disciplina"><input type="checkbox"> Criptografia Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
+                            <label class="disciplina"><input type="checkbox"> Sistemas Distribuidos e Segurança</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
+                            <label class="disciplina"><input type="checkbox"> Ética e Legislação em Ciberegurança</label>
+                        </div>
 
-        <div class="curso" onclick="toggleDisciplinas('auto')">Automação</div>
-            <div id="auto" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-auto')">1.º Ano</div>
-                    <div id="ano1-auto" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Cálculo</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Análise de Circuitos Elétricos</label>
-                        <label class="disciplina"><input type="checkbox"> Eletricidade e Mecânica</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução à Estatística</label>
-                        <label class="disciplina"><input type="checkbox"> Álgebra Linear e Geometria</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Electrónica de Potência</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-auto')">2.º Ano</div>
-                    <div id="ano2-auto" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Micro-Controladores</label>
-                        <label class="disciplina"><input type="checkbox"> Robótica e Automação Avançada</label>
-                        <label class="disciplina"><input type="checkbox"> Controlo de Qualidade e Visão Artificial</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação I</label>
-                        <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
-                        <label class="disciplina"><input type="checkbox"> Gestão e Sistemas de Informação Industrial</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Sensores, Autoadores e Processamento de Sinal</label>
-                        <label class="disciplina"><input type="checkbox"> Intrumentação  e Controlo Industrial</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Automação</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-auto')">3.º Ano</div>
-                    <div id="ano3-auto" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Não Supervizionada</label>
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
-                        <label class="disciplina"><input type="checkbox"> Interação Pessoa-Máquina e Simulação</label>
-                        <label class="disciplina"><input type="checkbox"> Redes Industriais e Supervizão</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Automação I</label>
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Automação II</label>
-                    </div>
-            </div>
+                    <div class="ano" onclick="toggleAno('ano3-seguranca')">3.º Ano</div>
+                        <div id="ano3-seguranca" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Segurança de Informação I</label>
+                            <label class="disciplina"><input type="checkbox"> Segurança de Software e Aplicacional</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Segurança de Informação II</label>
+                            <label class="disciplina"><input type="checkbox"> Auditoria de Segurança em sistemas e Redes Digitais</label>
+                            <label class="disciplina"><input type="checkbox"> Operações de Segurança e Gestão de Incidentes</label>
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                        </div>
+                </div>
 
-        <div class="curso" onclick="toggleDisciplinas('gestão')">Gestão</div>
-            <div id="gestão" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-gestão')">1.º Ano</div>
-                    <div id="ano1-gestão" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Cálculo</label>
-                        <label class="disciplina"><input type="checkbox"> Gestão de Pessoas na Era Digital</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
-                        <label class="disciplina"><input type="checkbox"> Aplicações de Sistemas de Informação para a Gestão</label>
-                        <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Gestão</label>
-                        <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-gestão')">2.º Ano</div>
-                    <div id="ano2-gestão" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Logística no Comércio e na Indústria</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
-                        <label class="disciplina"><input type="checkbox"> Estratégia, Planeamento e Orçamentação</label>  
-                        <label class="disciplina"><input type="checkbox"> Gestão de Riscos na Era Digital</label>  
-                        <label class="disciplina"><input type="checkbox"> Métodos Analíticos Aplicados à Gestão</label>  
-                        <label class="disciplina"><input type="checkbox"> Gestão Fiscal</label>  
-                        <label class="disciplina"><input type="checkbox"> Gestão Comercial, Vendas na Era Digital</label>  
-                        <label class="disciplina"><input type="checkbox"> Enquadramento Legal das Pessoas Coletivas</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
-                        <label class="disciplina"><input type="checkbox"> Gestão de Investimentos</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-gestão')">3.º Ano</div>
-                    <div id="ano3-gestão" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
-                        <label class="disciplina"><input type="checkbox"> Monitorizar A Performance da Gestão</label>  
-                        <label class="disciplina"><input type="checkbox"> Finanças Empresariais e Gestão de Tesouraria</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação III</label>  
-                        <label class="disciplina"><input type="checkbox"> Marketing Digital</label>  
-                        <label class="disciplina"><input type="checkbox"> Relatório Integrado</label>  
-                    </div>
-            </div>
+            <div class="curso" onclick="toggleDisciplinas('ia')">Inteligencia Artificial</div>
+                <div id="ia" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-ia')">1.º Ano</div>
+                        <div id="ano1-ia" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Inteligência Artificial</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-ia')">2.º Ano</div>
+                        <div id="ano2-ia" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Programação Orientada para Objectos</label>
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>
+                            <label class="disciplina"><input type="checkbox"> Projetos em Ambientes Web e Cloud</label>
+                            <label class="disciplina"><input type="checkbox"> Programação e Análise de Dados em Excel</label>
+                            <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Não Supevizionada</label>
+                            <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Supervizionada</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
+                            <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
+                            <label class="disciplina"><input type="checkbox"> Agentes Autónomos</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-ia')">3.º Ano</div>
+                        <div id="ano3-ia" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Algoritmos Avançados de Procura</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Inteligência Artificial I</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Inteligência Artificial II</label>
+                            <label class="disciplina"><input type="checkbox"> Big Data</label>
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                            <label class="disciplina"><input type="checkbox"> Text Mining</label>
+                        </div>
+                </div>
 
-        <div class="curso" onclick="toggleDisciplinas('saude')">Saúde</div>
-            <div id="saude" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-saude')">1.º Ano</div>
-                    <div id="ano1-saude" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistema de Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>  
-                        <label class="disciplina"><input type="checkbox"> Noções de Saúde Humana</label>  
-                        <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>  
-                        <label class="disciplina"><input type="checkbox"> Psicologia Social da Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>  
-                        <label class="disciplina"><input type="checkbox"> Algoritmia e Estrutura de Dados</label>  
-                        <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-saude')">2.º Ano</div>
-                    <div id="ano2-saude" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Gestão de Organizações de Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
-                        <label class="disciplina"><input type="checkbox"> Dados de Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
-                        <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas de Informação em Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução à Cibersegurança</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-saude')">3.º Ano</div>
-                    <div id="ano3-saude" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Saúde I</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Saúde II</label>  
-                        <label class="disciplina"><input type="checkbox"> Logística Digital em Contexto Hospitalar</label>  
-                        <label class="disciplina"><input type="checkbox"> Tecnologias Assistivas e Tele-Saúde</label>  
-                        <label class="disciplina"><input type="checkbox"> Inteligência Artificial na Saúde</label>  
-                    </div>
-            </div>
+            <div class="curso" onclick="toggleDisciplinas('dsa')">Desenvolvimentos de Software e Aplicações</div>
+                <div id="dsa" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-dsa')">1.º Ano</div>
+                        <div id="ano1-dsa" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Desenho Centrado no Utilizador</label>
+                            <label class="disciplina"><input type="checkbox"> Sistemas Operativos e Virtualização</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução às Redes de Computadores</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-dsa')">2.º Ano</div>
+                        <div id="ano2-dsa" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Desenvolvimento Ági de Software</label>
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestçao de Informação</label>
+                            <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>
+                            <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
+                            <label class="disciplina"><input type="checkbox"> Programação Orientada para Objectos</label>
+                            <label class="disciplina"><input type="checkbox"> Criptografia Aplicada</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação</label>
+                            <label class="disciplina"><input type="checkbox"> Programação para Ciência dos Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
+                            <label class="disciplina"><input type="checkbox"> Ética e Legislação em Ciberegurança</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-dsa')">3.º Ano</div>
+                        <div id="ano3-dsa" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Big Data</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Software e Aplicações I</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução à Ciberegurança</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Software e Aplicações II</label>
+                            <label class="disciplina"><input type="checkbox"> Programação para Mobilidade</label>
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                        </div>
+                </div>
 
-        <div class="curso" onclick="toggleDisciplinas('edu')">Educativas</div>
-            <div id="edu" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-edu')">1.º Ano</div>
-                    <div id="ano1-edu" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>  
-                        <label class="disciplina"><input type="checkbox"> Recursos Digitais Estáticos</label>  
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>  
-                        <label class="disciplina"><input type="checkbox"> Metodologias de Ensino e Aprendizagem</label>  
-                        <label class="disciplina"><input type="checkbox"> Geometria e Estatística</label>  
-                        <label class="disciplina"><input type="checkbox"> Psicologia da Aprendizagem</label>  
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
-                        <label class="disciplina"><input type="checkbox"> Comunicação e Aprendizagem Multimédia</label>  
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
-                        <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-edu')">2.º Ano</div>
-                    <div id="ano2-edu" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
-                        <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>  
-                        <label class="disciplina"><input type="checkbox"> Recursos Digitais Dinâmicos</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução à Cibersegurança</label>  
-                        <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>  
-                        <label class="disciplina"><input type="checkbox"> Desenvolvimento Curricular</label>  
-                        <label class="disciplina"><input type="checkbox"> Ambientes Virtuais de Aprendizagem</label>  
-                        <label class="disciplina"><input type="checkbox"> Gestão da Formação</label>  
-                        <label class="disciplina"><input type="checkbox"> Desenho Centrado no Utilizador</label>  
-                        <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-edu')">3.º Ano</div>
-                    <div id="ano3-edu" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
-                        <label class="disciplina"><input type="checkbox"> Inteligência Artificial Aplicada à Educação</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais Educativas I</label>  
-                        <label class="disciplina"><input type="checkbox"> Inclusão e Acessibilidade</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais Educativas II</label>  
-                    </div>
-            </div>
+            <div class="curso" onclick="toggleDisciplinas('mat')">Matemática Aplicada</div>
+                <div id="mat" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-mat')">1.º Ano</div>
+                        <div id="ano1-mat" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Álgebra Linear e Aplicações</label>
+                            <label class="disciplina"><input type="checkbox"> Cálculo a uma Variável</label>
+                            <label class="disciplina"><input type="checkbox"> Álgebra Linear Númérica</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Cálculo a Múltiplas Variáveis</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Algoritmia e Estruturas de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-mat')">2.º Ano</div>
+                        <div id="ano2-mat" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação I</label>
+                            <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Supervizionada</label>
+                            <label class="disciplina"><input type="checkbox"> Inteligência Artificial</label>
+                            <label class="disciplina"><input type="checkbox"> Otimização Matemática</label>
+                            <label class="disciplina"><input type="checkbox"> Análise Numérica</label>
+                            <label class="disciplina"><input type="checkbox"> Grafos e Redes Complexas</label>
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
+                            <label class="disciplina"><input type="checkbox"> Modelação Financeira</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução à Estatística e Probabilidades</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-mat')">3.º Ano</div>
+                        <div id="ano3-mat" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Tomada de Decisão Apoiada em Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                            <label class="disciplina"><input type="checkbox"> Matemática Computacional</label>
+                            <label class="disciplina"><input type="checkbox"> Processos Estocásticos e Simulação</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto de Matemática Aplicada I</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto de Matemática Aplicada II</label>
+                        </div>
+                </div>
+
+            <div class="curso" onclick="toggleDisciplinas('auto')">Automação</div>
+                <div id="auto" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-auto')">1.º Ano</div>
+                        <div id="ano1-auto" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Cálculo</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Análise de Circuitos Elétricos</label>
+                            <label class="disciplina"><input type="checkbox"> Eletricidade e Mecânica</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução à Estatística</label>
+                            <label class="disciplina"><input type="checkbox"> Álgebra Linear e Geometria</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Electrónica de Potência</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-auto')">2.º Ano</div>
+                        <div id="ano2-auto" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Micro-Controladores</label>
+                            <label class="disciplina"><input type="checkbox"> Robótica e Automação Avançada</label>
+                            <label class="disciplina"><input type="checkbox"> Controlo de Qualidade e Visão Artificial</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação I</label>
+                            <label class="disciplina"><input type="checkbox"> Empreendorismo e Inovação II</label>
+                            <label class="disciplina"><input type="checkbox"> Gestão e Sistemas de Informação Industrial</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Sensores, Autoadores e Processamento de Sinal</label>
+                            <label class="disciplina"><input type="checkbox"> Intrumentação  e Controlo Industrial</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Automação</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-auto')">3.º Ano</div>
+                        <div id="ano3-auto" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Aprendizagem Automática Não Supervizionada</label>
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>
+                            <label class="disciplina"><input type="checkbox"> Interação Pessoa-Máquina e Simulação</label>
+                            <label class="disciplina"><input type="checkbox"> Redes Industriais e Supervizão</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Automação I</label>
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Automação II</label>
+                        </div>
+                </div>
+
+            <div class="curso" onclick="toggleDisciplinas('gestão')">Gestão</div>
+                <div id="gestão" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-gestão')">1.º Ano</div>
+                        <div id="ano1-gestão" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Cálculo</label>
+                            <label class="disciplina"><input type="checkbox"> Gestão de Pessoas na Era Digital</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>
+                            <label class="disciplina"><input type="checkbox"> Aplicações de Sistemas de Informação para a Gestão</label>
+                            <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Gestão</label>
+                            <label class="disciplina"><input type="checkbox"> Apresentação em Público com Técnicas Teatrais</label>
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-gestão')">2.º Ano</div>
+                        <div id="ano2-gestão" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Logística no Comércio e na Indústria</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
+                            <label class="disciplina"><input type="checkbox"> Estratégia, Planeamento e Orçamentação</label>  
+                            <label class="disciplina"><input type="checkbox"> Gestão de Riscos na Era Digital</label>  
+                            <label class="disciplina"><input type="checkbox"> Métodos Analíticos Aplicados à Gestão</label>  
+                            <label class="disciplina"><input type="checkbox"> Gestão Fiscal</label>  
+                            <label class="disciplina"><input type="checkbox"> Gestão Comercial, Vendas na Era Digital</label>  
+                            <label class="disciplina"><input type="checkbox"> Enquadramento Legal das Pessoas Coletivas</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
+                            <label class="disciplina"><input type="checkbox"> Gestão de Investimentos</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-gestão')">3.º Ano</div>
+                        <div id="ano3-gestão" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
+                            <label class="disciplina"><input type="checkbox"> Monitorizar A Performance da Gestão</label>  
+                            <label class="disciplina"><input type="checkbox"> Finanças Empresariais e Gestão de Tesouraria</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação III</label>  
+                            <label class="disciplina"><input type="checkbox"> Marketing Digital</label>  
+                            <label class="disciplina"><input type="checkbox"> Relatório Integrado</label>  
+                        </div>
+                </div>
+
+            <div class="curso" onclick="toggleDisciplinas('saude')">Saúde</div>
+                <div id="saude" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-saude')">1.º Ano</div>
+                        <div id="ano1-saude" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistema de Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>  
+                            <label class="disciplina"><input type="checkbox"> Noções de Saúde Humana</label>  
+                            <label class="disciplina"><input type="checkbox"> Complementos de Matemática Aplicada</label>  
+                            <label class="disciplina"><input type="checkbox"> Psicologia Social da Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>  
+                            <label class="disciplina"><input type="checkbox"> Algoritmia e Estrutura de Dados</label>  
+                            <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-saude')">2.º Ano</div>
+                        <div id="ano2-saude" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Gestão de Organizações de Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
+                            <label class="disciplina"><input type="checkbox"> Dados de Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
+                            <label class="disciplina"><input type="checkbox"> Estatística e Probabilidades</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas de Informação em Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução à Cibersegurança</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-saude')">3.º Ano</div>
+                        <div id="ano3-saude" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Saúde I</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais e Saúde II</label>  
+                            <label class="disciplina"><input type="checkbox"> Logística Digital em Contexto Hospitalar</label>  
+                            <label class="disciplina"><input type="checkbox"> Tecnologias Assistivas e Tele-Saúde</label>  
+                            <label class="disciplina"><input type="checkbox"> Inteligência Artificial na Saúde</label>  
+                        </div>
+                </div>
+
+            <div class="curso" onclick="toggleDisciplinas('edu')">Educativas</div>
+                <div id="edu" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-edu')">1.º Ano</div>
+                        <div id="ano1-edu" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Planeamento e Gestão de Projetos</label>  
+                            <label class="disciplina"><input type="checkbox"> Recursos Digitais Estáticos</label>  
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Análise de Dados</label>  
+                            <label class="disciplina"><input type="checkbox"> Metodologias de Ensino e Aprendizagem</label>  
+                            <label class="disciplina"><input type="checkbox"> Geometria e Estatística</label>  
+                            <label class="disciplina"><input type="checkbox"> Psicologia da Aprendizagem</label>  
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
+                            <label class="disciplina"><input type="checkbox"> Comunicação e Aprendizagem Multimédia</label>  
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
+                            <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-edu')">2.º Ano</div>
+                        <div id="ano2-edu" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação II</label>  
+                            <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>  
+                            <label class="disciplina"><input type="checkbox"> Recursos Digitais Dinâmicos</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução à Cibersegurança</label>  
+                            <label class="disciplina"><input type="checkbox"> Bases de Dados e Gestão de Informação</label>  
+                            <label class="disciplina"><input type="checkbox"> Desenvolvimento Curricular</label>  
+                            <label class="disciplina"><input type="checkbox"> Ambientes Virtuais de Aprendizagem</label>  
+                            <label class="disciplina"><input type="checkbox"> Gestão da Formação</label>  
+                            <label class="disciplina"><input type="checkbox"> Desenho Centrado no Utilizador</label>  
+                            <label class="disciplina"><input type="checkbox"> Empreendedorismo e Inovação I</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-edu')">3.º Ano</div>
+                        <div id="ano3-edu" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
+                            <label class="disciplina"><input type="checkbox"> Inteligência Artificial Aplicada à Educação</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas de Informação Analíticos</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais Educativas I</label>  
+                            <label class="disciplina"><input type="checkbox"> Inclusão e Acessibilidade</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto Aplicado de Tecnologias Digitais Educativas II</label>  
+                        </div>
+                </div>
+                
+            <div class="curso" onclick="toggleDisciplinas('construcao')">Edifícios e Contrução Sustentável</div>
+                <div id="construcao" class="disciplinas">
+                    <div class="ano" onclick="toggleAno('ano1-contruçao')">1.º Ano</div>
+                        <div id="ano1-contruçao" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
+                            <label class="disciplina"><input type="checkbox"> Desenho</label>  
+                            <label class="disciplina"><input type="checkbox"> Ciência de Materiais</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Ambiente Construído</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto I</label>  
+                            <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>  
+                            <label class="disciplina"><input type="checkbox"> Geometria e Estatística</label>  
+                            <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção I</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas e Processos de Construção de Edifícios I</label>  
+                            <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
+                            <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
+                            <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano2-construçao')">2.º Ano</div>
+                        <div id="ano2-construçao" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Qualidade e Segurança na Construção</label>  
+                            <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
+                            <label class="disciplina"><input type="checkbox"> Técnicas de Levantamento, Diagnóstico e Reabilitação de Edifícios</label>  
+                            <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção II</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto II</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto III</label>  
+                            <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>  
+                            <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas, Instalações e Edifícios Inteligentes</label>  
+                            <label class="disciplina"><input type="checkbox"> Sistemas e Processos de Construção de Edifícios II</label>  
+                        </div>
+                    <div class="ano" onclick="toggleAno('ano3-construçao')">3.º Ano</div>
+                        <div id="ano3-construçao" class="ano-disciplinas">
+                            <label class="disciplina"><input type="checkbox"> Gestão da Construção</label>  
+                            <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto IV</label>  
+                            <label class="disciplina"><input type="checkbox"> Projeto V</label>  
+                            <label class="disciplina"><input type="checkbox"> Metodologia BIM</label>  
+                            <label class="disciplina"><input type="checkbox"> Edifícios e Construção Sustentáveis</label>  
+                        </div>
+                </div>
             
-        <div class="curso" onclick="toggleDisciplinas('construcao')">Edifícios e Contrução Sustentável</div>
-            <div id="construcao" class="disciplinas">
-                <div class="ano" onclick="toggleAno('ano1-contruçao')">1.º Ano</div>
-                    <div id="ano1-contruçao" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Trabalho, Organizações e Tecnologia</label>  
-                        <label class="disciplina"><input type="checkbox"> Desenho</label>  
-                        <label class="disciplina"><input type="checkbox"> Ciência de Materiais</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Ambiente Construído</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto I</label>  
-                        <label class="disciplina"><input type="checkbox"> Matemática Aplicada</label>  
-                        <label class="disciplina"><input type="checkbox"> Geometria e Estatística</label>  
-                        <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção I</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas e Processos de Construção de Edifícios I</label>  
-                        <label class="disciplina"><input type="checkbox"> Introdução ao Design Thinking</label>  
-                        <label class="disciplina"><input type="checkbox"> Apresentações em Público com Técnicas Teatrais</label>  
-                        <label class="disciplina"><input type="checkbox"> Trabalho Académico com Inteligência Artificial</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano2-construçao')">2.º Ano</div>
-                    <div id="ano2-construçao" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Qualidade e Segurança na Construção</label>  
-                        <label class="disciplina"><input type="checkbox"> Fundamentos de Programação</label>  
-                        <label class="disciplina"><input type="checkbox"> Técnicas de Levantamento, Diagnóstico e Reabilitação de Edifícios</label>  
-                        <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção II</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto II</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto III</label>  
-                        <label class="disciplina"><input type="checkbox"> Programação para a Internet</label>  
-                        <label class="disciplina"><input type="checkbox"> Modelação da Informação de Construção</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas, Instalações e Edifícios Inteligentes</label>  
-                        <label class="disciplina"><input type="checkbox"> Sistemas e Processos de Construção de Edifícios II</label>  
-                    </div>
-                <div class="ano" onclick="toggleAno('ano3-construçao')">3.º Ano</div>
-                    <div id="ano3-construçao" class="ano-disciplinas">
-                        <label class="disciplina"><input type="checkbox"> Gestão da Construção</label>  
-                        <label class="disciplina"><input type="checkbox"> Tecnologia, Economia e Sociedade</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto IV</label>  
-                        <label class="disciplina"><input type="checkbox"> Projeto V</label>  
-                        <label class="disciplina"><input type="checkbox"> Metodologia BIM</label>  
-                        <label class="disciplina"><input type="checkbox"> Edifícios e Construção Sustentáveis</label>  
-                    </div>
-            </div>
-        
-        <button class="aplicar-btn">Aplicar Seleção</button>
-    </div>    
+            <button class="aplicar-btn">Aplicar Seleção</button>
+        </div> 
+    </main>       
 
     <footer>
         <p>&copy; 2025 Study Link. Todos os direitos reservados.</p>
@@ -418,5 +518,27 @@
             div.style.display = (div.style.display === "block") ? "none" : "block";
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+   
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              ...
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-primary">Understood</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
 </body>
 </html>
+
+
