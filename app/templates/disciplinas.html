@@ -39,7 +39,7 @@
                         <div class="dropdown">
                             <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Escolher Ano</button>
                             <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disciplinas_1_Seg">1.º Ano</a></li>
+                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disciplinas_1_seg_1">1.º Ano</a></li>
                               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">2.º Ano</a></li>
                               <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#staticBackdrop">3.º Ano</a></li>
                             </ul>
@@ -508,35 +508,35 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
    
-    <div class="modal fade" id="disciplinas_1_Seg" aria-hidden="true" aria-labelledby="disciplinas_1_Seg_Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollabe">
+    <div class="modal fade" id="disciplinas_1_seg_1" aria-hidden="true" aria-labelledby="disciplinas_1_seg_1Label" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="disciplinas_1_Seg_Label">Modal 1</h1>
+              <h1 class="modal-title fs-5" id="disciplinas_1_seg_1Label">Modal 1</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               Show a second modal and hide this one with the button below.
             </div>
             <div class="modal-footer">
-              <button class="btn btn-primary" data-bs-target="#disciplinas_2_Seg" data-bs-toggle="modal">Open second modal</button>
+              <button class="btn btn-primary" data-bs-target="#disciplinas_1_seg_2" data-bs-toggle="modal">Open second modal</button>
             </div>
           </div>
         </div>
       </div>
-      <div class="modal fade" id="disciplinas_2_Seg" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal fade" id="disciplinas_1_seg_2" aria-hidden="true" aria-labelledby="disciplinas_1_seg_2Label" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Modal 2</h1>
+              <h1 class="modal-title fs-5" id="disciplinas_1_seg_2Label">Modal 2</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
               Hide this modal and show the first with the button below.
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#disciplinas_1_Seg" data-bs-toggle="modal">Back to first</button>
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button class="btn btn-primary" data-bs-target="#disciplinas_1_seg_1" data-bs-toggle="modal">Back to first</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
