@@ -11,6 +11,7 @@ import secrets
 import os
 
 app = Flask(__name__)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 UPLOAD_FOLDER = 'static/uploads/ProfilePics'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
