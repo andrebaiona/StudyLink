@@ -7,7 +7,7 @@
     <title>Minha Conta - Study Link</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/conta.css">
-</head>
+    </head>
 <body>
     <header>
         <img src="../static/Imagens/logo.png" alt="Study Link Logo">
@@ -42,31 +42,48 @@
             {% endif %}
             {% endwith %}
 
-            <form action="/update_profile" method="POST" enctype="multipart/form-data">
+            <form action="/update_profile" method="POST" enctype="multipart/form-data" class="account-form">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                 <label for="profile_pic">Foto de Perfil:</label>
-                <img id="profilePreview" src="/{{ user.profile_pic }}" alt="Foto de Perfil" width="100">
-
-                <input type="file" id="profile_pic" name="profile_pic" accept="image/*" onchange="previewProfileImage()">
+                <img id="profilePreview" src="/{{ user.profile_pic }}" alt="Foto de Perfil" width="100" class="profile-img">
+                <input type="file" id="profile_pic" name="profile_pic" accept="image/*" onchange="previewProfileImage()" class="input-file">
 
                 <label for="name">Nome:</label>
-                <input type="text" id="name" name="name" value="{{ user.name }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required>
+                <input type="text" id="name" name="name" value="{{ user.name }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required class="input-text">
 
                 <label for="username">Nome de Utilizador:</label>
-                <input type="text" id="username" name="username" value="{{ user.username }}" disabled>
+                <input type="text" id="username" name="username" value="{{ user.username }}" disabled class="input-text">
 
                 <label for="email">E-mail:</label>
-                <input type="email" id="email" name="email" value="{{ user.email }}" disabled>
+                <input type="email" id="email" name="email" value="{{ user.email }}" disabled class="input-text">
 
                 <label for="bio">Biografia:</label>
-                <textarea id="bio" name="bio">{{ user.bio }}</textarea>
+                <textarea id="bio" name="bio" class="input-textarea">{{ user.bio }}</textarea>
+
+                <label for="course_type">Tipo de Curso:</label>
+                <select id="course_type" name="course_type" required onchange="updateYearOptions()" class="input-select">
+                    <option value="Licenciatura">Licenciatura</option>
+                    <option value="Mestrado">Mestrado</option>
+                    <option value="Pós-Graduação">Pós-Graduação</option>
+                </select>
 
                 <label for="class_year">Ano de Curso:</label>
-                <input type="number" id="class_year" name="class_year" value="{{ user.class_year }}" min="1" max="10">
+                <select id="class_year" name="class_year" class="input-select"></select>
 
                 <label for="course">Curso:</label>
-                <input type="text" id="course" name="course" value="{{ user.course }}">
+                <select id="course" name="course" class="input-select">
+                    <option value="Desenvolvimento de Software e Aplicações">Desenvolvimento de Software e Aplicações</option>
+                    <option value="Matemática Aplicada e Tecnologias Digitais">Matemática Aplicada e Tecnologias Digitais</option>
+                    <option value="Tecnologias Digitais Educativas">Tecnologias Digitais Educativas</option>
+                    <option value="Tecnologias Digitais e Automação">Tecnologias Digitais e Automação</option>
+                    <option value="Tecnologias Digitais e Gestão">Tecnologias Digitais e Gestão</option>
+                    <option value="Tecnologias Digitais e Inteligência Artificial">Tecnologias Digitais e Inteligência Artificial</option>
+                    <option value="Tecnologias Digitais e Saúde">Tecnologias Digitais e Saúde</option>
+                    <option value="Tecnologias Digitais e Segurança de Informação">Tecnologias Digitais e Segurança de Informação</option>
+                    <option value="Tecnologias Digitais Edifícios e Construção Sustentável">Tecnologias Digitais Edifícios e Construção Sustentável</option>
+                    <option value="Política, Economia e Sociedade">Política, Economia e Sociedade</option>
+                </select>
 
                 <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
             </form>
@@ -93,6 +110,30 @@
                 reader.readAsDataURL(file);
             }
         }
+
+        function updateYearOptions() {
+            const courseType = document.getElementById('course_type').value;
+            const yearSelect = document.getElementById('class_year');
+            
+            let years = [];
+            if (courseType === "Licenciatura") {
+                years = ["1º", "2º", "3º"];
+            } else if (courseType === "Mestrado") {
+                years = ["1º", "2º"];
+            } else if (courseType === "Pós-Graduação") {
+                years = ["1º"];
+            }
+
+            yearSelect.innerHTML = "";
+            years.forEach(year => {
+                let option = document.createElement("option");
+                option.value = year.charAt(0);
+                option.textContent = year;
+                yearSelect.appendChild(option);
+            });
+        }
+        
+        document.addEventListener("DOMContentLoaded", updateYearOptions);
     </script>
 </body>
 </html>
