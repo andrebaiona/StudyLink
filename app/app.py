@@ -189,6 +189,7 @@ def login():
         return redirect(url_for('login_page', identifier=identifier))
 
 
+
 @app.route('/conta')
 def conta():
     if 'username' not in session:
@@ -206,18 +207,13 @@ def conta():
                    IFNULL(us.bio, '') AS bio, IFNULL(us.class_year, '') AS class_year, IFNULL(us.course, '') AS course
             FROM users u
             LEFT JOIN user_settings us ON u.id = us.user_id
-            WHERE u.username = %s
+            WHERE u.id = %s
         """
-        cursor.execute(query, (session['username'],))
+        cursor.execute(query, (user_id,))
         user = cursor.fetchone()
 
-        cursor.fetchall()
-
         if user:
-            session['name'] = user['name']
-            session['email'] = user['email']
             return render_template('conta.html', user=user)
-
         else:
             flash("Erro ao carregar dados do utilizador.", "error")
             return redirect(url_for('login_page'))
@@ -226,14 +222,8 @@ def conta():
         flash(f"Erro na base de dados: {err}", "error")
         return redirect(url_for('login_page'))
 
-    except Exception as e:
-        flash(f"Erro inesperado: {e}", "error")
-        return redirect(url_for('login_page'))
-
     finally:
         cursor.close()
-
-
 
 
 @app.route('/update_profile', methods=['POST'])
@@ -242,32 +232,22 @@ def update_profile():
         return redirect(url_for('login_page'))
 
     user_id = session['user_id']
-    username = session['username']  
-    bio = request.form.get('bio', '')
+    name = sanitize_input(request.form.get('name', ''))
+    bio = sanitize_input(request.form.get('bio', ''))
     class_year = request.form.get('class_year', '')
     course = request.form.get('course', '')
 
     cursor = db.cursor(dictionary=True)
-    cursor.execute("SELECT profile_pic FROM user_settings WHERE user_id = %s", (user_id,))
-    user_settings = cursor.fetchone()
-    profile_pic_path = user_settings['profile_pic'] if user_settings else 'static/uploads/ProfilePics/default.jpg'
-
-    if 'profile_pic' in request.files:
-        file = request.files['profile_pic']
-        if file and allowed_file(file.filename):
-            filename = secure_filename(f"{username}.jpg")  
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(file_path)
-            profile_pic_path = file_path.replace("\\", "/")  
-
     try:
         query = """
-            UPDATE user_settings
-            SET profile_pic = %s, bio = %s, class_year = %s, course = %s
-            WHERE user_id = %s
+            UPDATE users u
+            JOIN user_settings us ON u.id = us.user_id
+            SET u.name = %s, us.bio = %s, us.class_year = %s, us.course = %s
+            WHERE u.id = %s
         """
-        cursor.execute(query, (profile_pic_path, bio, class_year, course, user_id))
+        cursor.execute(query, (name, bio, class_year, course, user_id))
         db.commit()
+
         flash("Conta atualizada com sucesso!", "success")
 
     except mysql.connector.Error as err:
@@ -277,8 +257,6 @@ def update_profile():
         cursor.close()
 
     return redirect(url_for('conta'))
-
-
 
 @app.route('/logout')
 def logout():

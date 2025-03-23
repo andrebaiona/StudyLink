@@ -7,7 +7,8 @@
     <title>Minha Conta - Study Link</title>
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/conta.css">
-    </head>
+    <script src="../static/js/conta.js" defer></script>
+</head>
 <body>
     <header>
         <img src="../static/Imagens/logo.png" alt="Study Link Logo">
@@ -68,21 +69,27 @@
                     <option value="Pós-Graduação">Pós-Graduação</option>
                 </select>
 
+                 
                 <label for="class_year">Ano de Curso:</label>
-                <select id="class_year" name="class_year" class="input-select"></select>
+                <select id="class_year" name="class_year" class="input-select">
+                    <option value="1" {% if user.class_year|string == "1" %}selected{% endif %}>1º</option>
+                    <option value="2" {% if user.class_year|string == "2" %}selected{% endif %}>2º</option>
+                    <option value="3" {% if user.class_year|string == "3" %}selected{% endif %}>3º</option>
+                </select>
+
 
                 <label for="course">Curso:</label>
                 <select id="course" name="course" class="input-select">
-                    <option value="Desenvolvimento de Software e Aplicações">Desenvolvimento de Software e Aplicações</option>
-                    <option value="Matemática Aplicada e Tecnologias Digitais">Matemática Aplicada e Tecnologias Digitais</option>
-                    <option value="Tecnologias Digitais Educativas">Tecnologias Digitais Educativas</option>
-                    <option value="Tecnologias Digitais e Automação">Tecnologias Digitais e Automação</option>
-                    <option value="Tecnologias Digitais e Gestão">Tecnologias Digitais e Gestão</option>
-                    <option value="Tecnologias Digitais e Inteligência Artificial">Tecnologias Digitais e Inteligência Artificial</option>
-                    <option value="Tecnologias Digitais e Saúde">Tecnologias Digitais e Saúde</option>
-                    <option value="Tecnologias Digitais e Segurança de Informação">Tecnologias Digitais e Segurança de Informação</option>
-                    <option value="Tecnologias Digitais Edifícios e Construção Sustentável">Tecnologias Digitais Edifícios e Construção Sustentável</option>
-                    <option value="Política, Economia e Sociedade">Política, Economia e Sociedade</option>
+                    <option value="Desenvolvimento de Software e Aplicações" {% if user.course == "Desenvolvimento de Software e Aplicações" %}selected{% endif %}>Desenvolvimento de Software e Aplicações</option>
+                    <option value="Matemática Aplicada e Tecnologias Digitais" {% if user.course == "Matemática Aplicada e Tecnologias Digitais" %}selected{% endif %}>Matemática Aplicada e Tecnologias Digitais</option>
+                    <option value="Tecnologias Digitais Educativas" {% if user.course == "Tecnologias Digitais Educativas" %}selected{% endif %}>Tecnologias Digitais Educativas</option>
+                    <option value="Tecnologias Digitais e Automação" {% if user.course == "Tecnologias Digitais e Automação" %}selected{% endif %}>Tecnologias Digitais e Automação</option>
+                    <option value="Tecnologias Digitais e Gestão" {% if user.course == "Tecnologias Digitais e Gestão" %}selected{% endif %}>Tecnologias Digitais e Gestão</option>
+                    <option value="Tecnologias Digitais e Inteligência Artificial" {% if user.course == "Tecnologias Digitais e Inteligência Artificial" %}selected{% endif %}>Tecnologias Digitais e Inteligência Artificial</option>
+                    <option value="Tecnologias Digitais e Saúde" {% if user.course == "Tecnologias Digitais e Saúde" %}selected{% endif %}>Tecnologias Digitais e Saúde</option>
+                    <option value="Tecnologias Digitais e Segurança de Informação" {% if user.course == "Tecnologias Digitais e Segurança de Informação" %}selected{% endif %}>Tecnologias Digitais e Segurança de Informação</option>
+                    <option value="Tecnologias Digitais Edifícios e Construção Sustentável" {% if user.course == "Tecnologias Digitais Edifícios e Construção Sustentável" %}selected{% endif %}>Tecnologias Digitais Edifícios e Construção Sustentável</option>
+                    <option value="Política, Economia e Sociedade" {% if user.course == "Política, Economia e Sociedade" %}selected{% endif %}>Política, Economia e Sociedade</option>
                 </select>
 
                 <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
@@ -94,46 +101,5 @@
         <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
     </footer>
 
-    <script>
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
-
-        function previewProfileImage() {
-            const file = document.getElementById('profile_pic').files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('profilePreview').src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function updateYearOptions() {
-            const courseType = document.getElementById('course_type').value;
-            const yearSelect = document.getElementById('class_year');
-            
-            let years = [];
-            if (courseType === "Licenciatura") {
-                years = ["1º", "2º", "3º"];
-            } else if (courseType === "Mestrado") {
-                years = ["1º", "2º"];
-            } else if (courseType === "Pós-Graduação") {
-                years = ["1º"];
-            }
-
-            yearSelect.innerHTML = "";
-            years.forEach(year => {
-                let option = document.createElement("option");
-                option.value = year.charAt(0);
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            });
-        }
-        
-        document.addEventListener("DOMContentLoaded", updateYearOptions);
-    </script>
-</body>
+    </body>
 </html>
