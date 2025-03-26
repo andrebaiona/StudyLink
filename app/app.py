@@ -226,19 +226,50 @@ def conta():
         cursor.close()
 
 
+
+
 @app.route('/update_profile', methods=['POST'])
 def update_profile():
     if 'username' not in session:
         return redirect(url_for('login_page'))
 
     user_id = session['user_id']
+    username = session['username']  # Get username from session
     name = sanitize_input(request.form.get('name', ''))
     bio = sanitize_input(request.form.get('bio', ''))
     class_year = request.form.get('class_year', '')
     course = request.form.get('course', '')
 
-    cursor = db.cursor(dictionary=True)
+    # Handle profile picture upload
+    if 'profile_pic' in request.files:
+        file = request.files['profile_pic']
+        if file and allowed_file(file.filename):
+            ext = file.filename.rsplit('.', 1)[1].lower()  # Get file extension
+            filename = f"{username}.{ext}"  # Rename file to username.ext
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            # Remove old profile picture if exists (except default)
+            cursor = db.cursor(dictionary=True)
+            cursor.execute("SELECT profile_pic FROM user_settings WHERE user_id = %s", (user_id,))
+            old_profile_pic = cursor.fetchone()
+
+            if old_profile_pic and old_profile_pic['profile_pic'] != 'static/uploads/ProfilePics/default.jpg':
+                old_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], old_profile_pic['profile_pic'])
+                if os.path.exists(old_pic_path):
+                    os.remove(old_pic_path)  # Delete the old profile picture
+
+            file.save(file_path)  # Save new profile picture
+
+            # Convert path for database storage
+            relative_file_path = f"static/uploads/ProfilePics/{filename}"
+
+            # Update database with new profile picture path
+            cursor.execute("UPDATE user_settings SET profile_pic = %s WHERE user_id = %s", (relative_file_path, user_id))
+            db.commit()
+            cursor.close()
+
     try:
+        cursor = db.cursor(dictionary=True)
         query = """
             UPDATE users u
             JOIN user_settings us ON u.id = us.user_id
@@ -247,14 +278,12 @@ def update_profile():
         """
         cursor.execute(query, (name, bio, class_year, course, user_id))
         db.commit()
+        cursor.close()
 
         flash("Conta atualizada com sucesso!", "success")
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
-
-    finally:
-        cursor.close()
 
     return redirect(url_for('conta'))
 
