@@ -17,6 +17,21 @@ body {
     max-width: 400px;
     text-align: center;
 }
+/* Add responsive behavior */
+@media (max-width: 768px) {
+    .register-container {
+        width: 85%; /* Slightly smaller width for smaller screens */
+        padding: 2% 4%; /* Adjust padding for better spacing */
+    }
+}
+
+@media (max-width: 480px) {
+    .register-container {
+        width: 85%; /* Full width for very small screens */
+        padding: 3% 3%; /* Adjust padding for compact layout */
+    }
+}
+
 
 .logo img {
     width: 40%;
