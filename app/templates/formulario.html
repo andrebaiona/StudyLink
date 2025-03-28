@@ -3,125 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/static/Imagens/logo.png"> 
+    <link rel="icon" href="/static/Imagens/logo.png">
     <title>Criar Tópico - Study Link</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        header {
-            background: #e1d9ce;
-            color: #000;
-            padding: 20px 10%;
-            text-align: center;
-        }
-        header img {
-            height: 50px;
-        }
-        header h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
-        nav {
-            background: #a0522d;
-            padding: 10px 10%;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        nav a {
-            color: #fff;
-            margin: 0 15px;
-            text-decoration: none;
-            font-size: 1.1em;
-        }
-        .container {
-            padding: 20px 10%;
-            flex-grow: 1;
-        }
-        .form-container {
-            background: #fff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .form-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .form-container input, .form-container textarea, .form-container button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 1em;
-        }
-        .form-container button {
-            background: #a0522d;
-            color: #fff;
-            border: none;
-            cursor: pointer;
-            font-size: 1.1em;
-        }
-        .form-container button:hover {
-            background: #8b4513;
-        }
-        footer {
-            background: #333;
-            color: #fff;
-            text-align: center;
-            padding: 10px;
-            font-size: 0.9em;
-        }
-        footer a {
-            color: #cd853f;
-            text-decoration: none;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
+    <!-- Link do Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ2QJb2iQK1vY5p6e2l98n9uPQfO4LgUy2Qk0h0lHdbbLvV5Y55Z5u7m5ak" crossorigin="anonymous">
+    <!-- Link para os estilos customizados -->
+    <link rel="stylesheet" href="../static/css/formulario.css">
+    <link rel="stylesheet" href="../static/css/styles.css">
+    <script src="../static/js/script.js" defer></script>
 </head>
 <body>
-    <header>
-        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
-        <h1>Criar Tópico</h1>
+    <!-- Header -->
+    <header class="d-flex justify-content-between align-items-center px-5 py-3" style="background: #e1d9ce; color: #000;">
+        <!-- Logo sempre visível -->
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo" style="height: 90px;" class="d-block d-sm-none">
+        
+        <!-- Título visível em telas grandes (sm ou maior) -->
+        <h1 class="flex-grow-1 text-center m-0 d-none d-sm-block" style="font-size: 2.5em; text-shadow: #333;">
+            <a href="index.html" class="text-decoration-none" style="color: #000;">StudyLink</a>
+        </h1>
+
+        <!-- Botão Menu com classes Bootstrap para estilo -->
+        <button class="account-btn btn" onclick="toggleAccountMenu()">Menu</button>
+        <div class="account-menu" id="accountMenu">
+            <a href="/registo_page">Registo</a>
+            <a href="/login_page">Login</a>
+            <a href="definicoes.html">Definições</a>
+            <a href="ajuda.html">Ajuda</a>
+        </div>
     </header>
-    <nav>
-        <a href="recursos.html">Recursos</a>
-        <a href="comunidade.html">Comunidade</a>
-        <a href="contacto.html">Contacto</a>
+
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #a0522d;">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand" href="recursos.html">Recursos</a>
+            <a class="navbar-brand" href="comunidade.html">Comunidade</a>
+            <a class="navbar-brand" href="contacto.html">Contacto</a>
+        </div>
     </nav>
-    <div class="container">
+
+    <!-- Conteúdo principal -->
+    <div class="container mt-5">
         <div class="form-container">
             <h2>Criar um Novo Tópico</h2>
-            <form id="topicForm">
-                <input type="text" id="authorName" placeholder="Nome do Autor" required>
-                <input type="text" id="topicTitle" placeholder="Título da Discussão" required>
-                <textarea id="topicText" placeholder="Texto da Discussão" rows="6" required></textarea>
-                <input type="file" id="topicImage" accept="image/*">
-                <input type="file" id="topicFile" accept="application/*">
-                <button type="submit">Guardar</button>
+            <form id="topicForm" class="bg-light p-4 rounded">
+                <div class="mb-3">
+                    <label for="authorName" class="form-label">Nome do Autor</label>
+                    <input type="text" id="authorName" class="form-control" placeholder="Nome do Autor" required>
+                </div>
+                <div class="mb-3">
+                    <label for="topicTitle" class="form-label">Título da Discussão</label>
+                    <input type="text" id="topicTitle" class="form-control" placeholder="Título da Discussão" required>
+                </div>
+                <div class="mb-3">
+                    <label for="topicText" class="form-label">Texto da Discussão</label>
+                    <textarea id="topicText" class="form-control" placeholder="Texto da Discussão" rows="6" required></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="topicImage" class="form-label">Imagem</label>
+                    <input type="file" id="topicImage" class="form-control" accept="image/*">
+                </div>
+                <div class="mb-3">
+                    <label for="topicFile" class="form-label">Arquivo</label>
+                    <input type="file" id="topicFile" class="form-control" accept="application/*">
+                </div>
+                <button type="submit" class="btn btn-primary">Guardar</button>
             </form>
         </div>
     </div>
-    <footer>
-        <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+
+    <!-- Rodapé -->
+    <footer class="text-center py-2">
+        <p class="mb-0">
+          &copy; 2025 Study Link. Todos os direitos reservados. 
+          <a href="contacto.html" class="text-decoration-none">Contacte-nos</a>
+        </p>
     </footer>
 
-    <script>
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
+    <!-- Script do Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gyb3H1tCXXgk8fh8nt60wZ4nW2jQdYk6t5D3h5/tXhiXk/JRAd" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0J4pE5dZ2rtFV2zQXcO6khxHGr8xV+z18yQ5U3nLCnM61Hll" crossorigin="anonymous"></script>
 
+    <script>
         // Função para adicionar o tópico ao LocalStorage
         function addTopic() {
             const authorInput = document.getElementById("authorName");  // Novo campo para o nome do autor
@@ -162,6 +125,5 @@
             addTopic(); // Chamar a função que adiciona o tópico
         });
     </script>
-    
 </body>
 </html>

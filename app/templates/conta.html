@@ -1,129 +1,142 @@
-
 <!DOCTYPE html>
 <html lang="pt">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="/static/Imagens/logo.png">
-    <title>Conta - Study Link</title>
+    <title>Minha Conta - Study Link</title>
+    <!-- Link do Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ2QJb2iQK1vY5p6e2l98n9uPQfO4LgUy2Qk0h0lHdbbLvV5Y55Z5u7m5ak" crossorigin="anonymous">
     <link rel="stylesheet" href="../static/css/styles.css">
     <link rel="stylesheet" href="../static/css/conta.css">
+    <script src="../static/js/conta.js" defer></script>
 </head>
 <body>
-    <header>
-        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
-        <h1><a href="index.html">StudyLink</a></h1>
-    </header>
-    <nav>
-        <a href="recursos.html">Recursos</a>
-        <a href="comunidade.html">Comunidade</a>
-        <a href="contacto.html">Contacto</a>
-    </nav>
-    <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
-    <div class="account-menu" id="accountMenu">
-        <a href="disciplinas.html">Discplinas</a>
-        <a href="conta.html">Conta</a>
-        <a href="definicoes.html">Definições</a>
-        <a href="ajuda.html">Ajuda</a>
-    </div>
-   
-   
-    
-<div class="container">
-    <section class="account-section">
-        <h2>Minha Conta</h2>
-        
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <div class="message">
-            {% for category, message in messages %}
-            <p class="{{ category }}">{{ message }}</p>
-            {% endfor %}
+    <!-- Header -->
+    <header class="d-flex justify-content-between align-items-center px-5 py-3" style="background: #e1d9ce;">
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo" style="height: 90px;">
+        <h1 class="m-0 d-none d-sm-block">
+            <a href="index.html" class="text-decoration-none" style="color: #000;">StudyLink</a>
+        </h1>
+        <button class="account-btn btn" onclick="toggleAccountMenu()">Menu</button>
+        <div class="account-menu" id="accountMenu">
+            <a href="disciplinas.html">Disciplinas</a>
+            <a href="conta.html">Conta</a>
+            <a href="definicoes.html">Definições</a>
+            <a href="ajuda.html">Ajuda</a>
         </div>
-        {% endif %}
-        {% endwith %}
-        
-        <form action="/update_account" method="POST" onsubmit="return validateForm();">
-            
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">  
-            
-            <label for="name">Nome:</label>
-            <input type="text" id="name" name="name" value="{{ session['name'] }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required>
+    </header>
 
-            <label for="username">Nome de Utilizador:</label>
-            <input type="text" id="username" name="username" value="{{ session['username'] }}" disabled>
-            
-            <label for="email">E-mail:</label>
-            <input type="email" id="email" name="email" value="{{ session['email'] }}" disabled>
-            
-            <label for="password">Password Atual:</label>
-            <input type="password" id="password" name="password" required placeholder="Digite a sua password atual" required>
-            
-            <label for="new_password">Nova Password:</label>
-            <input type="password" id="new_password" name="new_password" pattern="(?=.*\d)(?=.*[A-Z])(?=.*[a-z]).{12,}" placeholder="Introduza a sua nova password" title="A password deve ter pelo menos 12 caracteres, 1 letra maiúscula e 1 número" required>
-            <label for="confirm_password">Confirmar Nova Password:</label>
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirme a nova password" required>
-            
-            <button class="btn" id="update-account-btn" type="submit">Atualizar Conta</button>
-        </form>
-    </section>
-</div>
+    <!-- Navegação -->
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #a0522d;">
+        <div class="container-fluid justify-content-center">
+            <a class="navbar-brand" href="recursos.html">Recursos</a>
+            <a class="navbar-brand" href="comunidade.html">Comunidade</a>
+            <a class="navbar-brand" href="contacto.html">Contacto</a>
+        </div>
+    </nav>
 
-    <footer>
-        <p>&copy; 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
+    <!-- Conteúdo Principal -->
+    <div class="container mt-5">
+        <section class="account-section">
+            <h2>Minha Conta</h2>
+
+            <!-- Mensagens de Flash -->
+           
+         
+              
+            <!-- Flash Messages Section -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+
+
+            <!-- Formulário de Atualização de Conta -->
+           <form action="/update_profile" method="POST" enctype="multipart/form-data" class="account-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <label for="profile_pic">Foto de Perfil:</label>
+                <img id="profilePreview" src="/{{ user.profile_pic }}" alt="Foto de Perfil" width="100" class="profile-img">
+                <input type="file" id="profile_pic" name="profile_pic" accept="image/*" onchange="previewProfileImage()" class="input-file">
+
+                <div class="mb-3">
+                    <label for="name">Nome:</label>
+                    <input type="text" id="name" name="name" value="{{ user.name }}" pattern="[A-Za-zÀ-ž\s]+" title="Apenas letras são permitidas" required class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="username">Nome de Utilizador:</label>
+                    <input type="text" id="username" name="username" value="{{ user.username }}" disabled class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" name="email" value="{{ user.email }}" disabled class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label for="bio">Biografia:</label>
+                    <textarea id="bio" name="bio" class="form-control">{{ user.bio }}</textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label for="course_type">Tipo de Curso:</label>
+                    <select id="course_type" name="course_type" required onchange="updateYearOptions()" class="form-select">
+                        <option value="Licenciatura">Licenciatura</option>
+                        <option value="Mestrado">Mestrado</option>
+                        <option value="Pós-Graduação">Pós-Graduação</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="class_year">Ano de Curso:</label>
+                    <select id="class_year" name="class_year" class="form-select">
+                        <option value="1" {% if user.class_year|string == "1" %}selected{% endif %}>1º</option>
+                        <option value="2" {% if user.class_year|string == "2" %}selected{% endif %}>2º</option>
+                        <option value="3" {% if user.class_year|string == "3" %}selected{% endif %}>3º</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="course">Curso:</label>
+                    <select id="course" name="course" class="form-select">
+                        <option value="Desenvolvimento de Software e Aplicações" {% if user.course == "Desenvolvimento de Software e Aplicações" %}selected{% endif %}>Desenvolvimento de Software e Aplicações</option>
+                        <option value="Matemática Aplicada e Tecnologias Digitais" {% if user.course == "Matemática Aplicada e Tecnologias Digitais" %}selected{% endif %}>Matemática Aplicada e Tecnologias Digitais</option>
+                        <option value="Tecnologias Digitais Educativas" {% if user.course == "Tecnologias Digitais Educativas" %}selected{% endif %}>Tecnologias Digitais Educativas</option>
+                        <option value="Tecnologias Digitais e Automação" {% if user.course == "Tecnologias Digitais e Automação" %}selected{% endif %}>Tecnologias Digitais e Automação</option>
+                        <option value="Tecnologias Digitais e Gestão" {% if user.course == "Tecnologias Digitais e Gestão" %}selected{% endif %}>Tecnologias Digitais e Gestão</option>
+                        <option value="Tecnologias Digitais e Inteligência Artificial" {% if user.course == "Tecnologias Digitais e Inteligência Artificial" %}selected{% endif %}>Tecnologias Digitais e Inteligência Artificial</option>
+                        <option value="Tecnologias Digitais e Saúde" {% if user.course == "Tecnologias Digitais e Saúde" %}selected{% endif %}>Tecnologias Digitais e Saúde</option>
+                        <option value="Tecnologias Digitais e Segurança de Informação" {% if user.course == "Tecnologias Digitais e Segurança de Informação" %}selected{% endif %}>Tecnologias Digitais e Segurança de Informação</option>
+                        <option value="Tecnologias Digitais Edifícios e Construção Sustentável" {% if user.course == "Tecnologias Digitais Edifícios e Construção Sustentável" %}selected{% endif %}>Tecnologias Digitais Edifícios e Construção Sustentável</option>
+                        <option value="Política, Economia e Sociedade" {% if user.course == "Política, Economia e Sociedade" %}selected{% endif %}>Política, Economia e Sociedade</option>
+                    </select>
+                </div>
+
+                <button class="btn btn-primary w-100" id="update-account-btn" type="submit">Atualizar Conta</button>
+            </form>
+        </section>
+    </div>
+
+    <!-- Rodapé -->
+    <footer class="text-center py-2">
+        <p class="mb-0">
+            &copy; 2025 Study Link. Todos os direitos reservados.
+            <a href="contacto.html" class="text-decoration-none">Contacte-nos</a>
+        </p>
     </footer>
-    <script>
 
-        function toggleAccountMenu() {
-            const menu = document.getElementById('accountMenu');
-            menu.classList.toggle('show');
-        }
-
-        function salvarConta() {
-            const form = document.getElementById('accountForm');
-            const formData = new FormData(form);
-
-            // Salvar dados no localStorage
-            for (const [key, value] of formData.entries()) {
-                localStorage.setItem(key, value);
-            }
-            alert('Conta atualizada com sucesso!');
-        }
-
-        function carregarConta() {
-            // Carregar dados do localStorage
-            const inputs = document.querySelectorAll('#accountForm input');
-            inputs.forEach(input => {
-                const savedValue = localStorage.getItem(input.id);
-                if (savedValue) input.value = savedValue;
-            });
-        }
-
-        function uploadProfileImage() {
-            const fileInput = document.getElementById('profileUpload');
-            const file = fileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    document.getElementById('profilePreview').src = e.target.result;
-                    localStorage.setItem('profileImage', e.target.result);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function carregarImagemPerfil() {
-            const savedImage = localStorage.getItem('profileImage');
-            if (savedImage) {
-                document.getElementById('profilePreview').src = savedImage;
-            }
-        }
-
-        // Carregar informações ao iniciar
-        window.onload = function () {
-            carregarConta();
-            carregarImagemPerfil();
-        };
-    </script>
+    <!-- Scripts do Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gyb3H1tCXXgk8fh8nt60wZ4nW2jQdYk6t5D3h5/tXhiXk/JRAd" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0J4pE5dZ2rtFV2zQXcO6khxHGr8xV+z18yQ5U3nLCnM61Hll" crossorigin="anonymous"></script>
 </body>
 </html>

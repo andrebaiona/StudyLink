@@ -1,10 +1,10 @@
-
-/* conta.css – Specific styles for conta.html */
+/* General container styling */
 .container {
     padding: 20px 10%;
     flex-grow: 1;
 }
 
+/* Account section styling */
 .account-section {
     background: #fff;
     padding: 20px;
@@ -18,8 +18,10 @@
 .account-section h2 {
     color: #a0522d;
     margin-bottom: 20px;
+    font-size: 1.8em;
 }
 
+/* Profile picture styling */
 .profile-image {
     border-radius: 50%;
     width: 120px;
@@ -38,35 +40,136 @@
     object-fit: cover;
 }
 
+/* Form labels styling */
 .account-section label {
     display: block;
     margin: 10px 0 5px;
     font-weight: bold;
+    color: #333;
+    font-size: 1em;
 }
 
-.account-section input {
+/* Input styling */
+.account-section input,
+.account-section textarea,
+.account-section select {
     padding: 10px;
-    width: 95%;
+    width: 80%;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1em;
+    background: #f9f9f9;
+    color: #333;
+    margin-bottom: 10px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
+.account-section textarea {
+    resize: none;
+    height: 100px;
+    text-align: center;
+}
+
+.account-section select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    background: #f9f9f9 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
+    background-size: 20px;
+    padding-right: 30px;
+    text-align: left;
+}
+
+/* Hover and focus effects */
+.account-section input:focus,
+.account-section textarea:focus,
+.account-section select:focus {
+    outline: none;
+    border-color: #a0522d;
+    box-shadow: 0 0 5px rgba(160, 82, 45, 0.5);
+}
+
+/* Button styling */
 .account-section button {
-    padding: 10px 20px;
-    background: #a0522d;
+    padding: 15px 20px;
+    background: linear-gradient(145deg, #a0522d, #8b4513);
     color: #fff;
     border: none;
-    border-radius: 5px;
-    font-size: 1em;
+    border-radius: 30px;
+    font-size: 1.2em;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s, transform 0.3s;
+    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
     display: block;
     width: 100%;
     margin-top: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .account-section button:hover {
     background: #8b4513;
     transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Flash messages styling */
+.message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+.message.success {
+    background: #d4edda;
+    color: #155724;
+}
+
+.message.error {
+    background: #f8d7da;
+    color: #721c24;
+}   -webkit
+
+.flash-messages {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Success message style */
+.flash-message.success {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeOut 5s ease-in forwards;
+}
+
+/* Error message style */
+.flash-message.danger {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    animation: fadeOut 5s ease-in forwards;
+}
+
+/* Optional: Fade out effect */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
 }

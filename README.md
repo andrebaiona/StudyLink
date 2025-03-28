@@ -2,7 +2,7 @@
 # 🎓 Buddy Mentoring App StudyLink - ISCTE-IUL
 
 <p align="center">
-  <img src="https://github.com/RagnarokEmrys/StudyLink/blob/main/app/static/Imagens/logo.png" alt="Buddy Mentoring App Logo" width="200"/>
+  <img src="https://github.com/RagnarokEmrys/StudyLink/blob/main/app/static/Imagens/logo1.png" alt="Buddy Mentoring App Logo" width="200"/>
 </p>
 
 🔍 **Projeto desenvolvido para a Unidade Curricular de Empreendedorismo e Inovação I e II, Programação para a Internet, Criptografia Aplicada e Sistemas Distribuidos e Segurança**  
