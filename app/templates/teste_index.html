@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/Imagens/logo.png"> 
+    <title>Study Link</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #d2b48c;
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            background-color: #2f2f2f;
+            color: #e1d9ce;
+        }
+
+        /* Navbar Melhorada */
+        header {
+            background: #e1d9ce;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(225, 217, 206, 0.95);
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            padding: 0.8rem 2rem;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        .logo {
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            position: relative;
+        }
+
+        .nav-link {
+            color: #a0522d;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background: #a0522d;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-link:hover::before {
+            width: 80%;
+        }
+
+        .nav-link:hover {
+            color: #deb887;
+            transform: translateY(-3px);
+        }
+
+        .nav-link.active {
+            background: #a0522d;
+            color: #fff;
+            border-radius: 20px;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            display: none;
+            padding: 0.5rem;
+            position: relative;
+            z-index: 1100;
+        }
+
+        .menu-icon {
+            width: 30px;
+            height: 2px;
+            background: #333;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon::before,
+        .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 30px;
+            height: 2px;
+            background: #333;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon::before { top: -8px; }
+        .menu-icon::after { bottom: -8px; }
+
+        .menu-btn.active .menu-icon { background: transparent; }
+        .menu-btn.active .menu-icon::before { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-btn.active .menu-icon::after { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .account-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: #e1d9ce;
+            display: none;
+            flex-direction: column;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transform-origin: top right;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .account-menu { background: #444; }
+
+        .account-menu a {
+            color: #333;
+            text-decoration: none;
+            padding: 0.8rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-mode .account-menu a { color: #e1d9ce; }
+
+        .account-menu a:hover {
+            background: #deb887;
+            padding-left: 2rem;
+        }
+
+        .account-menu.show {
+            display: flex;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+            flex: 1;
+        }
+
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 2rem;
+            overflow: hidden;
+        }
+
+        .hero video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+            opacity: 0.7;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            z-index: -1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            color: #fff;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #fff;
+            max-width: 800px;
+            margin-bottom: 2rem;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        }
+
+        .cta-btn {
+            background: #a0522d;
+            color: #fff;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background: #deb887;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        /* Features */
+        .features {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: #e1d9ce;
+            padding: 2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        body.dark-mode .feature-card { background: #444; }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .feature-card h3 {
+            color: #a0522d;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Connect */
+        .connect {
+            background: #e1d9ce;
+            text-align: center;
+            padding: 4rem 2rem;
+        }
+
+        body.dark-mode .connect { background: #444; }
+
+        .connect h2 {
+            color: #a0522d;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .testimonials h2 {
+            color: #a0522d;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: #e1d9ce;
+            padding: 1.5rem;
+            border-radius: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        body.dark-mode .testimonial-card { background: #444; }
+
+        .testimonial-card:hover {
+            transform: scale(1.05);
+        }
+
+        .testimonial-card p {
+            font-style: italic;
+        }
+
+        .testimonial-card span {
+            display: block;
+            margin-top: 1rem;
+            font-weight: 500;
+            color: #a0522d;
+        }
+
+        /* Footer */
+        footer {
+            background: #333;
+            color: #fff;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        footer a {
+            color: #deb887;
+            text-decoration: none;
+            transition: opacity 0.3s ease;
+        }
+
+        footer a:hover {
+            opacity: 0.7;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #e1d9ce;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            }
+
+            body.dark-mode nav { background: #444; }
+            nav.show { display: flex; }
+
+            .menu-btn { display: block; }
+            .hero h1 { font-size: 2.5rem; }
+            .hero p { font-size: 1.2rem; }
+            .connect h2, .testimonials h2 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html">
+                <img src="../static/Imagens/logo.png" alt="Study Link Logo" class="logo">
+            </a>
+            <nav>
+                <a href="recursos.html" class="nav-link">Recursos</a>
+                <a href="comunidade.html" class="nav-link">Comunidade</a>
+                <a href="contacto.html" class="nav-link">Contacto</a>
+                <button class="theme-toggle" onclick="toggleTheme()">☀️</button>
+            </nav>
+            <button class="menu-btn" onclick="toggleMenu()">
+                <span class="menu-icon"></span>
+            </button>
+            <div class="account-menu" id="accountMenu">
+                <a href="/registo_page">Registo</a>
+                <a href="/login_page">Login</a>
+                <a href="definicoes.html">Definições</a>
+                <a href="ajuda.html">Ajuda</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <video autoplay muted loop>
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-students-studying-and-talking-in-a-classroom-30483-large.mp4" type="video/mp4">
+                Seu navegador não suporta vídeo.
+            </video>
+            <div class="hero-overlay"></div>
+            <h1>Study Link</h1>
+            <p>O Study Link é a sua plataforma definitiva para transformar o percurso académico. Conecte-se com mentores experientes, aceda a uma vasta biblioteca de recursos educacionais e participe numa comunidade vibrante de estudantes e profissionais. Quer esteja a procurar orientação personalizada ou a partilhar o seu conhecimento, o Study Link é o lugar onde o aprendizado encontra a colaboração.</p>
+            <button class="cta-btn">Junte-se à Comunidade</button>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <h3>Mentoria Personalizada</h3>
+                <p>Encontre mentores qualificados que oferecem orientação individualizada para os seus desafios académicos e profissionais. Desde apoio em disciplinas específicas até aconselhamento de carreira, os nossos mentores estão aqui para o guiar em cada passo.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Biblioteca de Recursos</h3>
+                <p>Explore uma coleção crescente de notas de aula, guias de estudo, exercícios práticos e vídeos educativos, todos partilhados pela nossa comunidade de estudantes e mentores. Encontre o que precisa para dominar qualquer tópico.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Comunidade Colaborativa</h3>
+                <p>Junte-se a fóruns temáticos, grupos de estudo virtuais e sessões de discussão ao vivo. Colabore com colegas de todo o mundo, troque ideias e resolva dúvidas em tempo real com o apoio da nossa comunidade.</p>
+            </div>
+            <div class="feature-card">
+                <h3>Sessões ao Vivo</h3>
+                <p>Participe em workshops interativos, tutorias em direto e palestras exclusivas com especialistas. Aprenda com profissionais e académicos de topo em sessões práticas e dinâmicas desenhadas para o seu sucesso.</p>
+            </div>
+        </section>
+
+        <section class="connect">
+            <h2>Conecte-se ao Sucesso Académico</h2>
+            <p>O Study Link foi criado para unir mentes curiosas e experientes num ambiente de aprendizado colaborativo. Seja um mentor e inspire a próxima geração de estudantes, ou torne-se um mentorando e acelere o seu crescimento académico com apoio personalizado. Aqui, oferecemos as ferramentas e a comunidade para que alcance os seus objetivos educacionais e profissionais.</p>
+            <button class="cta-btn" onclick="location.href='/registo_page'">Comece a Sua Jornada</button>
+        </section>
+
+        <section class="testimonials">
+            <h2>O Que Dizem os Nossos Utilizadores</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p>"O Study Link mudou completamente a minha forma de estudar. Encontrei um mentor incrível que me ajudou a passar em Cálculo e agora sinto-me muito mais confiante."</p>
+                    <span>- Ana Silva, Estudante de Engenharia</span>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Adoro ser mentor no Study Link. Poder partilhar o meu conhecimento com estudantes motivados e ver o seu progresso é extremamente gratificante."</p>
+                    <span>- Pedro Almeida, Mentor de Matemática</span>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Os recursos disponíveis e a comunidade ativa tornaram o meu estudo para exames muito mais eficaz. Recomendo a todos os estudantes universitários!"</p>
+                    <span>- Sofia Mendes, Estudante de Medicina</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Study Link. Todos os direitos reservados. 
+            <a href="contacto.html">Contacte-nos</a>
+        </p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.querySelector('nav');
+            const btn = document.querySelector('.menu-btn');
+            const accountMenu = document.getElementById('accountMenu');
+            nav.classList.toggle('show');
+            btn.classList.toggle('active');
+            accountMenu.classList.remove('show');
+        }
+
+        function toggleAccountMenu() {
+            const menu = document.getElementById('accountMenu');
+            const nav = document.querySelector('nav');
+            const btn = document.querySelector('.menu-btn');
+            menu.classList.toggle('show');
+            nav.classList.remove('show');
+            btn.classList.remove('active');
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggleBtn = document.querySelector('.theme-toggle');
+            body.classList.toggle('dark-mode');
+            toggleBtn.textContent = body.classList.contains('dark-mode') ? '🌙' : '☀️';
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-toggle').textContent = '🌙';
+        }
+
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        document.addEventListener('click', (e) => {
+            const accountMenu = document.getElementById('accountMenu');
+            const nav = document.querySelector('nav');
+            const menuBtn = document.querySelector('.menu-btn');
+            if (!accountMenu.contains(e.target) && !menuBtn.contains(e.target)) {
+                accountMenu.classList.remove('show');
+            }
+            if (!nav.contains(e.target) && !menuBtn.contains(e.target)) {
+                nav.classList.remove('show');
+                menuBtn.classList.remove('active');
+            }
+        });
+
+        // Ativar link atual (exemplo)
+        const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+        document.querySelectorAll('.nav-link').forEach(link => {
+            if (link.getAttribute('href') === currentPage) {
+                link.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

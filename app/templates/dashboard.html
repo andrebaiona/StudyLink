@@ -1,680 +1,641 @@
-<!-- DOCTYPE e cabeçalho -->
 <!DOCTYPE html>
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard - Study Link</title>
-
-  <!-- CSS e fontes -->
-  <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
-    rel="stylesheet"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    /* ================= RESET BÁSICO ================= */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      font-family: Arial, sans-serif; 
+      background-color: #d2b48c; 
+      transition: all 0.3s ease; 
+      display: flex; 
+      flex-direction: column; 
     }
-    html, body {
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background-color: #d2b48c; /* fundo principal */
-    }
+    .dark-mode { background-color: #1a1a1a; color: #e0e0e0; }
 
-    /* ================= SIDEBAR ================= */
-    .sidebar {
-      background-color: #a0522d;
-      min-height: 100vh;
-      color: #ffffff;
-      width: 250px;
-      transition: transform 0.3s ease;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar .nav-link {
-      color: #ffffff;
-      font-weight: 500;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      padding: 10px;
-    }
-    .sidebar .nav-link:hover {
-      background-color: #8a4523;
-    }
-    .sidebar .logout-btn {
-      background-color: #ff4c4c;
-      border: none;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-weight: 600;
-      padding: 10px;
-    }
-    .sidebar .logout-btn:hover {
-      background-color: #cc0000;
-    }
-
-    /* ================= HEADER (TOPO) ================= */
+    /* Navbar */
     .header {
-      background-color: #e1d9ce;
-      border-bottom: 1px solid #e4e5e6;
+      background: #e1d9ce;
+      padding: 10px 20px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+    }
+    .dark-mode .header { background: #2c2c2c; }
+    .navbar-brand { display: flex; align-items: center; position: relative; }
+    .navbar-brand a { text-decoration: none; display: flex; align-items: center; }
+    .logo-big { height: 50px; width: auto; transition: transform 0.3s ease; }
+    .logo-big:hover { transform: scale(1.05); }
+    .navbar-brand span { 
+      font-size: 1.8rem; 
+      font-weight: 700; 
+      color: #a0522d; 
+      margin-left: 10px; 
+      letter-spacing: 1px; 
+      background: linear-gradient(90deg, #a0522d, #cd853f); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    }
+    .dark-mode .navbar-brand span { color: #e0e0e0; background: none; -webkit-text-fill-color: #e0e0e0; }
+    .navbar-actions { display: flex; align-items: center; gap: 15px; }
+    .navbar-actions i { color: #555; font-size: 1.2rem; transition: all 0.3s ease; cursor: pointer; }
+    .dark-mode .navbar-actions i { color: #e0e0e0; }
+    .navbar-actions i:hover { color: #a0522d; transform: scale(1.2); }
+    .dark-mode .navbar-actions i:hover { color: #704030; }
+    .search-container { 
+      display: flex; 
+      align-items: center; 
+      width: 40px; 
+      transition: width 0.3s ease; 
+    }
+    .search-container.active { width: 200px; }
+    .search-container input { 
+      width: 0; 
+      padding: 5px 10px; 
+      border: none; 
+      border-radius: 20px; 
+      background: rgba(255,255,255,0.8); 
+      transition: width 0.3s ease, box-shadow 0.3s ease; 
+      font-size: 0.9rem; 
+      margin-right: 5px; 
+    }
+    .search-container.active input { width: 160px; box-shadow: 0 0 5px rgba(0,0,0,0.2); }
+    .dark-mode .search-container input { background: rgba(80,80,80,0.8); color: #e0e0e0; }
+    .search-container i { z-index: 1; transition: transform 0.3s ease; }
+    .search-container i:hover { transform: scale(1.1); }
+    .notification-bell { position: relative; }
+    .notification-bell .badge { 
+      position: absolute; 
+      top: -8px; 
+      right: -8px; 
+      background: #ff4c4c; 
+      border-radius: 50%; 
+      padding: 2px 5px; 
+      font-size: 0.6rem; 
+      transition: transform 0.3s ease; 
+    }
+    .notification-bell:hover .badge { transform: scale(1.2); }
+    .notification-dropdown { 
+      position: absolute; 
+      top: 70px; 
+      right: 0; 
+      background: #fff; 
+      border-radius: 8px; 
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+      display: none; 
+      padding: 10px; 
+      width: 180px; 
+    }
+    .dark-mode .notification-dropdown { background: #3a3a3a; }
+    .notification-dropdown.show { display: block; animation: slideDown 0.3s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .profile-circle { position: relative; }
+    .profile-circle img { width: 30px; height: 30px; border-radius: 50%; transition: transform 0.3s ease; }
+    .profile-circle:hover img { transform: scale(1.1); }
+    .profile-menu { 
+      position: absolute; 
+      top: 70px; 
+      right: 0; 
+      background: linear-gradient(135deg, #fff, #f0e6d2); 
+      border-radius: 8px; 
+      width: 160px; 
+      display: none; 
+      flex-direction: column; 
+      padding: 10px; 
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2); 
+    }
+    .dark-mode .profile-menu { background: linear-gradient(135deg, #3a3a3a, #2c2c2c); }
+    .profile-menu.show { display: flex; animation: slideDown 0.3s ease; }
+    .profile-menu a { 
+      color: #555; 
+      text-decoration: none; 
+      padding: 8px; 
+      transition: all 0.3s ease; 
+      border-radius: 5px; 
+    }
+    .dark-mode .profile-menu a { color: #e0e0e0; }
+    .profile-menu a:hover { color: #a0522d; background: rgba(0,0,0,0.1); transform: translateY(-2px); }
+    .dark-mode .profile-menu a:hover { color: #704030; background: rgba(255,255,255,0.1); }
+
+    /* Container Principal */
+    .container-wrapper { 
+      display: flex; 
+      flex: 1; 
+      margin-top: 70px; 
+      min-height: calc(100vh - 110px); 
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: linear-gradient(135deg, #a0522d 0%, #704030 100%);
+      width: 220px;
       transition: transform 0.3s ease;
-      z-index: 998;
+      padding: 15px;
+      position: fixed;
+      top: 70px;
+      bottom: 40px;
+      z-index: 999;
+    }
+    .dark-mode .sidebar { background: linear-gradient(135deg, #3c2c25 0%, #2c1f1b 100%); }
+    .sidebar .profile-section {
+      text-align: center;
+      margin-bottom: 15px;
       padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      position: relative;
     }
-    .navbar-hidden {
-      transform: translateY(-100%);
+    .sidebar .profile-pic { width: 70px; height: 70px; border-radius: 50%; transition: all 0.5s ease; }
+    .sidebar .profile-section:hover .profile-pic { transform: rotateY(180deg); box-shadow: 0 0 10px rgba(255,255,255,0.3); }
+    .sidebar .profile-name { font-size: 0.9rem; margin-top: 5px; color: #fff; }
+    .sidebar .upload-btn { 
+      position: absolute; 
+      bottom: 10px; 
+      right: 10px; 
+      cursor: pointer; 
+      font-size: 1rem; 
+      color: #fff; 
+      transition: transform 0.3s ease; 
     }
-    .search-bar input {
-      border-radius: 20px;
-    }
-
-    /* ================= NAVBAR ================= */
-    .navbar-brand {
-      font-size: 1.3rem;
-      font-weight: bold;
-    }
-    .navbar-nav .nav-link {
+    .sidebar .upload-btn:hover { transform: scale(1.2); }
+    .sidebar .file-input { display: none; }
+    .sidebar .nav-list { list-style: none; padding: 0; }
+    .sidebar .nav-item { margin: 10px 0; position: relative; }
+    .sidebar .nav-link {
+      color: #fff;
       font-weight: 500;
-      margin-right: 15px;
-      color: #555 !important;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      background: rgba(255,255,255,0.15);
     }
-    .navbar-nav .nav-link:hover {
-      color: #333 !important;
+    .sidebar .nav-link:hover { background: rgba(255,255,255,0.25); transform: scale(1.02); }
+    .sidebar .nav-link.active { background: rgba(255,235,205,0.4); }
+    .sidebar .nav-link i { margin-right: 10px; transition: transform 0.3s ease; }
+    .sidebar .nav-link:hover i { transform: rotate(15deg); }
+    .sidebar .widget {
+      margin-top: auto;
+      padding: 10px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-around;
+      transition: transform 0.3s ease;
     }
-    .logo-big {
-      height: 60px;
-      width: auto;
-    }
-
-    /* ================= ÁREA DE CONTEÚDO PRINCIPAL ================= */
-    .main-content {
-      flex-grow: 1;
-      background-color: #d2b48c;
-      padding: 20px;
-    }
-
-    /* ================= CARTÕES (CARDS) ================= */
-    .card-custom {
+    .sidebar .widget:hover { transform: scale(1.05); }
+    .sidebar .widget i { font-size: 1.1rem; cursor: pointer; transition: all 0.3s ease; }
+    .sidebar .widget i:hover { transform: scale(1.2); color: #ffebcd; }
+    .sidebar .logout-btn {
+      background: #ff4c4c;
       border: none;
       border-radius: 8px;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-    .card-custom .card-header {
-      background-color: transparent;
-      border-bottom: none;
-      font-weight: 600;
-    }
-    .card-orange { background-color: #ffebcd; }
-    .card-green { background-color: #f0e68c; color: #333; }
-    .card-yellow { background-color: #f0e68c; }
-    .card-stats { background-color: #ffebcd; }
-
-    /* ================= PERFIL NA SIDEBAR ================= */
-    .profile-pic {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border: 3px solid #fff;
-      border-radius: 50%;
-    }
-    .upload-btn {
-      background-color: #fff;
-      color: #a0522d;
-      border: none;
-      font-weight: 600;
-      margin-top: 10px;
-      padding: 4px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .upload-btn:hover {
-      background-color: #f2f2f2;
-    }
-    .file-input {
-      display: none;
-    }
-
-    /* ================= FOOTER ================= */
-    footer {
-      background: #333;
+      padding: 8px;
       color: #fff;
-      text-align: center;
-      padding: 3px;
-      font-size: 0.9em;
-      margin-top: auto;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 15px;
     }
-    footer a {
-      color: #cd853f;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
+    .sidebar .logout-btn:hover { background: #cc0000; transform: scale(1.02); box-shadow: 0 0 10px rgba(255,0,0,0.3); }
 
-    /* ================= RESPONSIVIDADE ================= */
-    @media (max-width: 768px) {
-      .navbar-brand { justify-content: center; }
-      .logo-big { margin: 0 auto; }
-      .main-content { padding: 10px; }
+    /* Main Content */
+    .main-content { 
+      flex-grow: 1; 
+      background-color: #d2b48c; 
+      padding: 20px; 
+      margin-left: 220px; 
     }
-    @media (max-width: 576px) {
-      .card-custom { margin-bottom: 20px; }
+    .dark-mode .main-content { background-color: #1a1a1a; }
+    .card-custom { 
+      border: none; 
+      border-radius: 8px; 
+      color: #333; 
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1); 
+      padding: 15px; 
+      background: #ffebcd; 
+      transition: all 0.3s ease; 
+      position: relative; 
+      overflow: hidden; 
     }
-    @media (max-width: 480px) {
-      .card-custom { margin-bottom: 10px; }
+    .dark-mode .card-custom { color: #e0e0e0; background: #8a6f5c; box-shadow: 0 2px 6px rgba(255,255,255,0.1); }
+    .card-custom:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+    .dark-mode .card-custom:hover { box-shadow: 0 4px 12px rgba(255,255,255,0.15); }
+    .card-custom::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255,255,255,0.1);
+      transform: rotate(30deg);
+      transition: all 0.5s ease;
+      pointer-events: none;
     }
+    .card-custom:hover::after { top: 100%; left: 100%; }
+    .progress-bar { background-color: #a0522d; transition: width 0.5s ease; }
+    .dark-mode .progress-bar { background-color: #704030; }
+    .task-list { list-style: none; padding: 0; }
+    .task-list li { display: flex; align-items: center; margin-bottom: 8px; transition: all 0.3s ease; }
+    .task-list li:hover { transform: translateX(5px); }
+    .task-list input[type="checkbox"] { margin-right: 8px; cursor: pointer; }
+    .resource-link { color: #a0522d; text-decoration: none; transition: all 0.3s ease; position: relative; }
+    .dark-mode .resource-link { color: #704030; }
+    .resource-link:hover { color: #8a4523; transform: scale(1.05); }
+    .dark-mode .resource-link:hover { color: #5a3525; }
+    .resource-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background: #a0522d;
+      transition: width 0.3s ease;
+    }
+    .resource-link:hover::after { width: 100%; }
 
-    /* ================= SIDEBAR RESPONSIVA ================= */
-    @media (max-width: 991px) {
-      .sidebar {
-        position: fixed;
-        transform: translateX(-100%);
-      }
-      .sidebar.show {
-        transform: translateX(0);
-      }
-      .toggle-sidebar-btn { display: inline-block; }
+    /* Footer */
+    footer { 
+      background: #333; 
+      color: #fff; 
+      text-align: center; 
+      padding: 10px; 
+      position: fixed; 
+      bottom: 0; 
+      left: 0; 
+      right: 0; 
+      z-index: 1000; 
+      transition: background 0.3s ease; 
     }
-    @media (min-width: 992px) {
+    .dark-mode footer { background: #222; }
+    footer:hover { background: #444; }
+    .dark-mode footer:hover { background: #333; }
+    footer a { color: #cd853f; text-decoration: none; transition: color 0.3s ease; }
+    .dark-mode footer a { color: #e0a070; }
+    footer a:hover { color: #ffebcd; text-decoration: underline; }
+
+    /* Responsividade */
+    @media (max-width: 576px) { /* Mobile */
+      .header { height: 60px; padding: 5px 10px; justify-content: center; }
+      .navbar-brand { justify-content: center; flex-grow: 1; }
+      .navbar-brand span { display: none; }
+      .logo-big { height: 40px; }
+      .navbar-actions { gap: 8px; position: absolute; right: 10px; }
+      .search-container.active { width: 150px; }
+      .search-container.active input { width: 120px; font-size: 0.8rem; }
+      .notification-dropdown, .profile-menu { top: 60px; width: 140px; }
+      .sidebar { 
+        width: 200px; 
+        transform: translateX(-100%); 
+        top: 60px; 
+        bottom: 40px; 
+      }
+      .sidebar.show { transform: translateX(0); }
+      .main-content { margin-left: 0; padding: 15px; }
+      .card-custom { padding: 10px; }
+      footer { padding: 8px; }
+    }
+    @media (min-width: 577px) and (max-width: 991px) { /* Tablet */
+      .header { padding: 8px 15px; }
+      .navbar-brand span { font-size: 1.6rem; }
+      .logo-big { height: 45px; }
+      .search-container.active { width: 180px; }
+      .search-container.active input { width: 140px; }
+      .sidebar { 
+        width: 200px; 
+        transform: translateX(-100%); 
+        top: 70px; 
+        bottom: 40px; 
+      }
+      .sidebar.show { transform: translateX(0); }
+      .main-content { margin-left: 0; padding: 15px; }
+    }
+    @media (min-width: 992px) { /* Desktop */
+      .sidebar { transform: none; }
       .toggle-sidebar-btn { display: none; }
     }
-    @media (max-width: 992px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 250px;
-        height: 100vh;
-        transition: left 0.3s ease;
-        z-index: 999;
-      }
-      .sidebar.show { left: 0; }
-    }
 
-    /* ================= BOTÃO PARA TOGGLE DA SIDEBAR ================= */
-    .sidebar-toggle {
-      position: fixed;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-      background-color: #a0522d;
+    /* Tooltip */
+    [data-tooltip] {
+      position: relative;
+    }
+    [data-tooltip]:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #333;
       color: #fff;
-      padding: 10px;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-      z-index: 999;
-      display: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      z-index: 1001;
+      animation: fadeIn 0.2s ease;
     }
-    @media (max-width: 992px) {
-      .sidebar-toggle { display: block; }
-    }
-    .sidebar-toggle i { font-size: 20px; }
-    .sidebar-toggle:hover { background-color: #8a4523; }
-
-    /* Esconder botão de toggle quando necessário */
-    .hide-toggle { display: none; }
-
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .dark-mode [data-tooltip]:hover::after { background: #555; }
   </style>
 </head>
-
-<!-- CORPO DA PÁGINA -->
 <body>
-  <!-- TOPO: Navbar -->
-  <nav class="header navbar navbar-expand-lg navbar-light py-2 shadow" id="mainNavbar">
-    <div class="container-fluid px-4">
-      <!-- Botão de toggle da sidebar (visível em telas menores) -->
-      <button 
-        class="btn btn-light toggle-sidebar-btn d-lg-none" 
-        id="toggleSidebar"
-      >
+  <nav class="header" id="mainNavbar">
+    <div class="navbar-brand">
+      <button class="btn btn-light toggle-sidebar-btn d-lg-none" id="toggleSidebar" data-tooltip="Abrir Sidebar">
         <i class="fas fa-bars"></i>
       </button>
-
-       <!-- Barra lateral para abrir a sidebar -->
-      <div class="sidebar-toggle" id="sidebarToggle">
-        <i class="fas fa-chevron-right"></i>
-      </div>
-      
-      <!-- Logo / Nome do projeto -->
-      <a class="navbar-brand d-flex align-items-center" href="index.html">
-        <img 
-          src="../static/Imagens/logo.png" 
-          alt="Study Link Logo" 
-          class="logo-big me-2"
-        />
-        <span class="fw-bold text-black text-decoration-none d-none d-lg-inline-block">Study Link</span>
+      <a href="index.html">
+        <img src="../static/Imagens/logo.png" alt="Study Link Logo" class="logo-big"/>
+        <span>Study Link</span>
       </a>
-
-      <!-- Navbar links (exemplo) -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarItems" aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarItems" style="transition: all 0.3s;">
-
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link text-white" href="index.html" style="transition: all 0.3s;">
-              <i class="fas fa-home me-2"></i> Início
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="recursos.html" style="transition: all 0.3s;">
-              <i class="fas fa-chart-bar me-2"></i> Recursos
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="definicoes.html" style="transition: all 0.3s;">
-              <i class="fas fa-cog me-2"></i> Definições
-            </a>
-          </li>
-          <!-- Barra de pesquisa dentro do menu (mobile/tablet) -->
-          <li class="nav-item d-lg-none mt-2 position-relative">
-
-            <form class="search-bar d-flex" style="max-width: 400px; width: 100%;">
-              <input 
-                class="form-control me-2" 
-                type="search" 
-                placeholder="Pesquisar..." 
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-            </form>
-          </li>
-        </ul>
+    </div>
+    <div class="navbar-actions">
+      <div class="search-container" id="searchContainer">
+        <input type="search" placeholder="Pesquisar..." id="searchInput"/>
+        <i class="fas fa-search" data-tooltip="Pesquisar"></i>
       </div>
-
-      <!-- Barra de pesquisa (central) - visível em telas maiores -->
-      <form class="search-bar d-none d-lg-flex mx-3" style="max-width: 400px; width: 100%; transition: all 0.3s;">
-
-        <input 
-          class="form-control me-2" 
-          type="search" 
-          placeholder="Pesquisar..." 
-          aria-label="Search"
-        />
-        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-      </form>
-
-      <!-- Dropdown de perfil (lado direito) -->
-      <div class="dropdown">
-        <a 
-          href="#" 
-          class="d-flex align-items-center text-decoration-none dropdown-toggle" 
-          id="dropdownUser      " 
-          data-bs-toggle="dropdown" 
-          aria-expanded="false"
-        >
-          <img 
-            src="../static/Imagens/perfil.jpg" 
-            alt="Perfil" 
-            width="40" 
-            height="40" 
-            class="rounded-circle border border-2 me-2"
-          />
-          <span class="fw-bold text-white">Username</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser      ">
-          <li><a class="dropdown-item" href="#">Perfil</a></li>
-          <li><a class="dropdown-item" href="#">Definições</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#">Sair</a></li>
-        </ul>
+      <div class="notification-bell" id="notificationBell" data-tooltip="Notificações">
+        <i class="fas fa-bell"></i>
+        <span class="badge">3</span>
+        <div class="notification-dropdown" id="notificationDropdown">
+          <p>3 novas mensagens</p>
+          <p>Atualização disponível</p>
+        </div>
+      </div>
+      <i class="fas fa-moon theme-toggle" id="themeToggle" data-tooltip="Alternar Tema"></i>
+      <div class="profile-circle" id="profileCircle" data-tooltip="Perfil">
+        <img src="../static/Imagens/perfil.jpg" alt="Perfil"/>
+        <div class="profile-menu" id="profileMenu">
+          <a href="#">Perfil</a>
+          <a href="#">Definições</a>
+          <a href="#">Sair</a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <!-- CONTAINER GERAL -->
-  <div class="d-flex">
-    <!-- SIDEBAR -->
-    <nav class="sidebar p-3 shadow" id="sidebarMenu">
-      <div class="text-center mb-4 border-bottom pb-3">
-        <!-- Foto de Perfil (maior) -->
-        <img 
-          src="../static/Imagens/perfil.jpg" 
-          alt="Foto de Perfil" 
-          class="profile-pic mb-2" 
-          id="profilePic"
-        >
-        <!-- Botão para trocar a foto -->
-        <label for="fileInput" class="upload-btn">
-          <i class="fas fa-camera me-1"></i> Carregar Foto
-        </label>
-        <input 
-          type="file" 
-          id="fileInput" 
-          class="file-input" 
-          accept="image/*"
-        />
-        <p class="h6 m-0 mt-2">Lorem Ipsum</p>
+  <div class="container-wrapper">
+    <nav class="sidebar" id="sidebarMenu">
+      <div class="profile-section">
+        <img src="../static/Imagens/perfil.jpg" alt="Foto de Perfil" class="profile-pic" id="profilePic">
+        <label for="fileInput" class="upload-btn" data-tooltip="Mudar Foto"><i class="fas fa-camera"></i></label>
+        <input type="file" id="fileInput" class="file-input" accept="image/*"/>
+        <p class="profile-name">Lorem Ipsum</p>
       </div>
-      <ul class="nav flex-column">
-        <!-- Novo botão 'Conta' antes do Dashboard -->
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-user-circle me-2"></i> Conta
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-chart-bar me-2"></i> Charts
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-file-alt me-2"></i> Pages
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-comments me-2"></i> Chat
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-envelope me-2"></i> Mailbox
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-cog me-2"></i> Settings
-          </a>
-        </li>
+      <ul class="nav-list">
+        <li class="nav-item"><a href="#" class="nav-link active" data-tooltip="Minha Conta"><i class="fas fa-user-circle"></i> Conta</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Painel Principal"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Gráficos"><i class="fas fa-chart-bar"></i> Charts</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Páginas"><i class="fas fa-file-alt"></i> Pages</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Conversas"><i class="fas fa-comments"></i> Chat</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Correio"><i class="fas fa-envelope"></i> Mailbox</a></li>
+        <li class="nav-item"><a href="#" class="nav-link" data-tooltip="Configurações"><i class="fas fa-cog"></i> Settings</a></li>
       </ul>
-      <button class="btn logout-btn w-100">
-        <i class="fas fa-sign-out-alt me-2"></i> Logout
-      </button>
-      <div class="sidebar-toggle" id="sidebarToggle">
-    <i class="fas fa-chevron-left"></i>
-  </div>
+      <div class="widget" data-tooltip="Controle de Música">
+        <i class="fas fa-backward" id="prevTrack" data-tooltip="Voltar"></i>
+        <i class="fas fa-play" id="playPause" data-tooltip="Play/Pause"></i>
+        <i class="fas fa-forward" id="nextTrack" data-tooltip="Avançar"></i>
+      </div>
+      <button class="btn logout-btn" id="logoutBtn" data-tooltip="Sair"><i class="fas fa-sign-out-alt"></i> Logout</button>
     </nav>
 
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div class="main-content p-4">
+    <div class="main-content">
       <div class="container-fluid">
-        <!-- Primeira linha de cartões -->
         <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
+          <div class="col-12 col-md-6 mb-3">
+            <div class="card-custom">
+              <h5 class="fw-bold mb-3">Progresso de Estudo</h5>
+              <p>Curso de Matemática Avançada</p>
+              <div class="progress mb-2">
+                <div class="progress-bar" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
+              </div>
+              <p>12 de 16 módulos concluídos</p>
             </div>
           </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
+          <div class="col-12 col-md-6 mb-3">
+            <div class="card-custom">
+              <h5 class="fw-bold mb-3">Mentorias Agendadas</h5>
+              <ul class="list-unstyled">
+                <li><i class="fas fa-calendar-alt me-2"></i> 01/04/2025, 14:00 - Prof. Ana</li>
+                <li><i class="fas fa-calendar-alt me-2"></i> 03/04/2025, 10:00 - Prof. João</li>
+              </ul>
+              <a href="#" class="resource-link">Ver todas as mentorias</a>
             </div>
           </div>
         </div>
-
-        <!-- Segunda linha -->
         <div class="row mb-4">
-          <!-- Coluna de estatísticas menores (Visitors, Page Views, Shares) -->
-          <div class="col-md-3 mb-3">
-            <div class="card card-custom card-stats text-center p-3 mb-3">
-              <p class="fw-bold mb-1">Visitors</p>
-              <h5>1,5876</h5>
-            </div>
-            <div class="card card-custom card-stats text-center p-3 mb-3">
-              <p class="fw-bold mb-1">Pages View</p>
-              <h5>134</h5>
-            </div>
-            <div class="card card-custom card-stats text-center p-3">
-              <p class="fw-bold mb-1">Shares</p>
-              <h5>100</h5>
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card-custom">
+              <h5 class="fw-bold mb-3">Tarefas Pendentes</h5>
+              <ul class="task-list">
+                <li><input type="checkbox" id="task1"><label for="task1">Resolver exercícios Cap. 5</label></li>
+                <li><input type="checkbox" id="task2"><label for="task2">Revisar notas da mentoria</label></li>
+                <li><input type="checkbox" id="task3"><label for="task3">Submeter trabalho final</label></li>
+              </ul>
             </div>
           </div>
-          <!-- Card Gráfico de barras -->
-          <div class="col-md-9 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header fw-bold">
-                Gráfico de Atividade
-              </div>
-              <div class="card-body">
-                <!-- Placeholder do gráfico -->
-                <p class="mb-0">[ Gráfico de barras aqui ]</p>
-              </div>
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card-custom">
+              <h5 class="fw-bold mb-3">Recursos Rápidos</h5>
+              <ul class="list-unstyled">
+                <li><a href="#" class="resource-link"><i class="fas fa-book me-2"></i> Guia de Álgebra</a></li>
+                <li><a href="#" class="resource-link"><i class="fas fa-video me-2"></i> Vídeo Aula 3</a></li>
+                <li><a href="#" class="resource-link"><i class="fas fa-file-pdf me-2"></i> Resumo Cap. 4</a></li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-12 col-md-4 mb-3">
+            <div class="card-custom">
+              <h5 class="fw-bold mb-3">Desempenho</h5>
+              <canvas id="performanceChart" height="150"></canvas>
             </div>
           </div>
         </div>
-
-        <!-- Terceira linha (exemplo de outro conteúdo) -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card card-custom p-3" style="background:#fff;">
-              <h5 class="fw-bold mb-2">Outros Tópicos / Informações</h5>
-              <p class="mb-0">
-                Aqui podes adicionar qualquer outra secção, tabela ou listagem para o dashboard. 
-                Mantém a flexibilidade para expandir conforme a aplicação for crescendo.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quarta linha-->
-        <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
-            </div>
-          </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quinta linha-->
-        <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
-            </div>
-          </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
 
-  <!-- RODAPÉ -->
-  <footer class="text-center py-2">
-    <p class="mb-0">
-      &copy; 2025 Study Link. Todos os direitos reservados. 
-      <a href="contacto.html" class="text-decoration-none">Contacte-nos</a>
-    </p>
+  <footer>
+    <p class="mb-0">© 2025 Study Link. Todos os direitos reservados. <a href="contacto.html">Contacte-nos</a></p>
   </footer>
 
-  <!-- Bootstrap JS -->
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-  <!-- Script para abrir/fechar sidebar em telas menores -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
+    // Som suave de clique
+    const clickSound = new Audio('https://www.soundjay.com/buttons/beep-07.mp3');
+    clickSound.volume = 0.3;
+
+    // Função para sanitizar input contra XSS e HTML injection
+    function sanitizeInput(input) {
+      const div = document.createElement('div');
+      div.textContent = input;
+      return div.innerHTML.replace(/[<>&"']/g, (match) => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#x27;'
+      }[match]));
+    }
+
+    // Sidebar toggle
     const toggleBtn = document.getElementById('toggleSidebar');
     const sidebarMenu = document.getElementById('sidebarMenu');
-    const navbar = document.getElementById('mainNavbar');
-    const fileInput = document.getElementById('fileInput');
-    const profilePic = document.getElementById('profilePic');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    
-    // Mostrar/ocultar sidebar no mobile
+
     toggleBtn.addEventListener('click', () => {
       sidebarMenu.classList.toggle('show');
-      if (window.innerWidth <= 992) {
-        sidebarMenu.style.left = sidebarMenu.classList.contains('show') ? '0' : '-250px';
-      }
+      clickSound.play();
     });
 
-    // Mostrar/ocultar a barra lateral quando a sidebar é ocultada
-    sidebarMenu.addEventListener('transitionend', () => {
-      if (sidebarMenu.classList.contains('show')) {
-        sidebarToggle.style.display = 'none';
-      } else {
-        sidebarToggle.style.display = 'block';
+    // Navbar interactions
+    const searchContainer = document.getElementById('searchContainer');
+    const searchInput = document.getElementById('searchInput');
+    const searchIcon = searchContainer.querySelector('i');
+    const notificationBell = document.getElementById('notificationBell');
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    const profileCircle = document.getElementById('profileCircle');
+    const profileMenu = document.getElementById('profileMenu');
+
+    searchIcon.addEventListener('click', () => {
+      searchContainer.classList.toggle('active');
+      if (searchContainer.classList.contains('active')) {
+        searchInput.focus();
+      } else if (searchInput.value.trim()) {
+        const sanitizedValue = sanitizeInput(searchInput.value);
+        alert(`Pesquisando: ${sanitizedValue}`);
+        searchInput.value = '';
+        searchContainer.classList.remove('active');
+      }
+      clickSound.play();
+    });
+    searchInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && searchInput.value.trim()) {
+        const sanitizedValue = sanitizeInput(searchInput.value);
+        alert(`Pesquisando: ${sanitizedValue}`);
+        searchContainer.classList.remove('active');
+        searchInput.value = '';
+        clickSound.play();
       }
     });
-
-    // Abrir a sidebar quando a barra lateral é clicada
-    sidebarToggle.addEventListener('click', () => {
-      sidebarMenu.classList.toggle('show');
-      sidebarToggle.classList.toggle('hide-toggle');
-      if (window.innerWidth <= 992) {
-        sidebarMenu.style.left = sidebarMenu.classList.contains('show') ? '0' : '-250px';
-      }
+    notificationBell.addEventListener('click', () => {
+      notificationDropdown.classList.toggle('show');
+      clickSound.play();
+    });
+    profileCircle.addEventListener('click', () => {
+      profileMenu.classList.toggle('show');
+      clickSound.play();
+    });
+    profileMenu.querySelectorAll('a').forEach(item => {
+      item.addEventListener('click', () => clickSound.play());
     });
 
-    // Lógica para ocultar/mostrar a navbar ao descer/subir scroll
-    let lastScrollTop = 0;
-      window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        if (currentScroll > 0 && currentScroll < lastScrollTop) {
-          navbar.classList.remove('navbar-hidden');
-        } else if (currentScroll > lastScrollTop) {
-          navbar.classList.add('navbar-hidden');
-        }
-        lastScrollTop = currentScroll;
-      });
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      themeToggle.classList.toggle('fa-moon');
+      themeToggle.classList.toggle('fa-sun');
+      updateChartColors();
+      clickSound.play();
+    });
 
-    // Evento para trocar a foto de perfil
+    // Widget interaction
+    const playPause = document.getElementById('playPause');
+    const prevTrack = document.getElementById('prevTrack');
+    const nextTrack = document.getElementById('nextTrack');
+    let isPlaying = false;
+
+    playPause.addEventListener('click', () => {
+      isPlaying = !isPlaying;
+      playPause.classList.toggle('fa-play');
+      playPause.classList.toggle('fa-pause');
+      clickSound.play();
+    });
+    prevTrack.addEventListener('click', () => {
+      console.log('Previous');
+      clickSound.play();
+    });
+    nextTrack.addEventListener('click', () => {
+      console.log('Next');
+      clickSound.play();
+    });
+
+    // Profile picture upload
+    const fileInput = document.getElementById('fileInput');
+    const profilePic = document.getElementById('profilePic');
     fileInput.addEventListener('change', () => {
       const file = fileInput.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(e) {
-          profilePic.src = e.target.result; // atualiza a imagem com a foto selecionada
+        reader.onload = (e) => {
+          profilePic.src = e.target.result;
+          clickSound.play();
         };
         reader.readAsDataURL(file);
       }
     });
+
+    // Checkbox interaction
+    document.querySelectorAll('.task-list input[type="checkbox"]').forEach(checkbox => {
+      checkbox.addEventListener('change', () => {
+        const label = checkbox.nextElementSibling;
+        label.style.textDecoration = checkbox.checked ? 'line-through' : 'none';
+        label.style.opacity = checkbox.checked ? '0.5' : '1';
+        clickSound.play();
+      });
+    });
+
+    // Performance Chart
+    const ctx = document.getElementById('performanceChart').getContext('2d');
+    const performanceChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5'],
+        datasets: [{
+          label: 'Desempenho',
+          data: [85, 90, 78, 92, 88],
+          borderColor: '#a0522d',
+          backgroundColor: 'rgba(160, 82, 45, 0.2)',
+          fill: true,
+          tension: 0.4,
+          pointBackgroundColor: '#fff',
+          pointBorderColor: '#a0522d',
+          pointHoverBackgroundColor: '#a0522d',
+          pointHoverBorderColor: '#fff'
+        }]
+      },
+      options: { 
+        responsive: true, 
+        scales: { y: { beginAtZero: true, max: 100 } }, 
+        plugins: { legend: { display: false } },
+        animation: { duration: 1000, easing: 'easeOutBounce' }
+      }
+    });
+
+    function updateChartColors() {
+      const isDark = document.body.classList.contains('dark-mode');
+      performanceChart.data.datasets[0].borderColor = isDark ? '#704030' : '#a0522d';
+      performanceChart.data.datasets[0].backgroundColor = isDark ? 'rgba(112, 64, 48, 0.2)' : 'rgba(160, 82, 45, 0.2)';
+      performanceChart.data.datasets[0].pointBorderColor = isDark ? '#704030' : '#a0522d';
+      performanceChart.data.datasets[0].pointHoverBackgroundColor = isDark ? '#704030' : '#a0522d';
+      performanceChart.update();
+    }
   </script>
 </body>
 </html>
