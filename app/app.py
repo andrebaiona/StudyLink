@@ -190,6 +190,8 @@ def login():
 
 
 
+
+
 @app.route('/conta')
 def conta():
     if 'username' not in session:
@@ -202,9 +204,13 @@ def conta():
 
     cursor = db.cursor(dictionary=True)
     try:
+        # Fetch user details
         query = """
-            SELECT u.name, u.email, u.username, IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic, 
-                   IFNULL(us.bio, '') AS bio, IFNULL(us.class_year, '') AS class_year, IFNULL(us.course, '') AS course
+            SELECT u.name, u.email, u.username, 
+                   IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic, 
+                   IFNULL(us.bio, '') AS bio, 
+                   IFNULL(us.class_year, '') AS class_year, 
+                   IFNULL(us.course, '') AS course
             FROM users u
             LEFT JOIN user_settings us ON u.id = us.user_id
             WHERE u.id = %s
@@ -212,8 +218,12 @@ def conta():
         cursor.execute(query, (user_id,))
         user = cursor.fetchone()
 
+        # Fetch courses from the 'courses' table
+        cursor.execute("SELECT name FROM courses")
+        courses = cursor.fetchall()  # Fetch all course names
+
         if user:
-            return render_template('conta.html', user=user)
+            return render_template('conta.html', user=user, courses=courses)
         else:
             flash("Erro ao carregar dados do utilizador.", "error")
             return redirect(url_for('login_page'))
@@ -224,6 +234,7 @@ def conta():
 
     finally:
         cursor.close()
+
 
 
 

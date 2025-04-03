@@ -106,23 +106,24 @@
                     </select>
                 </div>
 
-                <div class="mb-3">
-                    <label for="course">Curso:</label>
-                    <select id="course" name="course" class="form-select">
-                        <option value="Desenvolvimento de Software e Aplicações" {% if user.course == "Desenvolvimento de Software e Aplicações" %}selected{% endif %}>Desenvolvimento de Software e Aplicações</option>
-                        <option value="Matemática Aplicada e Tecnologias Digitais" {% if user.course == "Matemática Aplicada e Tecnologias Digitais" %}selected{% endif %}>Matemática Aplicada e Tecnologias Digitais</option>
-                        <option value="Tecnologias Digitais Educativas" {% if user.course == "Tecnologias Digitais Educativas" %}selected{% endif %}>Tecnologias Digitais Educativas</option>
-                        <option value="Tecnologias Digitais e Automação" {% if user.course == "Tecnologias Digitais e Automação" %}selected{% endif %}>Tecnologias Digitais e Automação</option>
-                        <option value="Tecnologias Digitais e Gestão" {% if user.course == "Tecnologias Digitais e Gestão" %}selected{% endif %}>Tecnologias Digitais e Gestão</option>
-                        <option value="Tecnologias Digitais e Inteligência Artificial" {% if user.course == "Tecnologias Digitais e Inteligência Artificial" %}selected{% endif %}>Tecnologias Digitais e Inteligência Artificial</option>
-                        <option value="Tecnologias Digitais e Saúde" {% if user.course == "Tecnologias Digitais e Saúde" %}selected{% endif %}>Tecnologias Digitais e Saúde</option>
-                        <option value="Tecnologias Digitais e Segurança de Informação" {% if user.course == "Tecnologias Digitais e Segurança de Informação" %}selected{% endif %}>Tecnologias Digitais e Segurança de Informação</option>
-                        <option value="Tecnologias Digitais Edifícios e Construção Sustentável" {% if user.course == "Tecnologias Digitais Edifícios e Construção Sustentável" %}selected{% endif %}>Tecnologias Digitais Edifícios e Construção Sustentável</option>
-                        <option value="Política, Economia e Sociedade" {% if user.course == "Política, Economia e Sociedade" %}selected{% endif %}>Política, Economia e Sociedade</option>
-                    </select>
-                </div>
+                
 
-                <button class="btn btn-primary w-100" id="update-account-btn" type="submit">Atualizar Conta</button>
+<div class="mb-3">
+    <label for="course"><strong>Curso:</strong></label>
+    <select id="course" name="course" class="form-select">
+        {% if courses %}
+            {% for course in courses %}
+                <option value="{{ course.name }}" {% if user.course == course.name %}selected{% endif %}>
+                    {{ course.name }}
+                </option>
+            {% endfor %}
+        {% else %}
+            <option disabled>Sem cursos disponíveis</option>
+        {% endif %}
+    </select>
+</div>
+
+<button class="btn btn-primary w-100" id="update-account-btn" type="submit">Atualizar Conta</button>
             </form>
         </section>
     </div>
