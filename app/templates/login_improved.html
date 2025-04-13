@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Iniciar sessão no Study Link para aceder à tua conta.">
+    <meta name="keywords" content="Study Link, login, educação, mentoria">
+    <meta name="author" content="Study Link Team">
+    <link rel="icon" href="/static/Imagens/logo.png">
+    <title>Iniciar Sessão - Study Link</title>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../static/css/login_improved.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="../static/js/login_improved.js" defer></script>
+</head>
+<body>
+    <!-- Botão de alternar tema -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg class="theme-icon" viewBox="0 0 24 24">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+    </button>
+    <!-- Container principal -->
+    <div class="login-container">
+        <div class="logo">
+            <img src="../static/Imagens/logo.png" alt="Logótipo Study Link" class="logo-img">
+        </div>
+        <h1>Iniciar Sessão</h1>
+
+        <!-- Mensagens flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {% if category == "success" %}
+                                {{ message }}           
+                                <div id="loading-container">
+                                    <div class="spinner-circle"></div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                {{ message }}
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulário de login -->
+        <form action="{{ url_for('login') }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <label for="identifier">Nome de Utilizador ou E-mail:</label>
+                <input type="text" id="identifier" name="identifier" placeholder=" " value="{{ request.args.get('identifier', '') }}" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Palavra-passe:</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder=" " required />
+                    <span class="toggle-password" onclick="togglePassword('password', this)">
+                        <i class="fa-solid fa-eye" id="eye-icon"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="botao btn-animated">Entrar</button>
+            </div>
+        </form>
+        <div class="link-register">
+            Não tens conta? <a href="{{ url_for('registo_page') }}">Regista-te aqui</a>
+        </div>
+    </div>
+</body>
+</html>
