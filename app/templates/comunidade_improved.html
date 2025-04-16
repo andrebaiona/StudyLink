@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explora os posts da comunidade Study Link sobre conteúdos escolares, como testes e exercícios.">
+    <meta name="keywords" content="Study Link, comunidade, educação, testes, exercícios">
+    <meta name="author" content="Study Link Team">
+    <link rel="icon" href="/static/Imagens/logo.png">
+    <title>Comunidade - Study Link</title>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../static/css/comunidade_improved.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="../static/js/comunidade_improved.js" defer></script>
+</head>
+<body>
+    <!-- Botão de alternar tema -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg class="theme-icon" viewBox="0 0 24 24">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+    </button>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <img src="../static/Imagens/logo.png" alt="Logótipo Study Link" class="logo-img">
+            </div>
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/recursos">Recursos</a></li>
+                <li><a href="/disciplinas">Disciplinas</a></li>
+                <li><a href="/comunidade" class="active">Comunidade</a></li>
+                <li><a href="/conta">Conta</a></li>
+                <li><a href="/logout">Sair</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" onclick="toggleDropdown()">Mais <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/ajuda">Ajuda</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                        <li><a href="/novidades">Novidades</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Container principal -->
+    <main class="community-container">
+        <header>
+            <h1>Comunidade Study Link</h1>
+            <p>Explora e partilha conteúdos escolares, como testes e exercícios!</p>
+            <a href="/formulario" class="botao btn-animated">Criar Novo Post</a>
+        </header>
+        <!-- Lista de posts -->
+        <section class="posts-list">
+            <h2>Posts Recentes</h2>
+            <div id="posts-container">
+                <!-- Posts serão adicionados dinamicamente via JavaScript -->
+            </div>
+        </section>
+    </main>
+    <!-- Rodapé -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-logo">
+                <img src="../static/Imagens/logo.png" alt="Logótipo Study Link" class="logo-img">
+            </div>
+            <div class="footer-links">
+                <a href="/ajuda">Ajuda</a>
+                <a href="/contacto">Contacto</a>
+                <a href="/termos">Termos de Uso</a>
+                <a href="/privacidade">Privacidade</a>
+            </div>
+            <div class="footer-social">
+                <a href="#" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+            </div>
+            <p>© 2025 Study Link. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+</body>
+</html>

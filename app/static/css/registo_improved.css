@@ -34,11 +34,12 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     background-color: var(--bg-color);
     font-family: 'Poppins', sans-serif;
     color: var(--text-color);
     transition: var(--transition);
+    padding: 2rem;
     position: relative;
     overflow: hidden;
 }
@@ -67,13 +68,13 @@ body.dark-mode::before {
 }
 
 /* Container principal */
-.login-container {
+.register-container {
     background: var(--container-bg);
     padding: 2rem;
     border-radius: 16px;
     box-shadow: 0 6px 20px var(--shadow);
     width: 100%;
-    max-width: 450px;
+    max-width: 500px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -81,7 +82,7 @@ body.dark-mode::before {
 }
 
 /* Efeito interativo no container */
-.login-container::after {
+.register-container::after {
     content: '';
     position: absolute;
     top: 0;
@@ -92,20 +93,20 @@ body.dark-mode::before {
     transition: left 0.5s ease;
 }
 
-.login-container:hover::after {
+.register-container:hover::after {
     left: 100%;
 }
 
 /* Design responsivo */
 @media (max-width: 768px) {
-    .login-container {
+    .register-container {
         width: 90%;
         padding: 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
-    .login-container {
+    .register-container {
         width: 95%;
         padding: 1rem;
     }
@@ -149,8 +150,21 @@ label {
     pointer-events: none;
 }
 
+/* Classe para acessibilidade */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
 /* Campos de entrada */
 input[type="text"],
+input[type="email"],
 input[type="password"] {
     width: 100%;
     padding: 1rem;
@@ -207,6 +221,17 @@ input:not(:placeholder-shown) + label {
     font-size: 1.2rem;
 }
 
+/* Barra de força da palavra-passe */
+.password-strength {
+    margin-top: 0.5rem;
+}
+
+.password-strength-bar {
+    height: 6px;
+    border-radius: 6px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
 /* Botão de submissão */
 .botao {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
@@ -247,20 +272,20 @@ input:not(:placeholder-shown) + label {
     height: 200px;
 }
 
-/* Link de registo */
-.link-register {
+/* Link de login */
+.link-login {
     margin-top: 1.5rem;
     font-size: 1rem;
 }
 
-.link-register a {
+.link-login a {
     color: var(--accent-primary);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
 }
 
-.link-register a:hover {
+.link-login a:hover {
     color: var(--accent-secondary);
     text-decoration: underline;
 }
@@ -297,6 +322,13 @@ input:not(:placeholder-shown) + label {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#loading-container p {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #155724;
+    margin-top: 0.5rem;
 }
 
 /* Spinner de carregamento */

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <!-- Metadados -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Regista-te no Study Link para começares a tua jornada académica.">
+    <meta name="keywords" content="Study Link, registo, educação, mentoria">
+    <meta name="author" content="Study Link Team">
+    <link rel="icon" href="/static/Imagens/logo.png">
+    <title>Registo - Study Link</title>
+    <!-- Estilos -->
+    <link rel="stylesheet" href="../static/css/registo_improved.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Scripts -->
+    <script src="../static/js/registo_improved.js" defer></script>
+</head>
+<body>
+    <!-- Botão de alternar tema -->
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+        <svg class="theme-icon" viewBox="0 0 24 24">
+            <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+    </button>
+    <!-- Container principal -->
+    <div class="register-container">
+        <div class="logo">
+            <img src="../static/Imagens/logo.png" alt="Logótipo Study Link" class="logo-img">
+        </div>
+        <h1>Criar Conta</h1>
+
+        <!-- Mensagens flash -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div id="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                            {% if category == "success" %}
+                                <div id="loading-container">
+                                    <div class="spinner-circle"></div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill"></div>
+                                    </div>
+                                    <p>🚀🎓 Poderá fazer login brevemente...</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Formulário de registo -->
+        <form action="{{ url_for('register') }}" method="post">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="form-group">
+                <input type="text" id="name" name="name" placeholder=" " value="{{ session['form_data']['name'] if 'form_data' in session else '' }}" required>
+                <label for="name">Nome</label>
+            </div>
+            <div class="form-group">
+                <input type="text" id="username" name="username" placeholder=" " value="{{ session['form_data']['username'] if 'form_data' in session else '' }}" required>
+                <label for="username">Nome de Utilizador</label>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" name="email" placeholder=" " value="{{ session['form_data']['email'] if 'form_data' in session else '' }}" required>
+                <label for="email">E-mail</label>
+            </div>
+            <div class="form-group">
+                <label for="password" class="sr-only">Palavra-passe</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password" placeholder=" " required>
+                    <span class="toggle-password" onclick="togglePassword('password', this)">
+                        <i class="fa-solid fa-eye" id="eye-icon"></i>
+                    </span>
+                </div>
+                <div class="password-strength">
+                    <div class="password-strength-bar"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="password" id="confirm-password" name="confirm-password" placeholder=" " required>
+                <label for="confirm-password">Confirmar Palavra-passe</label>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="botao btn-animated">Registar</button>
+            </div>
+        </form>
+        <div class="link-login">
+            Já tens conta? <a href="/login_page">Inicia sessão aqui</a>
+        </div>
+    </div>
+</body>
+</html>
