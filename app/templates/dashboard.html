@@ -152,23 +152,24 @@
             font-weight: 600;
         }
 
-        .theme-toggle, .sidebar-toggle {
+        .theme-toggle {
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.4rem;
+            padding: 0.5rem;
             transition: transform 0.3s ease;
-            display: none;
+            min-width: 44px;
+            min-height: 44px;
         }
 
-        .theme-toggle svg, .sidebar-toggle svg {
+        .theme-toggle svg {
             width: 22px;
             height: 22px;
             fill: var(--accent-primary);
             transition: var(--transition);
         }
 
-        .theme-toggle:hover, .sidebar-toggle:hover {
+        .theme-toggle:hover {
             transform: rotate(15deg);
         }
 
@@ -182,6 +183,8 @@
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
         }
 
         .auth-btn:hover, .profile-btn:hover {
@@ -194,7 +197,9 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 0.4rem;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
         }
 
         .menu-icon {
@@ -763,28 +768,8 @@
         }
 
         @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                position: fixed;
-                top: 60px;
-                left: 0;
-                transform: translateX(-100%);
-                padding: 1rem;
-                box-shadow: 2px 0 15px var(--shadow);
-                z-index: 999;
-            }
-
-            .sidebar.active {
-                transform: translateX(0);
-            }
-
-            .main-content {
-                margin-left: 0;
-                padding: 1.5rem;
-            }
-
-            .sidebar-toggle {
-                display: block;
+            header {
+                padding: 0.6rem 1rem;
             }
 
             nav {
@@ -806,6 +791,49 @@
 
             .menu-btn {
                 display: block;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                transform: translateX(-100%);
+                padding: 1rem;
+                box-shadow: 2px 0 15px var(--shadow);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
             }
 
             .section-title {
@@ -868,7 +896,7 @@
                 font-size: 0.8rem;
             }
 
-            .theme-toggle svg, .sidebar-toggle svg {
+            .theme-toggle svg {
                 width: 20px;
                 height: 20px;
             }
@@ -967,7 +995,7 @@
                 font-size: 0.75rem;
             }
 
-            .theme-toggle svg, .sidebar-toggle svg {
+            .theme-toggle svg {
                 width: 18px;
                 height: 18px;
             }
@@ -1074,11 +1102,6 @@
             </nav>
             <button class="menu-btn" onclick="toggleMenu()" aria-label="Alternar menu">
                 <span class="menu-icon"></span>
-            </button>
-            <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Alternar sidebar">
-                <svg viewBox="0 0 24 24">
-                    <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z" />
-                </svg>
             </button>
         </div>
     </header>
@@ -1414,6 +1437,7 @@
                 ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
                 : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
             localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            showNotification('Tema alterado!');
         }
 
         // Verificar tema guardado

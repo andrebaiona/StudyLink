@@ -2,7 +2,6 @@
 <html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"Andy: The generated artifact must contain exactly 1 `<xaiArtifact>` tag, with 4 attributes: `artifact_id`, `title`, `contentType`, and one additional attribute of your choice.
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Study Link - Comunidade de partilha de conhecimento educacional.">
     <meta name="keywords" content="Study Link, comunidade, educação, posts, conhecimento">
@@ -13,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
     <title>Study Link - Comunidade</title>
     <style>
+        /* Definição de variáveis de cores */
         :root {
             --bg-color: #d2b48c;
             --text-color: #333;
@@ -34,6 +34,7 @@
             --shadow: rgba(0, 0, 0, 0.4);
         }
 
+        /* Estilos globais */
         * {
             margin: 0;
             padding: 0;
@@ -52,6 +53,7 @@
             flex-direction: column;
         }
 
+        /* Barra de navegação */
         header {
             background: var(--navbar-bg);
             backdrop-filter: blur(12px);
@@ -79,6 +81,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .brand {
@@ -113,6 +116,7 @@
             display: flex;
             align-items: center;
             gap: 0.8rem;
+            flex-wrap: wrap;
         }
 
         .nav-link {
@@ -171,23 +175,47 @@
             transform: rotate(15deg);
         }
 
-        .auth-btn, .profile-btn {
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
             background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
             color: #fff;
             border: none;
-            padding: 0.5rem 1.2rem;
-            border-radius: 25px;
-            font-size: 0.85rem;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
             font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            animation: pulseButton 2s ease infinite;
             min-width: 44px;
             min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .auth-btn:hover, .profile-btn:hover {
+        .btn-animated::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-animated:hover::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        .btn-animated:hover {
             transform: translateY(-3px);
-            box-shadow: 0 4px 12px var(--shadow);
+            box-shadow: 0 6px 15px var(--shadow);
         }
 
         .menu-btn {
@@ -636,7 +664,7 @@
                 padding: 0.4rem 0.6rem;
             }
 
-            .auth-btn, .profile-btn {
+            .btn-animated {
                 padding: 0.4rem 1rem;
                 font-size: 0.8rem;
             }
@@ -784,7 +812,7 @@
                 padding: 0.3rem 0.5rem;
             }
 
-            .auth-btn, .profile-btn {
+            .btn-animated {
                 padding: 0.3rem 0.8rem;
                 font-size: 0.75rem;
             }
@@ -865,8 +893,8 @@
                         <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
                 </button>
-                <a href="/conta.html" class="profile-btn btn-animated">Conta</a>
-                <button class="auth-btn btn-animated" onclick="logout()">Sair</button>
+                <a href="/conta.html" class="btn-animated">Conta</a>
+                <button class="btn-animated" onclick="logout()">Sair</button>
             </nav>
             <button class="menu-btn" onclick="toggleMenu()" aria-label="Alternar menu">
                 <span class="menu-icon"></span>
@@ -1105,7 +1133,6 @@ hello_world()</code></pre>
             const modal = document.getElementById('postModal');
             modal.style.display = 'none';
         }
-
 
         // Navegar para criar post
         function navigateToCreatePost() {
