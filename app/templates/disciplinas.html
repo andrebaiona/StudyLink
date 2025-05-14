@@ -1,476 +1,1034 @@
-
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study Link - Explora todas as disciplinas e cadeiras do ISCTE-Sintra.">
+    <meta name="keywords" content="Study Link, disciplinas, ISCTE-Sintra, cursos, cadeiras, educação">
+    <meta name="author" content="Study Link Team">
     <link rel="icon" href="/static/Imagens/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Study Link - Disciplinas</title>
-    <link rel="stylesheet" href="../static/css/styles.css">
-    <link rel="stylesheet" href="../static/css/disciplinas.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <style>
+        :root {
+            --bg-color: #d2b48c;
+            --text-color: #333;
+            --navbar-bg: #e1d9ce;
+            --accent-primary: #a0522d;
+            --accent-secondary: #deb887;
+            --card-bg: #e1d9ce;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --bg-color: #1f1f1f;
+            --text-color: #e1d9ce;
+            --navbar-bg: #2c2c2c;
+            --accent-primary: #deb887;
+            --accent-secondary: #a0522d;
+            --card-bg: #2c2c2c;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 1.5rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        header.scrolled {
+            background: rgba(225, 217, 206, 0.95);
+            padding: 0.6rem 1.5rem;
+        }
+
+        body.dark-mode header.scrolled {
+            background: rgba(44, 44, 44, 0.95);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo {
+            height: 50px;
+            transition: transform 0.4s ease, filter 0.4s ease;
+            animation: pulseLogo 2s ease infinite;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px var(--accent-primary));
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--accent-secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .auth-btn, .profile-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .auth-btn:hover, .profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .menu-icon {
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .menu-icon::before,
+        .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .menu-icon::before { top: -7px; }
+        .menu-icon::after { bottom: -7px; }
+
+        .menu-btn.active .menu-icon { background: transparent; }
+        .menu-btn.active .menu-icon::before { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-btn.active .menu-icon::after { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .main-content {
+            flex: 1;
+            padding: 2.5rem;
+            margin-top: 60px;
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--accent-primary);
+            text-align: left;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-secondary);
+        }
+
+        .disciplinas-container {
+            display: flex;
+            gap: 1.5rem;
+            height: calc(100vh - 180px);
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow);
+            overflow: hidden;
+        }
+
+        .course-list {
+            width: 240px;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .course-toggle {
+            display: none;
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .course-toggle:hover {
+            background: var(--accent-secondary);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--accent-primary);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent-secondary);
+            outline: none;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .filter-bar select {
+            flex: 1;
+            padding: 0.7rem;
+            border: 1px solid var(--accent-primary);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .filter-bar select:focus {
+            border-color: var(--accent-secondary);
+            outline: none;
+        }
+
+        .course-item {
+            padding: 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
+        }
+
+        .course-item:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .course-item.active {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        .course-item h4 {
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .units-area {
+            flex: 1;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+            overflow-y: auto;
+        }
+
+        .unit-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .unit-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow);
+            padding: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .unit-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .unit-card h3 {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            margin: 0 0 0.5rem;
+        }
+
+        .unit-card p {
+            font-size: 0.95rem;
+            color: var(--text-color);
+            margin: 0 0 1rem;
+        }
+
+        .unit-card .mentor {
+            font-size: 0.9rem;
+            color: var(--accent-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .unit-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .unit-card .tag {
+            background: var(--accent-primary);
+            color: #fff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: pulseButton 2s ease infinite;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-animated::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-animated:hover::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        .btn-animated:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow);
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            background: var(--card-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: none;
+            z-index: 3000;
+            transition: var(--transition);
+        }
+
+        .notification.active {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        footer {
+            background: var(--navbar-bg);
+            padding: 1.2rem;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 -2px 8px var(--shadow);
+        }
+
+        footer p {
+            color: var(--text-color);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--accent-secondary);
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes pulseButton {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.6s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .course-list {
+                width: 200px;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .disciplinas-container {
+                height: calc(100vh - 170px);
+            }
+
+            .unit-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .course-list {
+                width: 180px;
+                padding: 1.2rem;
+            }
+
+            .main-content {
+                padding: 1.8rem;
+            }
+
+            .units-area {
+                padding: 1.5rem;
+            }
+
+            .unit-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .unit-card p {
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 1rem;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--navbar-bg);
+                flex-direction: column;
+                padding: 0.8rem;
+                box-shadow: 0 4px 15px var(--shadow);
+                z-index: 998;
+            }
+
+            nav.show {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .disciplinas-container {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 160px);
+            }
+
+            .course-list {
+                width: 100%;
+                max-height: 0;
+                padding: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .course-list.active {
+                max-height: 200px;
+                padding: 1rem;
+            }
+
+            .course-toggle {
+                display: block;
+            }
+
+            .units-area {
+                min-height: 400px;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .unit-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .unit-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .unit-card p {
+                font-size: 0.85rem;
+            }
+
+            .notification {
+                top: 70px;
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .course-list.active {
+                max-height: 150px;
+            }
+
+            .units-area {
+                min-height: 350px;
+            }
+
+            .unit-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .unit-card p {
+                font-size: 0.8rem;
+            }
+
+            .unit-card .mentor {
+                font-size: 0.85rem;
+            }
+
+            .unit-card .tag {
+                font-size: 0.75rem;
+            }
+
+            .btn-animated {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            footer {
+                padding: 1rem;
+            }
+
+            footer p {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo {
+                height: 40px;
+            }
+
+            .brand-name {
+                font-size: 1.1rem;
+            }
+
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-toggle svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .unit-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .unit-card p {
+                font-size: 0.75rem;
+            }
+
+            .unit-card .mentor {
+                font-size: 0.8rem;
+            }
+
+            .unit-card .tag {
+                font-size: 0.7rem;
+            }
+
+            .btn-animated {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
 </head>
 <body>
+    <!-- Navbar -->
     <header>
-        <img src="../static/Imagens/logo.png" alt="Study Link Logo">
-        <h1><a href="index.html">StudyLink</a></h1>
-        <button class="account-btn" onclick="toggleAccountMenu()">Menu</button>
-        <div class="account-menu" id="accountMenu">
-            <a href="disciplinas.html">Disciplinas</a>
-            <a href="conta.html">Conta</a>
-            <a href="definicoes.html">Definições</a>
-            <a href="ajuda.html">Ajuda</a>
+        <div class="header-content max-width">
+            <a href="/dashboard.html" class="brand">
+                <img src="/static/Imagens/logo.png" alt="Logótipo Study Link" class="logo">
+                <span class="brand-name">Study Link</span>
+            </a>
+            <nav>
+                <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="/matching.html" class="nav-link">Matching</a>
+                <a href="/disciplinas.html" class="nav-link">Disciplinas</a>
+                <a href="/recursos.html" class="nav-link">Recursos</a>
+                <a href="/comunidade.html" class="nav-link">Comunidade</a>
+                <a href="/conversa.html" class="nav-link">Mensagens</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+                    <svg class="theme-icon" viewBox="0 0 24 24">
+                        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <a href="/conta.html" class="profile-btn btn-animated">Conta</a>
+                <button class="auth-btn btn-animated" onclick="logout()">Sair</button>
+            </nav>
+            <button class="menu-btn" onclick="toggleMenu()" aria-label="Alternar menu">
+                <span class="menu-icon"></span>
+            </button>
         </div>
     </header>
-    <nav>
-        <a href="recursos.html">Recursos</a>
-        <a href="comunidade.html">Comunidade</a>
-        <a href="contacto.html">Contacto</a>
-    </nav>
 
-    <main class="d-flex justify-content-center">    
-        <div class="container py-4">  
-            <div class="row mb-50">
-                <div class="col">        
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://fia.com.br/wp-content/uploads/2022/04/Ciberseguranca-capa.png" class="card-img-top img-thumbnail" alt="Cibersegurança" style="height:90%">
-                        <div class="card-body">
-                        <h5 class="card-title">Segurança de Informação</h5>
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Escolher Ano</button>
-                            <ul class="dropdown-menu">
-                              <li><a class="dropdown-item" href="modal_seg.html" data-bs-toggle="modal" data-bs-target="#disciplinas_1_seg_1">1.º Ano</a></li>
-                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disciplinas_2_seg_1">2.º Ano</a></li>
-                              <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#disciplinas_3_seg_1">3.º Ano</a></li>
-                            </ul>
-                          </div>
-                        </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="animate-slide-in">
+            <h2 class="section-title">Disciplinas ISCTE-Sintra</h2>
+            <button class="course-toggle" onclick="toggleCourseList()" aria-label="Alternar lista de cursos">Lista de Cursos</button>
+            <div class="disciplinas-container">
+                <!-- Course List -->
+                <aside class="course-list">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Procurar curso ou unidade..." oninput="searchCoursesUnits(this.value)" aria-label="Procurar curso ou unidade curricular">
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://cdn.ceps.eu/wp-content/uploads/2024/07/vecteezy_ai-generated-ai-circuit-board-technology-background_37348385-1300x731.jpg" class="card-img-top img-thumbnail" alt="IA">
-                        <div class="card-body">
-                        <h5 class="card-title">Inteligência Artificial</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
+                    <div class="filter-bar">
+                        <select onchange="filterByCourse(this.value)" aria-label="Filtrar por curso">
+                            <option value="all">Todos os Cursos</option>
+                            <!-- Populated dynamically -->
+                        </select>
+                        <select onchange="sortUnits(this.value)" aria-label="Ordenar unidades">
+                            <option value="course-asc">Curso (A-Z)</option>
+                            <option value="course-desc">Curso (Z-A)</option>
+                            <option value="unit-asc">Unidade (A-Z)</option>
+                            <option value="unit-desc">Unidade (Z-A)</option>
+                        </select>
                     </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://informationage-production.s3.amazonaws.com/uploads/2022/10/how-ensure-faster-quality-code-ease-development-process.jpeg" class="card-img-top img-thumbnail" alt="DSA">
-                        <div class="card-body">
-                        <h5 class="card-title">Desenvolvimento de Software e Aplicações</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div>
+                    <div id="courseList"></div>
+                </aside>
+
+                <!-- Units Area -->
+                <div class="units-area">
+                    <div class="unit-grid" id="unitGrid"></div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://ichef.bbci.co.uk/ace/ws/640/cpsprodpb/164EE/production/_109347319_gettyimages-611195980.jpg" class="card-img-top" alt="Matemática">
-                        <div class="card-body">
-                        <h5 class="card-title">Matemática Aplicada</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://assets.datamation.com/uploads/2023/05/dm-what-is-automation.png" class="card-img-top" alt="Automação">
-                        <div class="card-body">
-                        <h5 class="card-title">Automação</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>                
-                        </div>
-                    </div>    
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://www.erpflex.com.br/wp-content/uploads/2024/09/habilidades-organizacionais-obtidas-na-gestao-da-qualidade-scaled-1.webp" class="card-img-top" alt="Gestão">
-                        <div class="card-body">
-                        <h5 class="card-title">Gestão</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div>    
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://img.odcdn.com.br/wp-content/uploads/2023/07/medicina_ia.jpg" class="card-img-top" alt="Saúde">
-                        <div class="card-body">
-                        <h5 class="card-title">Saúde</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div> 
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://cdn.elearningindustry.com/wp-content/uploads/2016/07/technology-benefits-learning.png" class="card-img-top" alt="Educativas">
-                        <div class="card-body">
-                        <h5 class="card-title">T.D.Educativas</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col">
-                    <div class="card" style="width: 18rem;">
-                        <img src="https://evercam.com/wp-content/uploads/sites/11/2023/04/construction-tech.jpg" class="card-img-top" alt="ECS">
-                        <div class="card-body">
-                        <h5 class="card-title">Edificios e Contrução Sustentável</h5>
-                        <button class="btn btn-primary">Escolher Ano</button>
-                        </div>
-                    </div>
-                </div>
-            </div>                               
-        </div>    
-    </main>       
+        </section>
+    </main>
 
-    <footer class="text-center py-2">
-        <p class="mb-0">
-          &copy; 2025 Study Link. Todos os direitos reservados. 
-          <a href="contacto.html" class="text-decoration-none">Contacte-nos</a>
-        </p>
+    <!-- Notification -->
+    <div class="notification" id="notification">
+        <p>Ação realizada com sucesso!</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Study Link. Todos os direitos reservados. Licenciado sob a <a href="https://opensource.org/licenses/MIT" target="_blank">Licença MIT</a>.</p>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-   
-    <div class="modal fade" id="disciplinas_1_seg_1" aria-hidden="true" aria-labelledby="disciplinas_1_seg_1Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_1_seg_1Label">Unidades Curriculares que Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Introdução à Ciberegurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Sistemas Operativos e Virtualização</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Introdução às Redes de Computadores</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Fundamentos de Programação</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Trabalho, Organizações e Tecnologia</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Matemática Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox7">
-                            <label class="form-check-label" for="checkbox7">Complementos de Matemática Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox8">
-                            <label class="form-check-label" for="checkbox8">Planeamento e Gestão de Projetos</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox9">
-                            <label class="form-check-label" for="checkbox9">Algoritmia e Estruturas de Dados</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox10">
-                            <label class="form-check-label" for="checkbox10">Apresentação em Público com Técnicas Teatrais</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox11">
-                            <label class="form-check-label" for="checkbox11">Introdução ao Design Thinking</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox12">
-                            <label class="form-check-label" for="checkbox12">Trabalho Académico com Inteligência Artificial</label>
-                        </li>
-                    </ul>                
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#disciplinas_1_seg_2" data-bs-toggle="modal">Seguinte</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="disciplinas_1_seg_2" aria-hidden="true" aria-labelledby="disciplinas_1_seg_2Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_1_seg_2Label">Unidades Curriculares que Não Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Introdução à Ciberegurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Sistemas Operativos e Virtualização</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Introdução às Redes de Computadores</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Fundamentos de Programação</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Trabalho, Organizações e Tecnologia</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Matemática Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox7">
-                            <label class="form-check-label" for="checkbox7">Complementos de Matemática Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox8">
-                            <label class="form-check-label" for="checkbox8">Planeamento e Gestão de Projetos</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox9">
-                            <label class="form-check-label" for="checkbox9">Algoritmia e Estruturas de Dados</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox10">
-                            <label class="form-check-label" for="checkbox10">Apresentação em Público com Técnicas Teatrais</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox11">
-                            <label class="form-check-label" for="checkbox11">Introdução ao Design Thinking</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox12">
-                            <label class="form-check-label" for="checkbox12">Trabalho Académico com Inteligência Artificial</label>
-                        </li>
-                    </ul>                
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-target="#disciplinas_1_seg_1" data-bs-toggle="modal">Voltar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirmar Escolha</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="modal fade" id="disciplinas_2_seg_1" aria-hidden="true" aria-labelledby="disciplinas_2_seg_1Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_2_seg_1Label">Unidades Curriculares que Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Análise Forense Digital</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Bases de Dados e Segurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Programação para a Internet</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Estatística e Probabilidades</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Segurança em Redes de Computadores</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Criptografia Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox7">
-                            <label class="form-check-label" for="checkbox7">Empreendorismo e Inovação</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox8">
-                            <label class="form-check-label" for="checkbox8">Sistemas Distribuidos e Segurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox9">
-                            <label class="form-check-label" for="checkbox9">Empreendorismo e Inovação II</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox10">
-                            <label class="form-check-label" for="checkbox10">Ética e Legislação em Ciberegurança</label>
-                        </li>
-                    </ul>                                 
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#disciplinas_2_seg_2" data-bs-toggle="modal">Seguinte</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="disciplinas_2_seg_2" aria-hidden="true" aria-labelledby="disciplinas_2_seg_2Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_2_seg_2Label">Unidades Curriculares que Não Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Análise Forense Digital</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Bases de Dados e Segurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Programação para a Internet</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Estatística e Probabilidades</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Segurança em Redes de Computadores</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Criptografia Aplicada</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox7">
-                            <label class="form-check-label" for="checkbox7">Empreendorismo e Inovação</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox8">
-                            <label class="form-check-label" for="checkbox8">Sistemas Distribuidos e Segurança</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox9">
-                            <label class="form-check-label" for="checkbox9">Empreendorismo e Inovação II</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox10">
-                            <label class="form-check-label" for="checkbox10">Ética e Legislação em Ciberegurança</label>
-                        </li>
-                    </ul>                            
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-target="#disciplinas_2_seg_1" data-bs-toggle="modal">Voltar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirmar Escolha</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // Sample CSV data (replace with actual CSV parsing in production)
+        const csvData = [
+            { Course: "Engenharia Informática", CurricularUnit: "Programação I" },
+            { Course: "Engenharia Informática", CurricularUnit: "Programação II" },
+            { Course: "Engenharia Informática", CurricularUnit: "Cálculo I" },
+            { Course: "Engenharia Informática", CurricularUnit: "Estruturas de Dados" },
+            { Course: "Matemática Aplicada", CurricularUnit: "Cálculo Diferencial" },
+            { Course: "Matemática Aplicada", CurricularUnit: "Álgebra Linear" },
+            { Course: "Matemática Aplicada", CurricularUnit: "Probabilidades e Estatística" },
+            { Course: "Física", CurricularUnit: "Física Teórica" },
+            { Course: "Física", CurricularUnit: "Mecânica Clássica" },
+            { Course: "Física", CurricularUnit: "Eletromagnetismo" },
+            { Course: "Gestão", CurricularUnit: "Contabilidade" },
+            { Course: "Gestão", CurricularUnit: "Marketing" }
+        ];
 
-    <div class="modal fade" id="disciplinas_3_seg_1" aria-hidden="true" aria-labelledby="disciplinas_3_seg_1Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_3_seg_1Label">Unidades Curriculares que Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        // Sample mentor data (from matching.html)
+        const mentors = [
+            { name: "João Silva", subject: "Cálculo Diferencial" },
+            { name: "Ana Costa", subject: "Física Teórica" },
+            { name: "Pedro Almeida", subject: "Programação" }
+        ];
+
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const toggleIcon = document.querySelector('.theme-icon');
+            body.classList.toggle('dark-mode');
+            toggleIcon.innerHTML = body.classList.contains('dark-mode')
+                ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
+                : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            showNotification('Tema alterado!');
+        }
+
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-icon').innerHTML = '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />';
+        }
+
+        // Menu Toggle
+        function toggleMenu() {
+            const nav = document.querySelector('nav');
+            const btn = document.querySelector('.menu-btn');
+            nav.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        // Course List Toggle (Mobile)
+        function toggleCourseList() {
+            const courseList = document.querySelector('.course-list');
+            courseList.classList.toggle('active');
+        }
+
+        // Scroll Effect for Navbar
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Logout
+        function logout() {
+            showNotification('Sessão terminada com sucesso!');
+            setTimeout(() => {
+                location.href = '/login_page';
+            }, 1000);
+        }
+
+        // Notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.querySelector('p').textContent = message;
+            notification.classList.add('active');
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        // GSAP Animations
+        gsap.fromTo('.disciplinas-container', 
+            { opacity: 0, y: 50 },
+            { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
+        );
+
+        // Course and Unit Logic
+        const courseListDiv = document.getElementById('courseList');
+        const unitGridDiv = document.getElementById('unitGrid');
+        const courseSelect = document.querySelector('select[aria-label="Filtrar por curso"]');
+        let selectedCourse = 'all';
+        let currentUnits = [...csvData];
+
+        function populateCourses() {
+            const courses = [...new Set(csvData.map(item => item.Course))];
+            courseSelect.innerHTML = '<option value="all">Todos os Cursos</option>' + 
+                courses.map(course => `<option value="${course}">${course}</option>`).join('');
+            
+            courseListDiv.innerHTML = courses.map(course => `
+                <div class="course-item" data-course="${course}" onclick="selectCourse('${course}')">
+                    <h4>${course}</h4>
                 </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Projeto Aplicado de Tecnologias Digitais e Segurança de Informação I</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Segurança de Software e Aplicacional</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Projeto Aplicado de Tecnologias Digitais e Segurança de Informação II</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Auditoria de Segurança em Sistemas e Redes Digitais</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Operações de Segurança e Gestão de Incidentes</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Tecnologia, Economia e Sociedade</label>
-                        </li>
-                    </ul>                                       
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-primary" data-bs-target="#disciplinas_3_seg_2" data-bs-toggle="modal">Seguinte</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="disciplinas_3_seg_2" aria-hidden="true" aria-labelledby="disciplinas_3_seg_2Label" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h1 class="modal-title fs-5" id="disciplinas_3_seg_2Label">Unidades Curriculares que Não Dominas</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox1">
-                            <label class="form-check-label" for="checkbox1">Projeto Aplicado de Tecnologias Digitais e Segurança de Informação I</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox2">
-                            <label class="form-check-label" for="checkbox2">Segurança de Software e Aplicacional</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox3">
-                            <label class="form-check-label" for="checkbox3">Projeto Aplicado de Tecnologias Digitais e Segurança de Informação II</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox4">
-                            <label class="form-check-label" for="checkbox4">Auditoria de Segurança em Sistemas e Redes Digitais</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox5">
-                            <label class="form-check-label" for="checkbox5">Operações de Segurança e Gestão de Incidentes</label>
-                        </li>
-                        <li class="list-group-item">
-                            <input class="form-check-input me-1" type="checkbox" value="" id="checkbox6">
-                            <label class="form-check-label" for="checkbox6">Tecnologia, Economia e Sociedade</label>
-                        </li>
-                    </ul>                                
-                </div>
-                <div class="modal-footer">
-                <button class="btn btn-secondary" data-bs-target="#disciplinas_3_seg_1" data-bs-toggle="modal">Voltar</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Confirmar Escolha</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    
-    
+            `).join('');
+
+            // Select first course by default
+            if (courses.length > 0) {
+                selectCourse(courses[0]);
+            }
+        }
+
+        function selectCourse(course) {
+            selectedCourse = course;
+            document.querySelectorAll('.course-item').forEach(item => {
+                item.classList.toggle('active', item.getAttribute('data-course') === course);
+            });
+            updateUnits();
+        }
+
+        function updateUnits() {
+            let units = selectedCourse === 'all' ? currentUnits : currentUnits.filter(unit => unit.Course === selectedCourse);
+            
+            unitGridDiv.innerHTML = units.map(unit => {
+                const mentor = mentors.find(m => m.subject === unit.CurricularUnit) || { name: 'Nenhum mentor' };
+                return `
+                    <div class="unit-card">
+                        <h3>${unit.CurricularUnit}</h3>
+                        <p>Parte do curso de ${unit.Course}. Introdução aos conceitos fundamentais da disciplina.</p>
+                        <div class="mentor">Mentor: ${mentor.name}</div>
+                        <div class="tags">
+                            <span class="tag">${unit.Course}</span>
+                            <span class="tag">${unit.CurricularUnit.split(' ')[0]}</span>
+                        </div>
+                        <button class="btn-animated" onclick="connectWithUnit('${unit.CurricularUnit}')" aria-label="Conectar com ${unit.CurricularUnit}">Conectar</button>
+                    </div>
+                `;
+            }).join('');
+
+            gsap.fromTo('.unit-card', 
+                { opacity: 0, y: 30 },
+                { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }
+            );
+
+            if (units.length === 0) {
+                unitGridDiv.innerHTML = '<p style="text-align: center; color: var(--text-color);">Nenhuma unidade encontrada.</p>';
+            }
+        }
+
+        function searchCoursesUnits(query) {
+            currentUnits = csvData.filter(unit => 
+                unit.Course.toLowerCase().includes(query.toLowerCase()) ||
+                unit.CurricularUnit.toLowerCase().includes(query.toLowerCase())
+            );
+            updateUnits();
+        }
+
+        function filterByCourse(course) {
+            selectedCourse = course;
+            updateUnits();
+        }
+
+        function sortUnits(criteria) {
+            if (criteria === 'course-asc') {
+                currentUnits.sort((a, b) => a.Course.localeCompare(b.Course));
+            } else if (criteria === 'course-desc') {
+                currentUnits.sort((a, b) => b.Course.localeCompare(a.Course));
+            } else if (criteria === 'unit-asc') {
+                currentUnits.sort((a, b) => a.CurricularUnit.localeCompare(b.CurricularUnit));
+            } else if (criteria === 'unit-desc') {
+                currentUnits.sort((a, b) => b.CurricularUnit.localeCompare(a.CurricularUnit));
+            }
+            updateUnits();
+        }
+
+        function connectWithUnit(unit) {
+            showNotification(`Conexão iniciada para ${unit}!`);
+            // Placeholder for redirect to matching.html or conversa.html
+        }
+
+        // Initialize
+        populateCourses();
+        if (window.innerWidth < 768) {
+            document.querySelector('.course-list').classList.remove('active');
+        }
+    </script>
 </body>
 </html>
-
-

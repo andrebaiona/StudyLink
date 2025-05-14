@@ -311,6 +311,7 @@ def login_page():
 def registo_page():
     return render_template('registo.html')
 
+
 @app.route('/contacto', methods=['POST'])
 def contacto():
     try:
@@ -325,15 +326,15 @@ def contacto():
         cursor.close()
 
         flash("Mensagem enviada com sucesso! Obrigado por nos contactar.", "success")
-        return redirect(url_for('html_redirect', page='contacto'))
+        return redirect(url_for('html_redirect', page='index') + "#connect")  # <- Aqui está o fix
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
-        return redirect(url_for('html_redirect', page='contacto'))
+        return redirect(url_for('html_redirect', page='index') + "#connect")  # <- Aqui também
 
     except Exception as e:
         flash(f"Erro geral: {e}", "error")
-        return redirect(url_for('html_redirect', page='contacto'))
+        return redirect(url_for('html_redirect', page='index') + "#connect")  # <- E aqui
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)
