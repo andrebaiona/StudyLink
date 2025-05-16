@@ -9,6 +9,7 @@
     <link rel="icon" href="/static/Imagens/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <title>Study Link - Minha Conta</title>
     <style>
         /* Definição de variáveis de cores */
@@ -774,6 +775,29 @@
                         </select>
                     </div>
 
+                  
+                    <div class="form-group">
+                      <label for="mentor_units">Quero ser **Mentor** em:</label>
+                      <select id="mentor_units" name="mentor_units" multiple style="height: 280px;">
+                        {% for unit in units %}
+                          <option value="{{ unit.id }}" {% if unit.id|string in mentor_unit_ids %}selected{% endif %}>
+                            {{ unit.name }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="mentee_units">Quero ser **Mentorado** em:</label>
+                      <select id="mentee_units" name="mentee_units" multiple style="height: 280px;">
+                        {% for unit in units %}
+                          <option value="{{ unit.id }}" {% if unit.id|string in mentee_unit_ids %}selected{% endif %}>
+                            {{ unit.name }}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </div>
+
                     <button class="submit-btn" id="update-account-btn" type="submit" aria-label="Atualizar conta">Atualizar Conta</button>
                 </form>
             </div>
@@ -793,7 +817,14 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#unit_select').select2({
+            placeholder: "Selecione unidades curriculares",
+            width: '100%'
+        });
+    });
         // Alternar tema
         function toggleTheme() {
             const body = document.body;

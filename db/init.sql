@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS curricular_units (
 CREATE TABLE IF NOT EXISTS user_subjects (
     user_id INT NOT NULL,
     subject_id INT NOT NULL,
-    PRIMARY KEY (user_id, subject_id),
+    role ENUM('mentor', 'mentee') NOT NULL,
+    PRIMARY KEY (user_id, subject_id, role),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES curricular_units(id) ON DELETE CASCADE
 );

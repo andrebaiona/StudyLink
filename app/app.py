@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect, url_for, session, f
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from jinja2 import TemplateNotFound
 import mysql.connector
 from argon2 import PasswordHasher, exceptions as argon2_exceptions
 from werkzeug.utils import secure_filename
@@ -57,12 +58,16 @@ cursor.close()
 # Initialize Argon2 password hasher
 ph = PasswordHasher()
 
+
 @app.route('/<page>.html')
 def html_redirect(page):
     page_map = {
         'login': 'login_page',
         'registo': 'registo_page',
         'conta': 'conta',
+        'dashboard': 'dashboard',
+        'matching': 'matching'
+        
     }
     if page in page_map:
         return redirect(url_for(page_map[page]), code=301)
@@ -192,6 +197,8 @@ def login():
 
 
 
+
+
 @app.route('/conta')
 def conta():
     if 'username' not in session:
@@ -204,29 +211,53 @@ def conta():
 
     cursor = db.cursor(dictionary=True)
     try:
-        # Fetch user details
-        query = """
-            SELECT u.name, u.email, u.username, 
-                   IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic, 
-                   IFNULL(us.bio, '') AS bio, 
-                   IFNULL(us.class_year, '') AS class_year, 
+        # Buscar dados do perfil
+        cursor.execute("""
+            SELECT u.name, u.email, u.username,
+                   IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic,
+                   IFNULL(us.bio, '') AS bio,
+                   IFNULL(us.class_year, '') AS class_year,
                    IFNULL(us.course, '') AS course
             FROM users u
             LEFT JOIN user_settings us ON u.id = us.user_id
             WHERE u.id = %s
-        """
-        cursor.execute(query, (user_id,))
+        """, (user_id,))
         user = cursor.fetchone()
 
-        # Fetch courses from the 'courses' table
+        # Buscar todos os cursos
         cursor.execute("SELECT name FROM courses")
-        courses = cursor.fetchall()  # Fetch all course names
+        courses = cursor.fetchall()
 
-        if user:
-            return render_template('conta.html', user=user, courses=courses)
-        else:
-            flash("Erro ao carregar dados do utilizador.", "error")
-            return redirect(url_for('login_page'))
+        # Buscar unidades curriculares do curso atual
+        course_units = []
+        if user and user['course']:
+            cursor.execute("""
+                SELECT cu.id, cu.name
+                FROM courses c
+                JOIN course_curricular_units ccu ON c.id = ccu.course_id
+                JOIN curricular_units cu ON cu.id = ccu.curricular_unit_id
+                WHERE c.name = %s
+                ORDER BY cu.name
+            """, (user['course'],))
+            course_units = cursor.fetchall()
+
+        # Buscar as unidades curriculares selecionadas pelo utilizador como mentor/mentorado
+        cursor.execute("""
+            SELECT subject_id, role FROM user_subjects WHERE user_id = %s
+        """, (user_id,))
+        subject_roles = cursor.fetchall()
+
+        mentor_unit_ids = [str(row['subject_id']) for row in subject_roles if row['role'] == 'mentor']
+        mentee_unit_ids = [str(row['subject_id']) for row in subject_roles if row['role'] == 'mentee']
+
+        return render_template(
+            'conta.html',
+            user=user,
+            courses=courses,
+            units=course_units,
+            mentor_unit_ids=mentor_unit_ids,
+            mentee_unit_ids=mentee_unit_ids
+        )
 
     except mysql.connector.Error as err:
         flash(f"Erro na base de dados: {err}", "error")
@@ -238,56 +269,71 @@ def conta():
 
 
 
-
 @app.route('/update_profile', methods=['POST'])
 def update_profile():
     if 'username' not in session:
         return redirect(url_for('login_page'))
 
     user_id = session['user_id']
-    username = session['username']  # Get username from session
+    username = session['username']
     name = sanitize_input(request.form.get('name', ''))
     bio = sanitize_input(request.form.get('bio', ''))
     class_year = request.form.get('class_year', '')
     course = request.form.get('course', '')
 
-    # Handle profile picture upload
+    # Processar imagem de perfil
     if 'profile_pic' in request.files:
         file = request.files['profile_pic']
         if file and allowed_file(file.filename):
-            ext = file.filename.rsplit('.', 1)[1].lower()  # Get file extension
-            filename = f"{username}.{ext}"  # Rename file to username.ext
+            ext = file.filename.rsplit('.', 1)[1].lower()
+            filename = f"{username}.{ext}"
             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
 
-            # Remove old profile picture if exists (except default)
             cursor = db.cursor(dictionary=True)
             cursor.execute("SELECT profile_pic FROM user_settings WHERE user_id = %s", (user_id,))
-            old_profile_pic = cursor.fetchone()
-
-            if old_profile_pic and old_profile_pic['profile_pic'] != 'static/uploads/ProfilePics/default.jpg':
-                old_pic_path = os.path.join(app.config['UPLOAD_FOLDER'], old_profile_pic['profile_pic'])
-                if os.path.exists(old_pic_path):
-                    os.remove(old_pic_path)  # Delete the old profile picture
-
-            file.save(file_path)  # Save new profile picture
-
-            # Convert path for database storage
-            relative_file_path = f"static/uploads/ProfilePics/{filename}"
-
-            # Update database with new profile picture path
-            cursor.execute("UPDATE user_settings SET profile_pic = %s WHERE user_id = %s", (relative_file_path, user_id))
+            old_pic = cursor.fetchone()
+            if old_pic and old_pic['profile_pic'] != 'static/uploads/ProfilePics/default.jpg':
+                old_path = old_pic['profile_pic']
+                if os.path.exists(old_path):
+                    os.remove(old_path)
+            file.save(file_path)
+            relative_path = f"static/uploads/ProfilePics/{filename}"
+            cursor.execute("UPDATE user_settings SET profile_pic = %s WHERE user_id = %s", (relative_path, user_id))
             db.commit()
             cursor.close()
 
     try:
         cursor = db.cursor(dictionary=True)
-        query = """
+
+        # Atualizar dados básicos
+        cursor.execute("""
             UPDATE users u
             JOIN user_settings us ON u.id = us.user_id
             SET u.name = %s, us.bio = %s, us.class_year = %s, us.course = %s
             WHERE u.id = %s
-        """
-        cursor.execute(query, (name, bio, class_year, course, user_id))
+        """, (name, bio, class_year, course, user_id))
+
+        # Atualizar unidades curriculares de mentoria
+        mentor_units = request.form.getlist('mentor_units')
+        mentee_units = request.form.getlist('mentee_units')
+
+        # Apagar entradas antigas
+        cursor.execute("DELETE FROM user_subjects WHERE user_id = %s", (user_id,))
+
+        # Inserir novas entradas
+        for unit_id in mentor_units:
+            cursor.execute("""
+                INSERT INTO user_subjects (user_id, subject_id, role)
+                VALUES (%s, %s, 'mentor')
+            """, (user_id, unit_id))
+
+        for unit_id in mentee_units:
+            if unit_id not in mentor_units:  # evita duplicar se já está como mentor
+                cursor.execute("""
+                    INSERT INTO user_subjects (user_id, subject_id, role)
+                    VALUES (%s, %s, 'mentee')
+                """, (user_id, unit_id))
+
         db.commit()
         cursor.close()
 
@@ -312,6 +358,92 @@ def registo_page():
     return render_template('registo.html')
 
 
+@app.route('/dashboard')
+def dashboard():
+    if 'username' not in session:
+        return redirect(url_for('login_page'))
+
+    user_id = session.get('user_id')
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT u.name, 
+               IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic
+        FROM users u
+        LEFT JOIN user_settings us ON u.id = us.user_id
+        WHERE u.id = %s
+    """, (user_id,))
+    user = cursor.fetchone()
+    cursor.close()
+
+    return render_template('dashboard.html', user=user)
+
+
+@app.route('/get_units_by_course', methods=['POST'])
+def get_units_by_course():
+    course = request.json.get('course')
+    if not course:
+        return {'units': []}
+
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("""
+        SELECT cu.id, cu.name
+        FROM courses c
+        JOIN course_curricular_units ccu ON c.id = ccu.course_id
+        JOIN curricular_units cu ON cu.id = ccu.curricular_unit_id
+        WHERE c.name = %s
+        ORDER BY cu.name
+    """, (course,))
+    units = cursor.fetchall()
+    cursor.close()
+    return {'units': units}
+
+@app.route('/matching')
+def matching():
+    if 'username' not in session:
+        return redirect(url_for('login_page'))
+
+    user_id = session.get('user_id')
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        # Buscar as UC onde o utilizador quer ser mentorado
+        cursor.execute("""
+            SELECT subject_id
+            FROM user_subjects
+            WHERE user_id = %s AND role = 'mentee'
+        """, (user_id,))
+        mentee_subjects = [row['subject_id'] for row in cursor.fetchall()]
+
+        if not mentee_subjects:
+            flash("Define as disciplinas em que queres ser mentorado no teu perfil.", "info")
+            return render_template('matching.html', mentors=[])
+
+        # Buscar utilizadores que marcaram essas UC como mentores
+        format_strings = ','.join(['%s'] * len(mentee_subjects))
+        cursor.execute(f"""
+            SELECT u.id AS mentor_id, u.name, u.username, cu.name AS subject_name,
+                   IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic,
+                   IFNULL(us.bio, '') AS bio
+            FROM user_subjects s
+            JOIN users u ON u.id = s.user_id
+            JOIN user_settings us ON us.user_id = u.id
+            JOIN curricular_units cu ON cu.id = s.subject_id
+            WHERE s.subject_id IN ({format_strings})
+              AND s.role = 'mentor'
+              AND u.id != %s
+            ORDER BY u.name
+        """, (*mentee_subjects, user_id))
+        mentors = cursor.fetchall()
+
+        return render_template('matching.html', mentors=mentors)
+
+    except mysql.connector.Error as err:
+        flash(f"Erro na base de dados: {err}", "error")
+        return redirect(url_for('dashboard'))
+
+    finally:
+        cursor.close()
 @app.route('/contacto', methods=['POST'])
 def contacto():
     try:

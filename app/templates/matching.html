@@ -1070,94 +1070,89 @@
     </header>
 
     <!-- Main Content -->
-    <main class="main-content">
-        <section class="animate-slide-in">
-            <h2 class="section-title">Matching</h2>
-            <button class="matched-toggle" onclick="toggleMatchedList()" aria-label="Alternar lista de mentores combinados">Mentores Combinados</button>
-            <div class="matching-container">
-                <!-- Matched Mentors List -->
-                <aside class="matched-list">
-                    <div class="search-bar">
-                        <input type="text" placeholder="Procurar mentor..." oninput="searchMatchedMentors(this.value)" aria-label="Procurar mentor combinado">
-                    </div>
-                    <div id="matchedMentors"></div>
-                </aside>
 
-                <!-- Swipe Area -->
-                <div class="swipe-area">
-                    <div class="card-stack" id="cardStack">
-                        <div class="mentor-card" data-mentor="João Silva" data-subject="Cálculo Diferencial">
-                            <img src="https://via.placeholder.com/200" alt="Mentor João Silva">
-                            <h3>João Silva</h3>
-                            <div class="subject">Cálculo Diferencial</div>
-                            <p>Especialista em derivadas e integrais, com 5 anos de experiência em ensino universitário.</p>
-                            <div class="tags">
-                                <span class="tag">Cálculo</span>
-                                <span class="tag">Matemática</span>
-                                <span class="tag">Análise</span>
-                            </div>
-                            <div class="swipe-stamp like">Like</div>
-                            <div class="swipe-stamp nope">Nope</div>
-                        </div>
-                        <div class="mentor-card" data-mentor="Ana Costa" data-subject="Física Teórica">
-                            <img src="https://via.placeholder.com/200" alt="Mentor Ana Costa">
-                            <h3>Ana Costa</h3>
-                            <div class="subject">Física Teórica</div>
-                            <p>Doutorada em física, apaixonada por mecânica quântica e relatividade.</p>
-                            <div class="tags">
-                                <span class="tag">Física</span>
-                                <span class="tag">Quântica</span>
-                                <span class="tag">Relatividade</span>
-                            </div>
-                            <div class="swipe-stamp like">Like</div>
-                            <div class="swipe-stamp nope">Nope</div>
-                        </div>
-                        <div class="mentor-card" data-mentor="Pedro Almeida" data-subject="Programação">
-                            <img src="https://via.placeholder.com/200" alt="Mentor Pedro Almeida">
-                            <h3>Pedro Almeida</h3>
-                            <div class="subject">Programação</div>
-                            <p>Engenheiro de software com foco em Python e estruturas de dados.</p>
-                            <div class="tags">
-                                <span class="tag">Python</span>
-                                <span class="tag">Algoritmos</span>
-                                <span class="tag">Programação</span>
-                            </div>
-                            <div class="swipe-stamp like">Like</div>
-                            <div class="swipe-stamp nope">Nope</div>
-                        </div>
-                    </div>
-                    <div class="swipe-actions">
-                        <button class="action-btn reject" onclick="swipeCard('left')" aria-label="Rejeitar mentor">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
-                        <button class="action-btn like" onclick="swipeCard('right')" aria-label="Combinar com mentor">
-                            <svg viewBox="0 0 24 24">
-                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <button class="undo-btn" onclick="undoSwipe()" aria-label="Desfazer swipe">Desfazer</button>
+
+{% block title %}Matching | Study Link{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="animate-slide-in">
+        <h2 class="section-title">Encontra o Mentor Ideal</h2>
+
+        <button class="matched-toggle" onclick="toggleMatchedList()" aria-label="Alternar lista de mentores combinados">
+            Ver Mentores Combinados
+        </button>
+
+        <div class="matching-container">
+            <!-- Lista de mentores combinados -->
+            <aside class="matched-list">
+                <div class="search-bar">
+                    <input type="text" placeholder="Procurar mentor..." oninput="searchMatchedMentors(this.value)" aria-label="Procurar mentor combinado">
                 </div>
+                <div id="matchedMentors"></div>
+            </aside>
+
+            <!-- Área de Swipe -->
+            <div class="swipe-area">
+                <div class="card-stack" id="cardStack">
+                    {% if mentors %}
+                        {% for mentor in mentors %}
+                        <div class="mentor-card" data-mentor="{{ mentor.name }}" data-subject="{{ mentor.subject_name }}">
+                            <img src="/{{ mentor.profile_pic }}" alt="Mentor {{ mentor.name }}" onerror="this.src='/static/uploads/ProfilePics/default.jpg';">
+                            <h3>{{ mentor.name }}</h3>
+                            <div class="subject">{{ mentor.subject_name }}</div>
+                            <p>{{ mentor.bio or "Este mentor ainda não adicionou uma descrição." }}</p>
+                            <div class="tags">
+                                <span class="tag">{{ mentor.subject_name }}</span>
+                            </div>
+                            <div class="swipe-stamp like">Like</div>
+                            <div class="swipe-stamp nope">Nope</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mentor-card">
+                            <h3>Sem mentores disponíveis 😕</h3>
+                            <p>Adiciona disciplinas no teu perfil em que desejas ser mentorado para começar a ver combinações!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="swipe-actions">
+                    <button class="action-btn reject" onclick="swipeCard('left')" aria-label="Rejeitar mentor">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <button class="action-btn like" onclick="swipeCard('right')" aria-label="Combinar com mentor">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button class="undo-btn" onclick="undoSwipe()" aria-label="Desfazer swipe">Desfazer</button>
             </div>
-        </section>
-    </main>
-
-    <!-- Match Modal -->
-    <div class="match-modal" id="matchModal">
-        <div class="match-modal-content">
-            <button class="match-modal-close" onclick="closeMatchModal()" aria-label="Fechar modal">×</button>
-            <h3>Parabéns, é um Match!</h3>
-            <p>Combinaste com <span id="matchMentorName"></span> em <span id="matchMentorSubject"></span>!</p>
-            <button class="btn-animated" onclick="connectWithMentor()" aria-label="Conectar com mentor">Conectar</button>
         </div>
-    </div>
+    </section>
+</main>
 
-    <!-- Notification -->
-    <div class="notification" id="notification">
-        <p>Ação realizada com sucesso!</p>
+<!-- Modal de Match -->
+<div class="match-modal" id="matchModal">
+    <div class="match-modal-content">
+        <button class="match-modal-close" onclick="closeMatchModal()" aria-label="Fechar modal">×</button>
+        <h3>Parabéns, é um Match!</h3>
+        <p>Combinaste com <span id="matchMentorName"></span> em <span id="matchMentorSubject"></span>!</p>
+        <button class="btn-animated" onclick="connectWithMentor()" aria-label="Conectar com mentor">Conectar</button>
     </div>
+</div>
+
+<!-- Notificação -->
+<div class="notification" id="notification">
+    <p>Ação realizada com sucesso!</p>
+</div>
+{% endblock %}
+
 
     <!-- Footer -->
     <footer>
@@ -1268,10 +1263,12 @@
                     lastSwiped = { card, direction };
                     card.remove();
                     mentors.shift();
-                    if (isLike) {
-                        const name = card.getAttribute('data-mentor');
-                        const subject = card.getAttribute('data-subject');
-                        matchedMentors.push({ name, subject });
+                    
+        if (isLike) {
+            const name = card.getAttribute('data-mentor');
+            const subject = card.getAttribute('data-subject');
+            const profilePic = card.querySelector('img').getAttribute('src');   
+            matchedMentors.push({ name, subject, profilePic }); 
                         updateMatchedList();
                         showMatchModal(name, subject);
                     }
@@ -1329,19 +1326,20 @@
             showNotification('Swipe desfeito!');
         }
 
-        function updateMatchedList() {
-            const matchedMentorsDiv = document.getElementById('matchedMentors');
-            matchedMentorsDiv.innerHTML = matchedMentors.map((mentor, index) => `
-                <div class="matched-card" data-index="${index}">
-                    <img src="https://via.placeholder.com/45" alt="${mentor.name}">
-                    <div>
-                        <h4>${mentor.name}</h4>
-                        <p>${mentor.subject}</p>
-                    </div>
-                    <button class="remove-btn" onclick="removeMatchedMentor(${index})" aria-label="Remover mentor">×</button>
-                </div>
-            `).join('');
-        }
+        
+      function updateMatchedList() {
+          const matchedMentorsDiv = document.getElementById('matchedMentors');
+          matchedMentorsDiv.innerHTML = matchedMentors.map((mentor, index) => `
+              <div class="matched-card" data-index="${index}">
+                  <img src="${mentor.profilePic}" alt="${mentor.name}" onerror="this.src='/static/uploads/ProfilePics/default.jpg';">
+                  <div>
+                      <h4>${mentor.name}</h4>
+                      <p>${mentor.subject}</p>
+                  </div>
+                  <button class="remove-btn" onclick="removeMatchedMentor(${index})" aria-label="Remover mentor">×</button>
+              </div>
+          `).join('');
+      }
 
         function removeMatchedMentor(index) {
             matchedMentors.splice(index, 1);

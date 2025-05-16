@@ -1110,10 +1110,11 @@
     <div class="dashboard-container">
         <!-- Sidebar -->
         <aside class="sidebar">
-            <div class="sidebar-header">
-                <img src="https://via.placeholder.com/80" alt="Utilizador">
-                <span>Maria Santos</span>
-            </div>
+            
+          <div class="sidebar-header">
+              <img src="{{ user.profile_pic }}" alt="Foto de Perfil">
+              <span>{{ user.name }}</span>
+          </div>
             <ul class="sidebar-nav">
                 <li><a href="#overview" class="active"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> Visão Geral</a></li>
                 <li><a href="#progress"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg> Progresso</a></li>
@@ -1128,7 +1129,7 @@
         <main class="main-content">
             <!-- Visão Geral -->
             <section id="overview" class="animate-slide-in">
-                <h2 class="section-title">Bem-vindo, Maria!</h2>
+                <h2 class="section-title">Bem-vindo, {{ user.name }}!</h2>
                 <div class="row g-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="dashboard-card">
