@@ -1,14 +1,14 @@
 FROM python:3.9
 
 # Set working directory
-WORKDIR /workspace
+WORKDIR /app
 
 # Copy project files
-COPY . /workspace
+COPY . /app
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-EXPOSE 8080
+EXPOSE 8000
 # Run Flask app directly
 CMD ["python", "app.py"]
