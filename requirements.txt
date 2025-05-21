@@ -1,0 +1,10 @@
+Flask
+mysql-connector-python
+argon2-cffi
+Flask-WTF         # CSRF Protection + Forms Validation
+Flask-Limiter
+WTForms           # Advanced Form Validation
+bleach             # XSS Input Sanitization
+python-dotenv      # Environment Variables (Optional for Secrets)
+importlib-metadata
+
