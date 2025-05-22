@@ -65,6 +65,6 @@ driver.quit()
 df = pd.DataFrame(all_data)
 
 # Save to CSV
-df.to_csv('ScriptFiles/iscte_courses_units.csv', index=False, encoding='utf-8')
+df.to_csv('../db/iscte_courses_units.csv', index=False, encoding='utf-8')
 
 print("✅ Scraping completed successfully! Data saved to 'ScriptFiles/iscte_courses_units.csv'.")
