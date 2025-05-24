@@ -1,4 +1,5 @@
 Flask
+gunicorn
 mysql-connector-python
 argon2-cffi
 Flask-WTF         # CSRF Protection + Forms Validation
