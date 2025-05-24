@@ -7,6 +7,7 @@
     <meta name="keywords" content="Study Link, mensagens, mentoria, educação, conversa, partilha de ficheiros">
     <meta name="author" content="Study Link Team">
     <link rel="icon" href="/static/Imagens/logo.png">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai-sublime.min.css">
@@ -1275,8 +1276,21 @@
             .file-preview-content {
                 padding: 1.2rem;
             }
-        }
-    </style>
+            .mentor-link {
+              text-decoration: none !important;
+              color: inherit;
+              display: block;
+            }
+
+            .mentor-link * {
+              text-decoration: none !important;
+              color: inherit;
+            }
+            .mentor-clickable {
+              cursor: pointer;
+            }
+         }
+      </style>
 </head>
 <body>
     <!-- Barra de navegação -->
@@ -1312,100 +1326,94 @@
         <section class="animate-slide-in">
             <h2 class="section-title">Mensagens</h2>
             <button class="mentor-toggle" onclick="toggleMentorList()" aria-label="Alternar lista de mentores">Mentores</button>
-            <div class="chat-container">
-                <!-- Lista de Mentores -->
-                <aside class="mentor-list">
-                    <div class="search-bar">
-                        <input type="text" placeholder="Procurar mentor..." oninput="searchMentors(this.value)" aria-label="Procurar mentor">
-                    </div>
-                    <div class="mentor-card active" data-mentor="João Silva" data-subject="Cálculo Diferencial">
-                        <img src="https://via.placeholder.com/45" alt="Mentor João Silva">
-                        <div>
-                            <h4>João Silva</h4>
-                            <p>Cálculo Diferencial</p>
-                        </div>
-                    </div>
-                    <div class="mentor-card" data-mentor="Ana Costa" data-subject="Física Teórica">
-                        <img src="https://via.placeholder.com/45" alt="Mentor Ana Costa">
-                        <div>
-                            <h4>Ana Costa</h4>
-                            <p>Física Teórica</p>
-                        </div>
-                    </div>
-                    <div class="mentor-card" data-mentor="Pedro Almeida" data-subject="Programação">
-                        <img src="https://via.placeholder.com/45" alt="Mentor Pedro Almeida">
-                        <div>
-                            <h4>Pedro Almeida</h4>
-                            <p>Programação</p>
-                        </div>
-                    </div>
-                </aside>
 
-                <!-- Área de Chat -->
-                <div class="chat-area">
-                    <div class="chat-header">
-                        <img src="https://via.placeholder.com/40" alt="Mentor">
-                        <div>
-                            <h3>João Silva</h3>
-                            <span class="status">Online</span>
-                        </div>
-                    </div>
-                    <div class="search-bar">
-                        <input type="text" placeholder="Procurar mensagens..." oninput="searchMessages(this.value)" aria-label="Procurar mensagens">
-                    </div>
-                    <div class="pinned-message" id="pinnedMessage">
-                        <span id="pinnedText"></span>
-                        <button onclick="unpinMessage()" aria-label="Desafixar mensagem">Desafixar</button>
-                    </div>
-                    <div class="message-area" id="messageArea">
-                        <div class="message received">
-                            <div class="message-content">
-                                Olá, Maria! Como posso ajudar com Cálculo hoje?
-                                <div class="message-time">17/04/2025 10:00</div>
-                            </div>
-                        </div>
-                        <div class="message sent">
-                            <div class="message-content">
-                                Olá, João! Estou com dúvidas na derivada parcial. Pode explicar?
-                                <div class="message-time">17/04/2025 10:05</div>
-                                <button class="pin-btn" onclick="pinMessage(this, 'Olá, João! Estou com dúvidas na derivada parcial. Pode explicar?')">Fixar</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="typing-indicator" id="typingIndicator">João está a escrever...</div>
-                    <div class="message-input">
-                        <div class="emoji-picker">
-                            <button onclick="toggleEmojiPicker()" aria-label="Selecionar emoji">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-3-10a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2zm-3 4c-2 0-3-1-3-2h6c0 1-1 2-3 2z"/>
-                                </svg>
-                            </button>
-                            <div class="emoji-list" id="emojiList">
-                                <span onclick="addEmoji('😊')" role="button" aria-label="Emoji sorriso">😊</span>
-                                <span onclick="addEmoji('👍')" role="button" aria-label="Emoji positivo">👍</span>
-                                <span onclick="addEmoji('🚀')" role="button" aria-label="Emoji foguete">🚀</span>
-                                <span onclick="addEmoji('📚')" role="button" aria-label="Emoji livro">📚</span>
-                                <span onclick="addEmoji('❓')" role="button" aria-label="Emoji pergunta">❓</span>
-                            </div>
-                        </div>
-                        <div class="file-upload">
-                            <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.txt" onchange="handleFileUpload(this.files)">
-                            <label for="fileInput" aria-label="Carregar ficheiro">
-                                <svg viewBox="0 0 24 24">
-                                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-                                </svg>
-                            </label>
-                        </div>
-                        <input type="text" id="messageInput" placeholder="Escreve uma mensagem..." oninput="showTypingIndicator()" aria-label="Escrever mensagem">
-                        <button class="btn-animated" onclick="sendMessage()" aria-label="Enviar mensagem">Enviar</button>
-                    </div>
-                    <div class="quick-replies">
-                        <button class="quick-reply" onclick="sendQuickReply('Obrigado!')" aria-label="Resposta rápida: Obrigado">Obrigado!</button>
-                        <button class="quick-reply" onclick="sendQuickReply('Pode explicar mais?')" aria-label="Resposta rápida: Explicar mais">Pode explicar mais?</button>
-                        <button class="quick-reply" onclick="sendQuickReply('Entendido!')" aria-label="Resposta rápida: Entendido">Entendido!</button>
-                    </div>
+
+
+{% block content %}
+
+<div class="chat-container">
+    <div class="sidebar">
+        {% for mentor in mentors %}
+        
+        
+          <div class="mentor-card mentor-clickable"
+     onclick="window.location.href='{{ url_for('conversa', conversation_id=mentor.conversation_id) }}'">
+            <img src="{{ url_for('static', filename=mentor.profile_pic.split('static/')[-1]) }}" alt="Mentor {{ mentor.name }}">
+            <div>
+              <h4>{{ mentor.name }}</h4>
+              <p>{{ mentor.subject }}</p>
+            </div>
+          </div>
+      
+        {% endfor %}
+    </div>
+
+    <div class="chat-area">
+        {% if mentor_info %}
+        <div class="chat-header">
+            <img src="{{ url_for('static', filename=mentor_info.profile_pic.split('static/')[-1]) }}" alt="Mentor {{ mentor_info.name }}">
+            <div>
+                <h3>{{ mentor_info.name }}</h3>
+                <p>{{ mentor_info.subject }}</p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="pinned-message" id="pinnedMessage">
+            <span id="pinnedText"></span>
+            <button onclick="unpinMessage()" aria-label="Desafixar mensagem">Desafixar</button>
+        </div>
+
+        <div class="message-area" id="messageArea"></div>
+
+        <div class="typing-indicator" id="typingIndicator">A escrever...</div>
+
+        <div class="message-input">
+            <div class="emoji-picker">
+                <button onclick="toggleEmojiPicker()" aria-label="Selecionar emoji">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-3-10a1 1 0 100-2 1 1 0 000 2zm6 0a1 1 0 100-2 1 1 0 000 2zm-3 4c-2 0-3-1-3-2h6c0 1-1 2-3 2z"/>
+                    </svg>
+                </button>
+                <div class="emoji-list" id="emojiList">
+                    <span onclick="addEmoji('😊')" role="button" aria-label="Emoji sorriso">😊</span>
+                    <span onclick="addEmoji('👍')" role="button" aria-label="Emoji positivo">👍</span>
+                    <span onclick="addEmoji('🚀')" role="button" aria-label="Emoji foguete">🚀</span>
+                    <span onclick="addEmoji('📚')" role="button" aria-label="Emoji livro">📚</span>
+                    <span onclick="addEmoji('❓')" role="button" aria-label="Emoji pergunta">❓</span>
                 </div>
             </div>
+
+            <div class="file-upload">
+                <input type="file" id="fileInput" accept=".pdf,.png,.jpg,.txt" onchange="handleFileUpload(this.files)">
+                <label for="fileInput" aria-label="Carregar ficheiro">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    </svg>
+                </label>
+            </div>
+
+            <input type="text" id="messageInput" placeholder="Escreve uma mensagem..." oninput="showTypingIndicator()" aria-label="Escrever mensagem">
+            <button class="btn-animated" onclick="sendMessage()" aria-label="Enviar mensagem">Enviar</button>
+        </div>
+
+        <div class="quick-replies">
+            <button class="quick-reply" onclick="sendQuickReply('Obrigado!')" aria-label="Resposta rápida: Obrigado">Obrigado!</button>
+            <button class="quick-reply" onclick="sendQuickReply('Pode explicar mais?')" aria-label="Resposta rápida: Explicar mais">Pode explicar mais?</button>
+            <button class="quick-reply" onclick="sendQuickReply('Entendido!')" aria-label="Resposta rápida: Entendido">Entendido!</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.conversationId = {{ conversation_id }};
+    window.onload = () => {
+        loadMessages(window.conversationId);
+    };
+</script>
+
+{% endblock %}
+
         </section>
     </main>
 
@@ -1440,7 +1448,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
     <script>
-        // Inicializar Highlight.js
+
+      const CONVERSATION_ID = {{ conversation_id }};
+      const USER_ID = {{ user_id }};
+      document.addEventListener("DOMContentLoaded", function () {
+              loadMessages();
+          });
+              // Inicializar Highlight.js
         hljs.highlightAll();
 
         // Alternar tema
@@ -1537,41 +1551,78 @@
         });
 
         // Enviar mensagem
-        function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-            if (!message) {
-                showNotification('Por favor, escreva uma mensagem.');
-                return;
-            }
-            const messageArea = document.getElementById('messageArea');
-            const newMessage = document.createElement('div');
-            newMessage.className = 'message sent';
-            newMessage.innerHTML = `
-                <div class="message-content">
-                    ${message}
-                    <div class="message-time">${new Date().toLocaleString()}</div>
-                    <button class="pin-btn" onclick="pinMessage(this, '${message}')">Fixar</button>
-                </div>
-            `;
-            messageArea.appendChild(newMessage);
-            input.value = '';
-            messageArea.scrollTop = messageArea.scrollHeight;
-            showNotification('Mensagem enviada!');
-            // Simular resposta do mentor
-            setTimeout(() => {
-                const response = document.createElement('div');
-                response.className = 'message received';
-                response.innerHTML = `
-                    <div class="message-content">
-                        Entendido, Maria! Vou explicar mais sobre isso em breve.
-                        <div class="message-time">${new Date().toLocaleString()}</div>
-                    </div>
-                `;
-                messageArea.appendChild(response);
-                messageArea.scrollTop = messageArea.scrollHeight;
-            }, 1500);
-        }
+       
+ let pollingInterval = null;
+
+    function loadMessages() {
+        fetch(`/get_messages/${CONVERSATION_ID}`)
+            .then(res => res.json())
+            .then(data => {
+                const area = document.getElementById('messageArea');
+                area.innerHTML = '';
+
+                data.messages.forEach(msg => {
+                    const div = document.createElement('div');
+                    div.className = msg.sender_id === USER_ID ? 'message right' : 'message left';
+                    div.innerHTML = `
+                        <p>${msg.message}</p>
+                        <span>${msg.timestamp}</span>
+                    `;
+                    area.appendChild(div);
+                });
+
+                // Scroll to bottom
+                area.scrollTop = area.scrollHeight;
+            });
+    }
+async function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    const res = await fetch('/send_message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            conversation_id: CONVERSATION_ID,
+            message: message
+        })
+    });
+
+    if (res.ok) {
+        input.value = '';
+        await loadMessages(); // Reload updated messages
+    } else {
+        showNotification('Erro ao enviar mensagem.');
+    }
+}
+
+
+async function loadMessages() {
+    const response = await fetch(`/get_messages/${CONVERSATION_ID}`);
+    const result = await response.json();
+    const messageArea = document.getElementById('messageArea');
+    messageArea.innerHTML = '';
+
+    result.messages.forEach(msg => {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${msg.sender_id === USER_ID ? 'sent' : 'received'}`;
+        msgDiv.innerHTML = `
+            <div class="message-content">
+                ${msg.message}
+                <div class="message-time">${msg.timestamp}</div>
+            </div>
+        `;
+        messageArea.appendChild(msgDiv);
+    });
+
+    messageArea.scrollTop = messageArea.scrollHeight;
+}
 
         // Enviar resposta rápida
         function sendQuickReply(text) {

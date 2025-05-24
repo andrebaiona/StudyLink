@@ -6,6 +6,7 @@
     <meta name="description" content="Study Link - Escolhe mentores com um interface estilo Tinder, com swipe para combinar.">
     <meta name="keywords" content="Study Link, matching, mentoria, educação, swipe, tinder">
     <meta name="author" content="Study Link Team">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="/static/Imagens/logo.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -1097,7 +1098,11 @@
                 <div class="card-stack" id="cardStack">
                     {% if mentors %}
                         {% for mentor in mentors %}
-                        <div class="mentor-card" data-mentor="{{ mentor.name }}" data-subject="{{ mentor.subject_name }}">
+                       
+            <div class="mentor-card" 
+                 data-id="{{ mentor.mentor_id }}" 
+                 data-mentor="{{ mentor.name }}" 
+                 data-subject="{{ mentor.subject_name }}">
                             <img src="/{{ mentor.profile_pic }}" alt="Mentor {{ mentor.name }}" onerror="this.src='/static/uploads/ProfilePics/default.jpg';">
                             <h3>{{ mentor.name }}</h3>
                             <div class="subject">{{ mentor.subject_name }}</div>
@@ -1162,274 +1167,194 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script>
-        // Theme Toggle
-        function toggleTheme() {
-            const body = document.body;
-            const toggleIcon = document.querySelector('.theme-icon');
-            body.classList.toggle('dark-mode');
-            toggleIcon.innerHTML = body.classList.contains('dark-mode')
-                ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
-                : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
-            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
-            showNotification('Tema alterado!');
+   <script>
+// === Theme Toggle ===
+function toggleTheme() {
+    const body = document.body;
+    const toggleIcon = document.querySelector('.theme-icon');
+    body.classList.toggle('dark-mode');
+    toggleIcon.innerHTML = body.classList.contains('dark-mode')
+        ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
+        : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+    localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+    showNotification('Tema alterado!');
+}
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.theme-icon').innerHTML = '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />';
+}
+
+// === Notification ===
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.querySelector('p').textContent = message;
+    notification.classList.add('active');
+    setTimeout(() => notification.classList.remove('active'), 3000);
+}
+
+// === Swipe Cards ===
+const cardStack = document.getElementById('cardStack');
+let mentors = Array.from(document.querySelectorAll('.mentor-card'));
+let lastSwiped = null;
+
+function updateCardStack() {
+    mentors.forEach((card, index) => {
+        card.style.zIndex = mentors.length - index;
+        card.style.transform = index === 0 ? 'none' : `scale(${1 - index * 0.03}) translateY(${index * 8}px)`;
+        card.style.pointerEvents = index === 0 ? 'auto' : 'none';
+    });
+}
+
+function swipeCard(direction) {
+    const card = mentors[0];
+    if (!card) return;
+
+    const isLike = direction === 'right';
+    const stamp = card.querySelector(isLike ? '.swipe-stamp.like' : '.swipe-stamp.nope');
+    const xPos = isLike ? 600 : -600;
+    const rotation = isLike ? 25 : -25;
+
+    gsap.to(stamp, { opacity: 1, duration: 0.3 });
+    gsap.to(card, {
+        x: xPos,
+        rotate: rotation,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        onComplete: () => {
+            lastSwiped = { card, direction };
+
+        const id = card.getAttribute('data-id');
+        const name = card.getAttribute('data-mentor');
+        const subject = card.getAttribute('data-subject');
+        const profilePic = card.querySelector('img').getAttribute('src');
+
+        if (id) {
+            showMatchModal(id, name, subject);
+        } else {
+            console.error("⚠️ Mentor card missing data-id attribute.");
         }
+            card.remove();
+            mentors.shift();
 
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            document.querySelector('.theme-icon').innerHTML = '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />';
-        }
-
-        // Menu Toggle
-        function toggleMenu() {
-            const nav = document.querySelector('nav');
-            const btn = document.querySelector('.menu-btn');
-            nav.classList.toggle('show');
-            btn.classList.toggle('active');
-        }
-
-        // Matched List Toggle (Mobile)
-        function toggleMatchedList() {
-            const matchedList = document.querySelector('.matched-list');
-            matchedList.classList.toggle('active');
-        }
-
-        // Scroll Effect for Navbar
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            header.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Logout
-        function logout() {
-            showNotification('Sessão terminada com sucesso!');
-            setTimeout(() => {
-                location.href = '/login_page';
-            }, 1000);
-        }
-
-        // Notification
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.querySelector('p').textContent = message;
-            notification.classList.add('active');
-            setTimeout(() => {
-                notification.classList.remove('active');
-            }, 3000);
-        }
-
-        // GSAP Animations
-        gsap.fromTo('.matching-container', 
-            { opacity: 0, y: 50 },
-            { opacity: 1, y: 0, duration: 1, ease: 'power2.out' }
-        );
-
-        gsap.fromTo('.mentor-card', 
-            { opacity: 0, y: 30 },
-            { opacity: 1, y: 0, duration: 0.8, stagger: 0.2, ease: 'power2.out' }
-        );
-
-        // Swipe Logic
-        const cardStack = document.getElementById('cardStack');
-        let mentors = Array.from(document.querySelectorAll('.mentor-card'));
-        let lastSwiped = null;
-        let matchedMentors = [];
-
-        function updateCardStack() {
-            mentors.forEach((card, index) => {
-                card.style.zIndex = mentors.length - index;
-                card.style.transform = index === 0 ? 'none' : `scale(${1 - index * 0.03}) translateY(${index * 8}px)`;
-                card.style.pointerEvents = index === 0 ? 'auto' : 'none';
-            });
-        }
-
-        function swipeCard(direction) {
-            const card = mentors[0];
-            if (!card) return;
-
-            const isLike = direction === 'right';
-            const stamp = card.querySelector(isLike ? '.swipe-stamp.like' : '.swipe-stamp.nope');
-            const xPos = isLike ? 600 : -600;
-            const rotation = isLike ? 25 : -25;
-
-            gsap.to(stamp, { opacity: 1, duration: 0.3 });
-            gsap.to(card, {
-                x: xPos,
-                rotate: rotation,
-                opacity: 0,
-                duration: 0.6,
-                ease: 'power2.out',
-                onComplete: () => {
-                    lastSwiped = { card, direction };
-                    card.remove();
-                    mentors.shift();
-                    
-        if (isLike) {
-            const name = card.getAttribute('data-mentor');
-            const subject = card.getAttribute('data-subject');
-            const profilePic = card.querySelector('img').getAttribute('src');   
-            matchedMentors.push({ name, subject, profilePic }); 
-                        updateMatchedList();
-                        showMatchModal(name, subject);
-                    }
-                    updateCardStack();
-                    gsap.set(stamp, { opacity: 0 });
-                    showNotification(isLike ? 'Mentor combinado!' : 'Mentor rejeitado!');
-                    if (mentors.length === 0) {
-                        addNewMentor();
-                    }
-                }
-            });
-        }
-
-        function addNewMentor() {
-            const newMentor = document.createElement('div');
-            newMentor.className = 'mentor-card';
-            const id = `Mentor${mentors.length + 1}`;
-            newMentor.setAttribute('data-mentor', `Novo Mentor ${id}`);
-            newMentor.setAttribute('data-subject', 'Nova Disciplina');
-            newMentor.innerHTML = `
-                <img src="https://via.placeholder.com/200" alt="Novo Mentor">
-                <h3>Novo Mentor ${id}</h3>
-                <div class="subject">Nova Disciplina</div>
-                <p>Especialista em ensino dinâmico e interativo.</p>
-                <div class="tags">
-                    <span class="tag">Ensino</span>
-                    <span class="tag">Aprendizagem</span>
-                </div>
-                <div class="swipe-stamp like">Like</div>
-                <div class="swipe-stamp nope">Nope</div>
-            `;
-            cardStack.appendChild(newMentor);
-            mentors.push(newMentor);
+            if (isLike) {
+                showMatchModal(id, name, subject);
+            }
             updateCardStack();
+            gsap.set(stamp, { opacity: 0 });
+            showNotification(isLike ? 'Mentor combinado!' : 'Mentor rejeitado!');
         }
+    });
+}
 
-        function undoSwipe() {
-            if (!lastSwiped) {
-                showNotification('Nada para desfazer!');
-                return;
-            }
-            const { card, direction } = lastSwiped;
-            cardStack.prepend(card);
-            mentors.unshift(card);
-            if (direction === 'right') {
-                matchedMentors.pop();
-                updateMatchedList();
-            }
-            gsap.fromTo(card, 
-                { x: direction === 'right' ? 600 : -600, opacity: 0, rotate: direction === 'right' ? 25 : -25 },
-                { x: 0, opacity: 1, rotate: 0, duration: 0.6, ease: 'power2.out' }
-            );
-            updateCardStack();
-            lastSwiped = null;
-            showNotification('Swipe desfeito!');
+
+function showMatchModal(id, name, subject) {
+    const modal = document.getElementById('matchModal');
+    console.log("Setting mentor ID:", id);
+    modal.setAttribute('data-mentor-id', id);  // store mentor ID for later
+    document.getElementById('matchMentorName').textContent = name;
+    document.getElementById('matchMentorSubject').textContent = subject;
+    modal.classList.add('active');
+}
+
+
+function closeMatchModal() {
+    document.getElementById('matchModal').classList.remove('active');
+}
+
+
+
+function connectWithMentor() {
+    const modal = document.getElementById('matchModal');
+    const mentorId = parseInt(modal.getAttribute('data-mentor-id'), 10);
+    console.log("Connecting with mentor ID:", mentorId);
+
+    if (!mentorId || isNaN(mentorId)) {
+        alert("Erro: mentor não encontrado.");
+        return;
+    }
+
+ 
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+fetch('/start_conversation', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+    },
+    body: JSON.stringify({ mentor_id: mentorId })
+})
+
+    .then(res => res.json())
+    .then(data => {
+        console.log("Response from server:", data);
+        if (data.status === 'success') {
+            window.location.href = `/conversa/${data.conversation_id}`;
+        } else {
+            alert("Erro ao iniciar conversa: " + data.message);
         }
+    })
+    .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("Erro ao comunicar com o servidor.");
+    });
+}
 
-        
-      function updateMatchedList() {
-          const matchedMentorsDiv = document.getElementById('matchedMentors');
-          matchedMentorsDiv.innerHTML = matchedMentors.map((mentor, index) => `
-              <div class="matched-card" data-index="${index}">
-                  <img src="${mentor.profilePic}" alt="${mentor.name}" onerror="this.src='/static/uploads/ProfilePics/default.jpg';">
-                  <div>
-                      <h4>${mentor.name}</h4>
-                      <p>${mentor.subject}</p>
-                  </div>
-                  <button class="remove-btn" onclick="removeMatchedMentor(${index})" aria-label="Remover mentor">×</button>
-              </div>
-          `).join('');
-      }
 
-        function removeMatchedMentor(index) {
-            matchedMentors.splice(index, 1);
-            updateMatchedList();
-            showNotification('Mentor removido!');
-        }
 
-        function showMatchModal(name, subject) {
-            const modal = document.getElementById('matchModal');
-            document.getElementById('matchMentorName').textContent = name;
-            document.getElementById('matchMentorSubject').textContent = subject;
-            modal.classList.add('active');
-        }
+// === Drag Events for Swipe ===
+let isDragging = false;
+let startX = 0;
+let currentX = 0;
 
-        function closeMatchModal() {
-            document.getElementById('matchModal').classList.remove('active');
-        }
+function handleDragStart(e) {
+    const card = mentors[0];
+    if (!card) return;
+    isDragging = true;
+    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    card.style.transition = 'none';
+    e.preventDefault();
+}
 
-        function connectWithMentor() {
-            closeMatchModal();
-            showNotification('Conexão iniciada com o mentor!');
-            // Placeholder for backend integration
-        }
+function handleDragMove(e) {
+    if (!isDragging) return;
+    const card = mentors[0];
+    if (!card) return;
+    currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const deltaX = currentX - startX;
+    const rotation = deltaX / 8;
+    card.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+    card.style.opacity = 1 - Math.abs(deltaX) / 400;
+    card.style.border = deltaX > 0 ? '3px solid #28a745' : '3px solid #dc3545';
+    const stamp = card.querySelector(deltaX > 0 ? '.swipe-stamp.like' : '.swipe-stamp.nope');
+    gsap.set(stamp, { opacity: Math.abs(deltaX) / 150 });
+}
 
-        function searchMatchedMentors(query) {
-            const matchedCards = document.querySelectorAll('.matched-card');
-            matchedCards.forEach(card => {
-                const name = card.querySelector('h4').textContent.toLowerCase();
-                const subject = card.querySelector('p').textContent.toLowerCase();
-                card.style.display = (name.includes(query.toLowerCase()) || subject.includes(query.toLowerCase())) ? 'flex' : 'none';
-            });
-        }
+function handleDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const card = mentors[0];
+    if (!card) return;
+    card.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+    const deltaX = currentX - startX;
+    if (Math.abs(deltaX) > 120) {
+        swipeCard(deltaX > 0 ? 'right' : 'left');
+    } else {
+        gsap.to(card, { x: 0, rotate: 0, opacity: 1, duration: 0.3 });
+        card.style.border = 'none';
+        gsap.set(card.querySelectorAll('.swipe-stamp'), { opacity: 0 });
+    }
+}
 
-        // Swipe Gesture Handling
-        let isDragging = false;
-        let startX = 0;
-        let currentX = 0;
+cardStack.addEventListener('mousedown', handleDragStart);
+cardStack.addEventListener('mousemove', handleDragMove);
+cardStack.addEventListener('mouseup', handleDragEnd);
+cardStack.addEventListener('mouseleave', handleDragEnd);
+cardStack.addEventListener('touchstart', handleDragStart);
+cardStack.addEventListener('touchmove', handleDragMove);
+cardStack.addEventListener('touchend', handleDragEnd);
 
-        function handleDragStart(e) {
-            const card = mentors[0];
-            if (!card) return;
-            isDragging = true;
-            startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-            card.style.transition = 'none';
-            e.preventDefault();
-        }
-
-        function handleDragMove(e) {
-            if (!isDragging) return;
-            const card = mentors[0];
-            if (!card) return;
-            currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-            const deltaX = currentX - startX;
-            const rotation = deltaX / 8;
-            card.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
-            card.style.opacity = 1 - Math.abs(deltaX) / 400;
-            card.style.border = deltaX > 0 ? '3px solid #28a745' : '3px solid #dc3545';
-            const stamp = card.querySelector(deltaX > 0 ? '.swipe-stamp.like' : '.swipe-stamp.nope');
-            gsap.set(stamp, { opacity: Math.abs(deltaX) / 150 });
-        }
-
-        function handleDragEnd() {
-            if (!isDragging) return;
-            isDragging = false;
-            const card = mentors[0];
-            if (!card) return;
-            card.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
-            const deltaX = currentX - startX;
-            if (Math.abs(deltaX) > 120) {
-                swipeCard(deltaX > 0 ? 'right' : 'left');
-            } else {
-                gsap.to(card, { x: 0, rotate: 0, opacity: 1, duration: 0.3 });
-                card.style.border = 'none';
-                gsap.set(card.querySelectorAll('.swipe-stamp'), { opacity: 0 });
-            }
-        }
-
-        cardStack.addEventListener('mousedown', handleDragStart);
-        cardStack.addEventListener('mousemove', handleDragMove);
-        cardStack.addEventListener('mouseup', handleDragEnd);
-        cardStack.addEventListener('mouseleave', handleDragEnd);
-        cardStack.addEventListener('touchstart', handleDragStart);
-        cardStack.addEventListener('touchmove', handleDragMove);
-        cardStack.addEventListener('touchend', handleDragEnd);
-
-        // Initialize
-        updateCardStack();
-        if (window.innerWidth < 768) {
-            document.querySelector('.matched-list').classList.remove('active');
-        }
-    </script>
-</body>
+updateCardStack();
+</script></body>
 </html>
