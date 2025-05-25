@@ -395,6 +395,7 @@ def get_units_by_course():
 
 
 
+
 @app.route('/send_message', methods=['POST'])
 def send_message():
     if 'user_id' not in session:
@@ -416,9 +417,20 @@ def send_message():
             VALUES (%s, %s, %s)
         """, (conversation_id, session['user_id'], encrypted_message))
         db.commit()
+
+        from datetime import datetime
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        # Emit real-time event
+        socketio.emit('new_message', {
+            'conversation_id': conversation_id,
+            'sender_id': session['user_id'],
+            'message': message,
+            'timestamp': timestamp
+        }, room=f'conversation_{conversation_id}')
+
         cursor.close()
         return {'status': 'success'}
-
     except mysql.connector.Error as err:
         return {'status': 'error', 'message': str(err)}, 500
 
@@ -560,5 +572,15 @@ def start_conversation():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}, 500
 # --- RUN ---
+
+from flask_socketio import SocketIO, emit, join_room
+
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
+
+@socketio.on('join')
+def handle_join(data):
+    join_room(f"conversation_{data['conversation_id']}")
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    socketio.run(app, host='0.0.0.0', port=8000, debug=True)
+

@@ -1404,7 +1404,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
     window.conversationId = {{ conversation_id }};
     window.onload = () => {
@@ -1596,7 +1596,7 @@ async function sendMessage() {
 
     if (res.ok) {
         input.value = '';
-        await loadMessages(); // Reload updated messages
+  
     } else {
         showNotification('Erro ao enviar mensagem.');
     }
@@ -1836,6 +1836,26 @@ async function loadMessages() {
         if (window.innerWidth < 768) {
             document.querySelector('.mentor-list').classList.remove('active');
         }
+        const socket = io();
+
+          // Join conversation room
+          socket.emit('join', { conversation_id: CONVERSATION_ID });
+
+          socket.on('new_message', data => {
+              if (data.conversation_id === CONVERSATION_ID) {
+                  const messageArea = document.getElementById('messageArea');
+                  const msgDiv = document.createElement('div');
+                  msgDiv.className = `message ${data.sender_id === USER_ID ? 'sent' : 'received'}`;
+                  msgDiv.innerHTML = `
+                      <div class="message-content">
+                          ${data.message}
+                          <div class="message-time">${data.timestamp}</div>
+                      </div>
+                  `;
+                  messageArea.appendChild(msgDiv);
+                  messageArea.scrollTop = messageArea.scrollHeight;
+              }
+          });
     </script>
 </body>
 </html>

@@ -8,3 +8,5 @@ WTForms
 bleach
 python-dotenv
 cryptography
+flask_socketio
+eventlet

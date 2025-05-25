@@ -1,16 +1,11 @@
 FROM python:3.9
 
-# Set working directory
 WORKDIR /app
 
-# Copy project files
-COPY . /app
-
-# Install dependencies
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY . .
+
 EXPOSE 8000
-# Run Flask app directly
-
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "app:app"]
-
+CMD ["gunicorn", "--worker-class", "eventlet", "-w", "1", "--bind", "0.0.0.0:8000", "app:app"]
