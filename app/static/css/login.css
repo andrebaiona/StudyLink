@@ -1,149 +1,313 @@
+/* Definição de variáveis de cores */
+:root {
+    --bg-color: #d2b48c;
+    --text-color: #333;
+    --container-bg: #e1d9ce;
+    --accent-primary: #a0522d;
+    --accent-secondary: #deb887;
+    --input-bg: #fff;
+    --input-border: #ccc;
+    --shadow: rgba(0, 0, 0, 0.2);
+    --transition: all 0.3s ease;
+}
+
+/* Modo escuro */
+body.dark-mode {
+    --bg-color: #1f1f1f;
+    --text-color: #e1d9ce;
+    --container-bg: #2c2c2c;
+    --accent-primary: #deb887;
+    --accent-secondary: #a0522d;
+    --input-bg: #3a3a3a;
+    --input-border: #555;
+    --shadow: rgba(0, 0, 0, 0.4);
+}
+
+/* Estilos globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: #d2b48c;
+    background-color: var(--bg-color);
     font-family: 'Poppins', sans-serif;
-    margin: 0;
+    color: var(--text-color);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
+/* Animação de fundo */
+body::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.2), transparent);
+    animation: rotateGradient 20s linear infinite;
+    z-index: -1;
+}
 
+body.dark-mode::before {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1), transparent);
+}
+
+/* Animação do gradiente */
+@keyframes rotateGradient {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Container principal */
 .login-container {
-    background: #e1d9ce;
-    padding: 5% 7.5%;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 400px;
+    background: var(--container-bg);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px var(--shadow);
+    width: 100%;
+    max-width: 450px;
     text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
 }
 
-/* Add responsive behavior */
+/* Efeito interativo no container */
+.login-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.login-container:hover::after {
+    left: 100%;
+}
+
+/* Design responsivo */
 @media (max-width: 768px) {
     .login-container {
-        width: 85%; /* Slightly smaller width for smaller screens */
-        padding: 2% 5%; /* Adjust padding for better spacing */
+        width: 90%;
+        padding: 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
     .login-container {
-        width: 85%; /* Full width for very small screens */
-        padding: 3% 4%; /* Adjust padding for compact layout */
+        width: 95%;
+        padding: 1rem;
     }
 }
 
-
+/* Logótipo */
 .logo img {
-    width: 40%;
-    margin-bottom: 5%;
+    width: 120px;
+    margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
 }
 
+.logo img:hover {
+    transform: scale(1.1);
+}
 
+/* Título */
 h1 {
-    font-size: 1.5em;
-    color: #cd853f;
-    margin-bottom: 5%;
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: 1.5rem;
 }
 
+/* Grupos de formulário */
 .form-group {
-    margin-bottom: 5%;
+    margin-bottom: 1.5rem;
     text-align: left;
+    position: relative;
 }
 
+/* Etiquetas */
 label {
-    display: block;
-    margin-bottom: 2%;
-    color: #555;
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+    color: #777;
+    font-size: 1rem;
+    transition: var(--transition);
+    pointer-events: none;
 }
 
-input {
+/* Campos de entrada */
+input[type="text"],
+input[type="password"] {
     width: 100%;
-    padding: 3%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1em;
+    padding: 1rem;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    background: var(--input-bg);
+    color: var(--text-color);
+    transition: var(--transition);
 }
 
+input:focus,
+input:not(:placeholder-shown) {
+    border-color: var(--accent-secondary);
+    outline: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+}
 
-.botao {
-    background: #cd853f;
-    color: #fff;
-    padding: 3%;
-    border: none;
-    border-radius: 5px;
-    font-size: 1em;
+/* Ajustar etiquetas quando o campo está focado ou preenchido */
+input:focus + label,
+input:not(:placeholder-shown) + label {
+    top: -0.8rem;
+    left: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--accent-primary);
+    background: var(--container-bg);
+    padding: 0 0.3rem;
+}
+
+/* Container da palavra-passe */
+.password-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+/* Botão de alternar visibilidade da palavra-passe */
+.toggle-password {
+    position: absolute;
+    right: 1rem;
     cursor: pointer;
-    transition: background 0.3s;
+    user-select: none;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    transition: opacity 0.2s ease-in-out;
+}
+
+.toggle-password:hover {
+    opacity: 0.7;
+}
+
+.eye-icon {
+    font-size: 1.2rem;
+}
+
+/* Botão de submissão */
+.botao {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
     width: 100%;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
 }
 
 .botao:hover {
-    background: #a0522d;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--shadow);
 }
 
+/* Efeito de brilho no botão */
+.botao::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s ease, height 0.4s ease;
+}
 
+.botao:hover::after {
+    width: 200px;
+    height: 200px;
+}
+
+/* Link de registo */
 .link-register {
-    margin-top: 5%;
-    font-size: 1em;
+    margin-top: 1.5rem;
+    font-size: 1rem;
 }
 
 .link-register a {
-    color: #cd853f;
+    color: var(--accent-primary);
     text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
 }
 
 .link-register a:hover {
+    color: var(--accent-secondary);
     text-decoration: underline;
-    color: #a0522d;
 }
 
-
+/* Mensagens flash */
 #flash-container {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
 }
 
 .flash-message {
-    padding: 15px;
-    border-radius: 5px;
+    padding: 1rem;
+    border-radius: 8px;
     text-align: center;
-    font-weight: bold;
-    margin-bottom: 10px;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    transition: var(--transition);
 }
 
-
 .flash-message.success {
-    background-color: #d4edda;
+    background-color: rgba(212, 237, 218, 0.9);
     color: #155724;
     border: 1px solid #c3e6cb;
 }
 
-
 .flash-message.error {
-    background-color: #f8d7da;
+    background-color: rgba(248, 215, 218, 0.9);
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
 
-
+/* Container de carregamento */
 #loading-container {
-    margin-top: 10px;
+    margin-top: 0.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-
+/* Spinner de carregamento */
 .spinner-circle {
-    width: 25px;
-    height: 25px;
+    width: 24px;
+    height: 24px;
     border: 3px solid rgba(21, 87, 36, 0.3);
     border-top: 3px solid #155724;
     border-radius: 50%;
     animation: spin 1s linear infinite;
-    margin-bottom: 10px;
+    margin-bottom: 0.5rem;
 }
 
 @keyframes spin {
@@ -151,21 +315,20 @@ input {
     to { transform: rotate(360deg); }
 }
 
-
+/* Barra de progresso */
 .progress-bar {
     width: 80%;
-    height: 5px;
+    height: 6px;
     background-color: rgba(21, 87, 36, 0.2);
-    border-radius: 5px;
+    border-radius: 6px;
     overflow: hidden;
-    margin-bottom: 10px;
 }
 
 .progress-fill {
     height: 100%;
     width: 0;
     background-color: #155724;
-    border-radius: 5px;
+    border-radius: 6px;
     animation: fillBar 2s linear forwards;
 }
 
@@ -174,50 +337,25 @@ input {
     to { width: 100%; }
 }
 
-
-#loading-container p {
-    font-size: 16px;
-    font-weight: bold;
-    font-family: 'Poppins', sans-serif;
-    color: #155724;
-    margin: 0;
+/* Botão de alternar tema */
+.theme-toggle {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    transition: transform 0.3s ease;
 }
 
-.password-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
+.theme-toggle svg {
+    width: 26px;
+    height: 26px;
+    fill: var(--accent-primary);
+    transition: var(--transition);
 }
 
-input[type="password"],
-input[type="text"]{
-  width: 100%;
-  padding-right: 40px;
-  box-sizing: border-box;
-  height: 40px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding-left: 10px;
-  font-size: 16px;
+.theme-toggle:hover {
+    transform: rotate(15deg);
 }
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  cursor: pointer;
-  user-select: none;
-  font-size: 1.2em;
-  color: #555;
-  transition: opacity 0.2s ease-in-out;
-}
-
-.toggle-password:hover {
-  opacity: 0.7;
-}
-
-.eye-icon {
-  font-size: 20px;
-  color: #555;
-}
-

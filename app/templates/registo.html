@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <!-- Metadados -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Regista-te no Study Link para começares a tua jornada académica.">
@@ -10,15 +9,15 @@
     <link rel="icon" href="/static/Imagens/logo.png">
     <title>Registo - Study Link</title>
     <!-- Estilos -->
-    <link rel="stylesheet" href="../static/css/registo_improved.css">
+    <link rel="stylesheet" href="../static/css/registo.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <!-- Scripts -->
-    <script src="../static/js/registo_improved.js" defer></script>
+    <script src="../static/js/registo.js" defer></script>
 </head>
 <body>
     <!-- Botão de alternar tema -->
-    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+    <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alterar tema">
         <svg class="theme-icon" viewBox="0 0 24 24">
             <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
         </svg>
@@ -70,7 +69,7 @@
             <div class="form-group">
                 <label for="password" class="sr-only">Palavra-passe</label>
                 <div class="password-container">
-                    <input type="password" id="password" name="password" placeholder=" " required>
+                    <input type="password" id="password" name="password" placeholder="Palavra-passe" required>
                     <span class="toggle-password" onclick="togglePassword('password', this)">
                         <i class="fa-solid fa-eye" id="eye-icon"></i>
                     </span>
