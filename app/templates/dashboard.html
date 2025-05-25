@@ -1,680 +1,1636 @@
-<!-- DOCTYPE e cabeçalho -->
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-PT">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard - Study Link</title>
-
-  <!-- CSS e fontes -->
-  <link 
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
-    rel="stylesheet"
-  />
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
-  <style>
-    /* ================= RESET BÁSICO ================= */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    html, body {
-      height: 100%;
-      font-family: Arial, sans-serif;
-      background-color: #d2b48c; /* fundo principal */
-    }
-
-    /* ================= SIDEBAR ================= */
-    .sidebar {
-      background-color: #a0522d;
-      min-height: 100vh;
-      color: #ffffff;
-      width: 250px;
-      transition: transform 0.3s ease;
-      z-index: 999;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar .nav-link {
-      color: #ffffff;
-      font-weight: 500;
-      margin-bottom: 10px;
-      border-radius: 5px;
-      padding: 10px;
-    }
-    .sidebar .nav-link:hover {
-      background-color: #8a4523;
-    }
-    .sidebar .logout-btn {
-      background-color: #ff4c4c;
-      border: none;
-      margin-top: 20px;
-      border-radius: 5px;
-      font-weight: 600;
-      padding: 10px;
-    }
-    .sidebar .logout-btn:hover {
-      background-color: #cc0000;
-    }
-
-    /* ================= HEADER (TOPO) ================= */
-    .header {
-      background-color: #e1d9ce;
-      border-bottom: 1px solid #e4e5e6;
-      transition: transform 0.3s ease;
-      z-index: 998;
-      padding: 10px;
-    }
-    .navbar-hidden {
-      transform: translateY(-100%);
-    }
-    .search-bar input {
-      border-radius: 20px;
-    }
-
-    /* ================= NAVBAR ================= */
-    .navbar-brand {
-      font-size: 1.3rem;
-      font-weight: bold;
-    }
-    .navbar-nav .nav-link {
-      font-weight: 500;
-      margin-right: 15px;
-      color: #555 !important;
-    }
-    .navbar-nav .nav-link:hover {
-      color: #333 !important;
-    }
-    .logo-big {
-      height: 60px;
-      width: auto;
-    }
-
-    /* ================= ÁREA DE CONTEÚDO PRINCIPAL ================= */
-    .main-content {
-      flex-grow: 1;
-      background-color: #d2b48c;
-      padding: 20px;
-    }
-
-    /* ================= CARTÕES (CARDS) ================= */
-    .card-custom {
-      border: none;
-      border-radius: 8px;
-      color: #333;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 20px;
-    }
-    .card-custom .card-header {
-      background-color: transparent;
-      border-bottom: none;
-      font-weight: 600;
-    }
-    .card-orange { background-color: #ffebcd; }
-    .card-green { background-color: #f0e68c; color: #333; }
-    .card-yellow { background-color: #f0e68c; }
-    .card-stats { background-color: #ffebcd; }
-
-    /* ================= PERFIL NA SIDEBAR ================= */
-    .profile-pic {
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      border: 3px solid #fff;
-      border-radius: 50%;
-    }
-    .upload-btn {
-      background-color: #fff;
-      color: #a0522d;
-      border: none;
-      font-weight: 600;
-      margin-top: 10px;
-      padding: 4px 12px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .upload-btn:hover {
-      background-color: #f2f2f2;
-    }
-    .file-input {
-      display: none;
-    }
-
-    /* ================= FOOTER ================= */
-    footer {
-      background: #333;
-      color: #fff;
-      text-align: center;
-      padding: 3px;
-      font-size: 0.9em;
-      margin-top: auto;
-    }
-    footer a {
-      color: #cd853f;
-      text-decoration: none;
-    }
-    footer a:hover {
-      text-decoration: underline;
-    }
-
-    /* ================= RESPONSIVIDADE ================= */
-    @media (max-width: 768px) {
-      .navbar-brand { justify-content: center; }
-      .logo-big { margin: 0 auto; }
-      .main-content { padding: 10px; }
-    }
-    @media (max-width: 576px) {
-      .card-custom { margin-bottom: 20px; }
-    }
-    @media (max-width: 480px) {
-      .card-custom { margin-bottom: 10px; }
-    }
-
-    /* ================= SIDEBAR RESPONSIVA ================= */
-    @media (max-width: 991px) {
-      .sidebar {
-        position: fixed;
-        transform: translateX(-100%);
-      }
-      .sidebar.show {
-        transform: translateX(0);
-      }
-      .toggle-sidebar-btn { display: inline-block; }
-    }
-    @media (min-width: 992px) {
-      .toggle-sidebar-btn { display: none; }
-    }
-    @media (max-width: 992px) {
-      .sidebar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 250px;
-        height: 100vh;
-        transition: left 0.3s ease;
-        z-index: 999;
-      }
-      .sidebar.show { left: 0; }
-    }
-
-    /* ================= BOTÃO PARA TOGGLE DA SIDEBAR ================= */
-    .sidebar-toggle {
-      position: fixed;
-      top: 50%;
-      left: 0;
-      transform: translateY(-50%);
-      background-color: #a0522d;
-      color: #fff;
-      padding: 10px;
-      border-radius: 0 5px 5px 0;
-      cursor: pointer;
-      z-index: 999;
-      display: none;
-    }
-    @media (max-width: 992px) {
-      .sidebar-toggle { display: block; }
-    }
-    .sidebar-toggle i { font-size: 20px; }
-    .sidebar-toggle:hover { background-color: #8a4523; }
-
-    /* Esconder botão de toggle quando necessário */
-    .hide-toggle { display: none; }
-
-  </style>
-</head>
-
-<!-- CORPO DA PÁGINA -->
-<body>
-  <!-- TOPO: Navbar -->
-  <nav class="header navbar navbar-expand-lg navbar-light py-2 shadow" id="mainNavbar">
-    <div class="container-fluid px-4">
-      <!-- Botão de toggle da sidebar (visível em telas menores) -->
-      <button 
-        class="btn btn-light toggle-sidebar-btn d-lg-none" 
-        id="toggleSidebar"
-      >
-        <i class="fas fa-bars"></i>
-      </button>
-
-       <!-- Barra lateral para abrir a sidebar -->
-      <div class="sidebar-toggle" id="sidebarToggle">
-        <i class="fas fa-chevron-right"></i>
-      </div>
-      
-      <!-- Logo / Nome do projeto -->
-      <a class="navbar-brand d-flex align-items-center" href="index.html">
-        <img 
-          src="../static/Imagens/logo.png" 
-          alt="Study Link Logo" 
-          class="logo-big me-2"
-        />
-        <span class="fw-bold text-black text-decoration-none d-none d-lg-inline-block">Study Link</span>
-      </a>
-
-      <!-- Navbar links (exemplo) -->
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarItems" aria-controls="navbarItems" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarItems" style="transition: all 0.3s;">
-
-        <ul class="navbar-nav ms-auto align-items-center">
-          <li class="nav-item">
-            <a class="nav-link text-white" href="index.html" style="transition: all 0.3s;">
-              <i class="fas fa-home me-2"></i> Início
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="recursos.html" style="transition: all 0.3s;">
-              <i class="fas fa-chart-bar me-2"></i> Recursos
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="definicoes.html" style="transition: all 0.3s;">
-              <i class="fas fa-cog me-2"></i> Definições
-            </a>
-          </li>
-          <!-- Barra de pesquisa dentro do menu (mobile/tablet) -->
-          <li class="nav-item d-lg-none mt-2 position-relative">
-
-            <form class="search-bar d-flex" style="max-width: 400px; width: 100%;">
-              <input 
-                class="form-control me-2" 
-                type="search" 
-                placeholder="Pesquisar..." 
-                aria-label="Search"
-              />
-              <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-            </form>
-          </li>
-        </ul>
-      </div>
-
-      <!-- Barra de pesquisa (central) - visível em telas maiores -->
-      <form class="search-bar d-none d-lg-flex mx-3" style="max-width: 400px; width: 100%; transition: all 0.3s;">
-
-        <input 
-          class="form-control me-2" 
-          type="search" 
-          placeholder="Pesquisar..." 
-          aria-label="Search"
-        />
-        <button class="btn btn-outline-secondary" type="submit">Buscar</button>
-      </form>
-
-      <!-- Dropdown de perfil (lado direito) -->
-      <div class="dropdown">
-        <a 
-          href="#" 
-          class="d-flex align-items-center text-decoration-none dropdown-toggle" 
-          id="dropdownUser      " 
-          data-bs-toggle="dropdown" 
-          aria-expanded="false"
-        >
-          <img 
-            src="../static/Imagens/perfil.jpg" 
-            alt="Perfil" 
-            width="40" 
-            height="40" 
-            class="rounded-circle border border-2 me-2"
-          />
-          <span class="fw-bold text-white">Username</span>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser      ">
-          <li><a class="dropdown-item" href="#">Perfil</a></li>
-          <li><a class="dropdown-item" href="#">Definições</a></li>
-          <li><hr class="dropdown-divider"></li>
-          <li><a class="dropdown-item" href="#">Sair</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- CONTAINER GERAL -->
-  <div class="d-flex">
-    <!-- SIDEBAR -->
-    <nav class="sidebar p-3 shadow" id="sidebarMenu">
-      <div class="text-center mb-4 border-bottom pb-3">
-        <!-- Foto de Perfil (maior) -->
-        <img 
-          src="../static/Imagens/perfil.jpg" 
-          alt="Foto de Perfil" 
-          class="profile-pic mb-2" 
-          id="profilePic"
-        >
-        <!-- Botão para trocar a foto -->
-        <label for="fileInput" class="upload-btn">
-          <i class="fas fa-camera me-1"></i> Carregar Foto
-        </label>
-        <input 
-          type="file" 
-          id="fileInput" 
-          class="file-input" 
-          accept="image/*"
-        />
-        <p class="h6 m-0 mt-2">Lorem Ipsum</p>
-      </div>
-      <ul class="nav flex-column">
-        <!-- Novo botão 'Conta' antes do Dashboard -->
-        <li class="nav-item mb-1">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-user-circle me-2"></i> Conta
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-chart-bar me-2"></i> Charts
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-file-alt me-2"></i> Pages
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-comments me-2"></i> Chat
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-envelope me-2"></i> Mailbox
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="#" class="nav-link text-white">
-            <i class="fas fa-cog me-2"></i> Settings
-          </a>
-        </li>
-      </ul>
-      <button class="btn logout-btn w-100">
-        <i class="fas fa-sign-out-alt me-2"></i> Logout
-      </button>
-      <div class="sidebar-toggle" id="sidebarToggle">
-    <i class="fas fa-chevron-left"></i>
-  </div>
-    </nav>
-
-    <!-- CONTEÚDO PRINCIPAL -->
-    <div class="main-content p-4">
-      <div class="container-fluid">
-        <!-- Primeira linha de cartões -->
-        <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
-            </div>
-          </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Segunda linha -->
-        <div class="row mb-4">
-          <!-- Coluna de estatísticas menores (Visitors, Page Views, Shares) -->
-          <div class="col-md-3 mb-3">
-            <div class="card card-custom card-stats text-center p-3 mb-3">
-              <p class="fw-bold mb-1">Visitors</p>
-              <h5>1,5876</h5>
-            </div>
-            <div class="card card-custom card-stats text-center p-3 mb-3">
-              <p class="fw-bold mb-1">Pages View</p>
-              <h5>134</h5>
-            </div>
-            <div class="card card-custom card-stats text-center p-3">
-              <p class="fw-bold mb-1">Shares</p>
-              <h5>100</h5>
-            </div>
-          </div>
-          <!-- Card Gráfico de barras -->
-          <div class="col-md-9 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header fw-bold">
-                Gráfico de Atividade
-              </div>
-              <div class="card-body">
-                <!-- Placeholder do gráfico -->
-                <p class="mb-0">[ Gráfico de barras aqui ]</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Terceira linha (exemplo de outro conteúdo) -->
-        <div class="row mb-4">
-          <div class="col-12">
-            <div class="card card-custom p-3" style="background:#fff;">
-              <h5 class="fw-bold mb-2">Outros Tópicos / Informações</h5>
-              <p class="mb-0">
-                Aqui podes adicionar qualquer outra secção, tabela ou listagem para o dashboard. 
-                Mantém a flexibilidade para expandir conforme a aplicação for crescendo.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quarta linha-->
-        <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
-            </div>
-          </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quinta linha-->
-        <div class="row mb-4">
-          <!-- Card grande estilo "circular" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-orange text-center p-3">
-              <h5 class="fw-bold">23</h5>
-              <p class="mb-0">Lorem Ipsum 2020</p>
-            </div>
-          </div>
-
-          <!-- Card "Contact" (exemplo) -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom" style="background: #fff;">
-              <div class="card-header">Contact</div>
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-primary"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Nome do Contacto</p>
-                    <small>contact@example.com</small>
-                  </div>
-                </div>
-                <div class="d-flex align-items-center mb-2">
-                  <i class="fas fa-user-circle fa-2x me-2 text-success"></i>
-                  <div>
-                    <p class="m-0 fw-bold">Outro Contacto</p>
-                    <small>outro@example.com</small>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Card Calendário -->
-          <div class="col-md-4 mb-3">
-            <div class="card card-custom card-green">
-              <div class="card-header">Novembro 2020</div>
-              <div class="card-body">
-                <!-- Exemplo simplificado de calendário -->
-                <p class="fw-bold">S M T W T F S</p>
-                <p>1 2 3 4 5 6 7</p>
-                <p>8 9 10 11 12 13 14</p>
-                <p>15 16 17 18 19 20 21</p>
-                <p>22 23 24 25 26 27 28</p>
-                <p>29 30</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- RODAPÉ -->
-  <footer class="text-center py-2">
-    <p class="mb-0">
-      &copy; 2025 Study Link. Todos os direitos reservados. 
-      <a href="contacto.html" class="text-decoration-none">Contacte-nos</a>
-    </p>
-  </footer>
-
-  <!-- Bootstrap JS -->
-  <script 
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js">
-  </script>
-  <!-- Script para abrir/fechar sidebar em telas menores -->
-  <script>
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const sidebarMenu = document.getElementById('sidebarMenu');
-    const navbar = document.getElementById('mainNavbar');
-    const fileInput = document.getElementById('fileInput');
-    const profilePic = document.getElementById('profilePic');
-    const sidebarToggle = document.getElementById('sidebarToggle');
-    
-    // Mostrar/ocultar sidebar no mobile
-    toggleBtn.addEventListener('click', () => {
-      sidebarMenu.classList.toggle('show');
-      if (window.innerWidth <= 992) {
-        sidebarMenu.style.left = sidebarMenu.classList.contains('show') ? '0' : '-250px';
-      }
-    });
-
-    // Mostrar/ocultar a barra lateral quando a sidebar é ocultada
-    sidebarMenu.addEventListener('transitionend', () => {
-      if (sidebarMenu.classList.contains('show')) {
-        sidebarToggle.style.display = 'none';
-      } else {
-        sidebarToggle.style.display = 'block';
-      }
-    });
-
-    // Abrir a sidebar quando a barra lateral é clicada
-    sidebarToggle.addEventListener('click', () => {
-      sidebarMenu.classList.toggle('show');
-      sidebarToggle.classList.toggle('hide-toggle');
-      if (window.innerWidth <= 992) {
-        sidebarMenu.style.left = sidebarMenu.classList.contains('show') ? '0' : '-250px';
-      }
-    });
-
-    // Lógica para ocultar/mostrar a navbar ao descer/subir scroll
-    let lastScrollTop = 0;
-      window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset || document.documentElement.scrollTop;
-        if (currentScroll > 0 && currentScroll < lastScrollTop) {
-          navbar.classList.remove('navbar-hidden');
-        } else if (currentScroll > lastScrollTop) {
-          navbar.classList.add('navbar-hidden');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study Link - Dashboard para progresso académico, matches e conteúdos salvos.">
+    <meta name="keywords" content="Study Link, dashboard, mentoria, educação, progresso, comunidade">
+    <meta name="author" content="Study Link Team">
+    <link rel="icon" href="/static/Imagens/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Study Link - Dashboard</title>
+    <style>
+        /* Definição de variáveis de cores */
+        :root {
+            --bg-color: #d2b48c;
+            --text-color: #333;
+            --navbar-bg: #e1d9ce;
+            --accent-primary: #a0522d;
+            --accent-secondary: #deb887;
+            --card-bg: #e1d9ce;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
         }
-        lastScrollTop = currentScroll;
-      });
 
-    // Evento para trocar a foto de perfil
-    fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          profilePic.src = e.target.result; // atualiza a imagem com a foto selecionada
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  </script>
+        body.dark-mode {
+            --bg-color: #1f1f1f;
+            --text-color: #e1d9ce;
+            --navbar-bg: #2c2c2c;
+            --accent-primary: #deb887;
+            --accent-secondary: #a0522d;
+            --card-bg: #2c2c2c;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Estilos globais */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Barra de navegação */
+        header {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 1.5rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        header.scrolled {
+            background: rgba(225, 217, 206, 0.95);
+            padding: 0.6rem 1.5rem;
+        }
+
+        body.dark-mode header.scrolled {
+            background: rgba(44, 44, 44, 0.95);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo {
+            height: 50px;
+            transition: transform 0.4s ease, filter 0.4s ease;
+            animation: pulseLogo 2s ease infinite;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px var(--accent-primary));
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--accent-secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .auth-btn, .profile-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .auth-btn:hover, .profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .menu-icon {
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .menu-icon::before,
+        .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .menu-icon::before { top: -7px; }
+        .menu-icon::after { bottom: -7px; }
+
+        .menu-btn.active .menu-icon { background: transparent; }
+        .menu-btn.active .menu-icon::before { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-btn.active .menu-icon::after { transform: rotate(-45deg) translate(5px, -5px); }
+
+        /* Sidebar */
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+            margin-top: 60px;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            position: fixed;
+            height: calc(100vh - 60px);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            box-shadow: 2px 0 15px var(--shadow);
+            z-index: 999;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .sidebar-header img {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 3px solid var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .sidebar-header img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px var(--shadow);
+        }
+
+        .sidebar-header span {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--accent-primary);
+            text-align: center;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 0.7rem;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.7rem 1rem;
+            border-radius: 10px;
+            transition: var(--transition);
+        }
+
+        .sidebar-nav a svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--accent-primary);
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .sidebar-nav a:hover svg {
+            fill: #fff;
+        }
+
+        .sidebar-nav a.active {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        .sidebar-nav a.active svg {
+            fill: #fff;
+        }
+
+        /* Conteúdo principal */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 2.5rem;
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .sidebar.hidden ~ .main-content {
+            margin-left: 0;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--accent-primary);
+            text-align: left;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-secondary);
+        }
+
+        .dashboard-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px var(--shadow);
+        }
+
+        .dashboard-card h3 {
+            font-size: 1.4rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .dashboard-card p {
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        /* Botões */
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-animated::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-animated:hover::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        .btn-animated:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-primary);
+            color: #fff;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 550px;
+            width: 90%;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Formulários */
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid var(--accent-primary);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent-secondary);
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group label {
+            position: absolute;
+            top: 50%;
+            left: 1rem;
+            transform: translateY(-50%);
+            color: #777;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .form-group input:focus + label,
+        .form-group input:not(:placeholder-shown) + label,
+        .form-group select:focus + label,
+        .form-group select:not(:placeholder-shown) + label,
+        .form-group textarea:focus + label,
+        .form-group textarea:not(:placeholder-shown) + label {
+            top: -0.7rem;
+            left: 1rem;
+            font-size: 0.75rem;
+            color: var(--accent-primary);
+            background: var(--card-bg);
+            padding: 0 0.4rem;
+        }
+
+        /* Progresso */
+        .progress-container {
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            height: 22px;
+            position: relative;
+        }
+
+        .progress-bar {
+            background: var(--accent-primary);
+            height: 100%;
+            transition: width 0.5s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.2) 75%, transparent 75%, transparent);
+            background-size: 30px 30px;
+            animation: moveStripes 2s linear infinite;
+        }
+
+        @keyframes moveStripes {
+            0% { background-position: 0 0; }
+            100% { background-position: 30px 0; }
+        }
+
+        /* Cards de mentoria e itens salvos */
+        .match-card, .saved-card {
+            display: flex;
+            gap: 1.2rem;
+            align-items: center;
+            padding: 1.2rem;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: var(--transition);
+        }
+
+        .match-card:hover, .saved-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px var(--shadow);
+        }
+
+        .match-card img {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .saved-card .icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.1rem;
+        }
+
+        /* Tabelas */
+        .table {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .table th {
+            background: var(--accent-primary);
+            color: #fff;
+            padding: 1rem;
+            font-weight: 600;
+        }
+
+        .table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .table tr:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        /* Gráficos */
+        .chart-container {
+            max-width: 100%;
+            height: 280px;
+            margin: 1.5rem 0;
+        }
+
+        /* Notificações */
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            background: var(--card-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: none;
+            z-index: 3000;
+            transition: var(--transition);
+        }
+
+        .notification.active {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navbar-bg);
+            padding: 1.2rem;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 -2px 8px var(--shadow);
+        }
+
+        footer p {
+            color: var(--text-color);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--accent-secondary);
+        }
+
+        /* Animações */
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        /* Responsividade */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            .main-content {
+                margin-left: 220px;
+                padding: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .chart-container {
+                height: 260px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 200px;
+                padding: 1.2rem;
+            }
+
+            .main-content {
+                margin-left: 200px;
+                padding: 1.8rem;
+            }
+
+            .sidebar-header img {
+                width: 60px;
+                height: 60px;
+            }
+
+            .sidebar-header span {
+                font-size: 1rem;
+            }
+
+            .sidebar-nav a {
+                font-size: 0.9rem;
+                padding: 0.6rem 0.8rem;
+            }
+
+            .sidebar-nav a svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .dashboard-card {
+                padding: 1.2rem;
+            }
+
+            .chart-container {
+                height: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 1rem;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--navbar-bg);
+                flex-direction: column;
+                padding: 0.8rem;
+                box-shadow: 0 4px 15px var(--shadow);
+                z-index: 998;
+            }
+
+            nav.show {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                transform: translateX(-100%);
+                padding: 1rem;
+                box-shadow: 2px 0 15px var(--shadow);
+                z-index: 999;
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .dashboard-card {
+                padding: 1rem;
+            }
+
+            .match-card, .saved-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .match-card img, .saved-card .icon {
+                margin-bottom: 0.8rem;
+            }
+
+            .chart-container {
+                height: 200px;
+            }
+
+            .table th, .table td {
+                padding: 0.7rem;
+                font-size: 0.85rem;
+            }
+
+            .progress-container {
+                height: 20px;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            header {
+                padding: 0.6rem 1rem;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .sidebar-header img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .sidebar-header span {
+                font-size: 0.9rem;
+            }
+
+            .sidebar-nav a {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.7rem;
+            }
+
+            .sidebar-nav a svg {
+                width: 15px;
+                height: 15px;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-card p {
+                font-size: 0.9rem;
+            }
+
+            .match-card img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .saved-card .icon {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+            }
+
+            .btn-animated {
+                padding: 0.6rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .chart-container {
+                height: 180px;
+            }
+
+            .table th, .table td {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .notification {
+                top: 70px;
+                right: 10px;
+                padding: 0.7rem 1.2rem;
+            }
+
+            footer {
+                padding: 1rem;
+            }
+
+            footer p {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo {
+                height: 40px;
+            }
+
+            .brand-name {
+                font-size: 1.1rem;
+            }
+
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-toggle svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .sidebar-header img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .sidebar-header span {
+                font-size: 0.85rem;
+            }
+
+            .sidebar-nav a {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .dashboard-card h3 {
+                font-size: 1.1rem;
+            }
+
+            .dashboard-card p {
+                font-size: 0.85rem;
+            }
+
+            .match-card img {
+                width: 45px;
+                height: 45px;
+            }
+
+            .saved-card .icon {
+                width: 28px;
+                height: 28px;
+                font-size: 0.9rem;
+            }
+
+            .btn-animated {
+                padding: 0.5rem 1.2rem;
+                font-size: 0.85rem;
+            }
+
+            .chart-container {
+                height: 160px;
+            }
+
+            .table th, .table td {
+                padding: 0.5rem;
+                font-size: 0.75rem;
+            }
+
+            .modal-content {
+                padding: 1.2rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 0.7rem;
+                font-size: 0.9rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input:focus + label,
+            .form-group input:not(:placeholder-shown) + label,
+            .form-group select:focus + label,
+            .form-group select:not(:placeholder-shown) + label,
+            .form-group textarea:focus + label,
+            .form-group textarea:not(:placeholder-shown) + label {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Barra de navegação -->
+    <header>
+        <div class="header-content max-width">
+            <a href="/dashboard.html" class="brand">
+                <img src="/static/Imagens/logo.png" alt="Logótipo Study Link" class="logo">
+                <span class="brand-name">Study Link</span>
+            </a>
+            <nav>
+                <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="/matching.html" class="nav-link">Matching</a>
+                <a href="/disciplinas.html" class="nav-link">Disciplinas</a>
+                <a href="/recursos.html" class="nav-link">Recursos</a>
+                <a href="/comunidade.html" class="nav-link">Comunidade</a>
+                <a href="/conversa.html" class="nav-link">Mensagens</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+                    <svg class="theme-icon" viewBox="0 0 24 24">
+                        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <a href="/conta.html" class="profile-btn btn-animated">Conta</a>
+                <button class="auth-btn btn-animated" onclick="logout()">Sair</button>
+            </nav>
+            <button class="menu-btn" onclick="toggleMenu()" aria-label="Alternar menu">
+                <span class="menu-icon"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            
+          <div class="sidebar-header">
+              <img src="{{ user.profile_pic }}" alt="Foto de Perfil">
+              <span>{{ user.name }}</span>
+          </div>
+            <ul class="sidebar-nav">
+                <li><a href="#overview" class="active"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg> Visão Geral</a></li>
+                <li><a href="#progress"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16z"/></svg> Progresso</a></li>
+                <li><a href="#matches"><svg viewBox="0 0 24 24"><path d="M12 12c2.2 0 4-1.8 4-4s-1.8-4-4-4-4 1.8-4 4 1.8 4 4 4zm0 2c-2.7 0-8 1.3-8 4v2h16v-2c0-2.7-5.3-4-8-4z"/></svg> Meus Matches</a></li>
+                <li><a href="#saved"><svg viewBox="0 0 24 24"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg> Itens Salvos</a></li>
+                <li><a href="#analytics"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm4 5h12v2H8zm-4 5h16v2H4z"/></svg> Análises</a></li>
+                <li><a href="#schedule"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg> Agenda</a></li>
+            </ul>
+        </aside>
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+            <!-- Visão Geral -->
+            <section id="overview" class="animate-slide-in">
+                <h2 class="section-title">Bem-vindo, {{ user.name }}!</h2>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="dashboard-card">
+                            <h3>Progresso Geral</h3>
+                            <p>Estás a 82% do teu objetivo académico!</p>
+                            <div class="progress-container">
+                                <div class="progress-bar" style="width: 82%;"></div>
+                            </div>
+                            <button class="btn-animated btn-outline mt-3" onclick="location.href='#progress'">Ver Detalhes</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="dashboard-card">
+                            <h3>Matches Ativos</h3>
+                            <p>3 mentores conectados contigo.</p>
+                            <button class="btn-animated mt-3" onclick="location.href='#matches'">Ver Matches</button>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="dashboard-card">
+                            <h3>Itens Salvos</h3>
+                            <p>5 recursos e posts salvos.</p>
+                            <button class="btn-animated mt-3" onclick="location.href='#saved'">Explorar</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Progresso -->
+            <section id="progress" class="mt-5 animate-slide-in">
+                <h2 class="section-title">Teu Progresso Académico</h2>
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="dashboard-card">
+                            <h3>Progresso por Disciplina</h3>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Disciplina</th>
+                                            <th>Progresso</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Cálculo Diferencial</td>
+                                            <td>
+                                                <div class="progress-container">
+                                                    <div class="progress-bar" style="width: 90%;"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Física Teórica</td>
+                                            <td>
+                                                <div class="progress-container">
+                                                    <div class="progress-bar" style="width: 65%;"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Programação</td>
+                                            <td>
+                                                <div class="progress-container">
+                                                    <div class="progress-bar" style="width: 80%;"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="dashboard-card">
+                            <h3>Metas Ativas</h3>
+                            <ul>
+                                <li>Completar 2 capítulos de Cálculo - <span style="color: green;">Concluído</span></li>
+                                <li>Participar em 1 sessão de Física - <span style="color: orange;">Pendente</span></li>
+                                <li>Submeter projeto de Programação - <span style="color: red;">Atrasado</span></li>
+                            </ul>
+                            <button class="btn-animated mt-3" onclick="openGoalModal()">Definir Nova Meta</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Matches -->
+            <section id="matches" class="mt-5 animate-slide-in">
+                <h2 class="section-title">Meus Matches</h2>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="match-card">
+                            <img src="https://via.placeholder.com/60" alt="Mentor">
+                            <div>
+                                <h3>João Silva</h3>
+                                <p>Mentor em Cálculo Diferencial</p>
+                                <button class="btn-animated btn-outline" onclick="openMessageModal('João Silva')">Enviar Mensagem</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="match-card">
+                            <img src="https://via.placeholder.com/60" alt="Mentor">
+                            <div>
+                                <h3>Ana Costa</h3>
+                                <p>Mentora em Física Teórica</p>
+                                <button class="btn-animated btn-outline" onclick="openMessageModal('Ana Costa')">Enviar Mensagem</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="match-card">
+                            <img src="https://via.placeholder.com/60" alt="Mentor">
+                            <div>
+                                <h3>Pedro Almeida</h3>
+                                <p>Mentor em Programação</p>
+                                <button class="btn-animated btn-outline" onclick="openMessageModal('Pedro Almeida')">Enviar Mensagem</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Itens Salvos -->
+            <section id="saved" class="mt-5 animate-slide-in">
+                <h2 class="section-title">Itens Salvos e Curtidos</h2>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="saved-card">
+                            <div class="icon">📘</div>
+                            <div>
+                                <h3>Guia de Cálculo</h3>
+                                <p>Recurso salvo em 15/04/2025</p>
+                                <button class="btn-animated btn-outline">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="saved-card">
+                            <div class="icon">🎥</div>
+                            <div>
+                                <h3>Vídeo de Física</h3>
+                                <p>Recurso curtido em 16/04/2025</p>
+                                <button class="btn-animated btn-outline">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="saved-card">
+                            <div class="icon">💬</div>
+                            <div>
+                                <h3>Post no Fórum</h3>
+                                <p>Post salvo em 17/04/2025</p>
+                                <button class="btn-animated btn-outline">Ver</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Análises -->
+            <section id="analytics" class="mt-5 animate-slide-in">
+                <h2 class="section-title">Análises e Estatísticas</h2>
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="dashboard-card">
+                            <h3>Tempo de Estudo</h3>
+                            <div class="chart-container">
+                                <canvas id="studyTimeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="dashboard-card">
+                            <h3>Atividade na Plataforma</h3>
+                            <div class="chart-container">
+                                <canvas id="activityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Agenda -->
+            <section id="schedule" class="mt-5 animate-slide-in">
+                <h2 class="section-title">Minha Agenda</h2>
+                <div class="dashboard-card">
+                    <h3>Próximas Sessões</h3>
+                    <ul>
+                        <li>Matemática com João Silva - 18/04/2025, 14:00</li>
+                        <li>Física com Ana Costa - 19/04/2025, 10:00</li>
+                        <li>Programação com Pedro Almeida - 20/04/2025, 16:00</li>
+                    </ul>
+                    <button class="btn-animated mt-3" onclick="openScheduleModal()">Agendar Nova Sessão</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modal de Agendamento -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('scheduleModal')">×</button>
+            <h3>Agendar Nova Sessão</h3>
+            <form>
+                <div class="form-group">
+                    <select id="mentor" required>
+                        <option value="">Selecione um mentor</option>
+                        <option value="joao">João Silva</option>
+                        <option value="ana">Ana Costa</option>
+                        <option value="pedro">Pedro Almeida</option>
+                    </select>
+                    <label for="mentor">Mentor</label>
+                </div>
+                <div class="form-group">
+                    <select id="disciplina" required>
+                        <option value="">Selecione uma disciplina</option>
+                        <option value="calculo">Cálculo Diferencial</option>
+                        <option value="fisica">Física Teórica</option>
+                        <option value="programacao">Programação</option>
+                    </select>
+                    <label for="disciplina">Disciplina</label>
+                </div>
+                <div class="form-group">
+                    <input type="datetime-local" id="datetime" placeholder=" " required>
+                    <label for="datetime">Data e Hora</label>
+                </div>
+                <div class="form-group">
+                    <textarea id="notes" placeholder=" " rows="4"></textarea>
+                    <label for="notes">Notas</label>
+                </div>
+                <button type="submit" class="btn-animated">Confirmar Agendamento</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Mensagem -->
+    <div class="modal" id="messageModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('messageModal')">×</button>
+            <h3>Enviar Mensagem</h3>
+            <form>
+                <div class="form-group">
+                    <input type="text" id="mentorName" placeholder=" " readonly>
+                    <label for="mentorName">Mentor</label>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" placeholder=" " rows="4" required></textarea>
+                    <label for="message">Mensagem</label>
+                </div>
+                <button type="submit" class="btn-animated">Enviar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Definir Meta -->
+    <div class="modal" id="goalModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal('goalModal')">×</button>
+            <h3>Definir Nova Meta</h3>
+            <form>
+                <div class="form-group">
+                    <select id="disciplinaGoal" required>
+                        <option value="">Selecione uma disciplina</option>
+                        <option value="calculo">Cálculo Diferencial</option>
+                        <option value="fisica">Física Teórica</option>
+                        <option value="programacao">Programação</option>
+                    </select>
+                    <label for="disciplinaGoal">Disciplina</label>
+                </div>
+                <div class="form-group">
+                    <input type="text" id="goalDescription" placeholder=" " required>
+                    <label for="goalDescription">Descrição da Meta</label>
+                </div>
+                <div class="form-group">
+                    <input type="date" id="goalDeadline" placeholder=" " required>
+                    <label for="goalDeadline">Prazo</label>
+                </div>
+                <button type="submit" class="btn-animated">Adicionar Meta</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notificação -->
+    <div class="notification" id="notification">
+        <p>Ação realizada com sucesso!</p>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Study Link. Todos os direitos reservados. Licenciado sob a <a href="https://opensource.org/licenses/MIT" target="_blank">Licença MIT</a>.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script>
+        // Alternar tema
+        function toggleTheme() {
+            const body = document.body;
+            const toggleIcon = document.querySelector('.theme-icon');
+            body.classList.toggle('dark-mode');
+            toggleIcon.innerHTML = body.classList.contains('dark-mode')
+                ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
+                : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            showNotification('Tema alterado!');
+        }
+
+        // Verificar tema guardado
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.theme-icon').innerHTML = '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />';
+        }
+
+        // Alternar menu
+        function toggleMenu() {
+            const nav = document.querySelector('nav');
+            const btn = document.querySelector('.menu-btn');
+            nav.classList.toggle('show');
+            btn.classList.toggle('active');
+        }
+
+        // Alternar sidebar
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('active');
+        }
+
+        // Efeito de rolagem na barra de navegação
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            header.classList.toggle('scrolled', window.scrollY > 50);
+        });
+
+        // Funções de modal
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('active');
+        }
+
+        function openMessageModal(mentorName) {
+            const modal = document.getElementById('messageModal');
+            modal.querySelector('#mentorName').value = mentorName;
+            modal.classList.add('active');
+        }
+
+        function openGoalModal() {
+            document.getElementById('goalModal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Função de logout
+        function logout() {
+            showNotification('Sessão terminada com sucesso!');
+            setTimeout(() => {
+                location.href = '/login_page';
+            }, 1000);
+        }
+
+        // Função de notificação
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.querySelector('p').textContent = message;
+            notification.classList.add('active');
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 3000);
+        }
+
+        // Animações GSAP
+        gsap.registerPlugin(ScrollTrigger);
+
+        document.querySelectorAll('section').forEach(section => {
+            gsap.fromTo(section, 
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1,
+                    ease: 'power2.out',
+                    scrollTrigger: {
+                        trigger: section,
+                        start: 'top 80%',
+                        end: 'bottom 20%',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
+
+        // Navegação da barra lateral
+        document.querySelectorAll('.sidebar-nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelectorAll('.sidebar-nav a').forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                const targetId = link.getAttribute('href').substring(1);
+                document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                if (window.innerWidth < 768) {
+                    toggleSidebar();
+                }
+            });
+        });
+
+        // Formulários
+        document.querySelector('#scheduleModal form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeModal('scheduleModal');
+            showNotification('Sessão agendada com sucesso!');
+        });
+
+        document.querySelector('#messageModal form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeModal('messageModal');
+            showNotification('Mensagem enviada com sucesso!');
+        });
+
+        document.querySelector('#goalModal form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            closeModal('goalModal');
+            showNotification('Meta adicionada com sucesso!');
+        });
+
+        // Gráficos
+        const studyTimeCtx = document.getElementById('studyTimeChart').getContext('2d');
+        new Chart(studyTimeCtx, {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                datasets: [{
+                    label: 'Horas de Estudo',
+                    data: [2, 3, 1.5, 4, 2.5, 3, 0],
+                    borderColor: 'var(--accent-primary)',
+                    backgroundColor: 'rgba(160, 82, 45, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Horas'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        const activityCtx = document.getElementById('activityChart').getContext('2d');
+        new Chart(activityCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Posts', 'Recursos', 'Sessões', 'Metas'],
+                datasets: [{
+                    label: 'Atividade',
+                    data: [5, 10, 8, 3],
+                    backgroundColor: 'var(--accent-primary)',
+                    borderColor: 'var(--accent-secondary)',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Quantidade'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Inicializar sidebar para telas pequenas
+        if (window.innerWidth < 768) {
+            document.querySelector('.sidebar').classList.add('hidden');
+        }
+    </script>
 </body>
 </html>

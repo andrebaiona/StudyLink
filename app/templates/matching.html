@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Study Link - Escolhe mentores com um interface estilo Tinder, com swipe para combinar.">
+    <meta name="keywords" content="Study Link, matching, mentoria, educação, swipe, tinder">
+    <meta name="author" content="Study Link Team">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link rel="icon" href="/static/Imagens/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Study Link - Matching</title>
+    <style>
+        :root {
+            --bg-color: #d2b48c;
+            --text-color: #333;
+            --navbar-bg: #e1d9ce;
+            --accent-primary: #a0522d;
+            --accent-secondary: #deb887;
+            --card-bg: #e1d9ce;
+            --shadow: rgba(0, 0, 0, 0.2);
+            --transition: all 0.3s ease;
+        }
+
+        body.dark-mode {
+            --bg-color: #1f1f1f;
+            --text-color: #e1d9ce;
+            --navbar-bg: #2c2c2c;
+            --accent-primary: #deb887;
+            --accent-secondary: #a0522d;
+            --card-bg: #2c2c2c;
+            --shadow: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--navbar-bg);
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 1.5rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        header.scrolled {
+            background: rgba(225, 217, 206, 0.95);
+            padding: 0.6rem 1.5rem;
+        }
+
+        body.dark-mode header.scrolled {
+            background: rgba(44, 44, 44, 0.95);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo {
+            height: 50px;
+            transition: transform 0.4s ease, filter 0.4s ease;
+            animation: pulseLogo 2s ease infinite;
+        }
+
+        .logo:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px var(--accent-primary));
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-link {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.4rem 0.8rem;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: var(--accent-secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link:hover {
+            color: var(--accent-secondary);
+            transform: translateY(-2px);
+        }
+
+        .nav-link.active {
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            transition: transform 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .theme-toggle svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--accent-primary);
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(15deg);
+        }
+
+        .auth-btn, .profile-btn {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .auth-btn:hover, .profile-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .menu-icon {
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .menu-icon::before,
+        .menu-icon::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 2px;
+            background: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .menu-icon::before { top: -7px; }
+        .menu-icon::after { bottom: -7px; }
+
+        .menu-btn.active .menu-icon { background: transparent; }
+        .menu-btn.active .menu-icon::before { transform: rotate(45deg) translate(5px, 5px); }
+        .menu-btn.active .menu-icon::after { transform: rotate(-45deg) translate(5px, -5px); }
+
+        .main-content {
+            flex: 1;
+            padding: 2.5rem;
+            margin-top: 60px;
+            background: var(--bg-color);
+            transition: var(--transition);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            color: var(--accent-primary);
+            text-align: left;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-secondary);
+        }
+
+        .matching-container {
+            display: flex;
+            gap: 1.5rem;
+            height: calc(100vh - 180px);
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 6px 20px var(--shadow);
+            overflow: hidden;
+        }
+
+        .matched-list {
+            width: 240px;
+            background: var(--card-bg);
+            padding: 1.5rem;
+            overflow-y: auto;
+            transition: var(--transition);
+        }
+
+        .matched-toggle {
+            display: none;
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            transition: var(--transition);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .matched-toggle:hover {
+            background: var(--accent-secondary);
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid var(--accent-primary);
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent-secondary);
+            outline: none;
+        }
+
+        .matched-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-bottom: 0.5rem;
+        }
+
+        .matched-card:hover {
+            background: var(--accent-primary);
+            color: #fff;
+            transform: translateX(5px);
+        }
+
+        .matched-card img {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-primary);
+        }
+
+        .matched-card h4 {
+            font-size: 1rem;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .matched-card p {
+            font-size: 0.8rem;
+            margin: 0;
+            color: var(--text-color);
+        }
+
+        .matched-card:hover p {
+            color: #fff;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .swipe-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+        }
+
+        .card-stack {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 550px;
+            perspective: 1000px;
+        }
+
+        .mentor-card {
+            position: absolute;
+            width: 100%;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px var(--shadow);
+            padding: 2rem;
+            cursor: grab;
+            user-select: none;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            touch-action: none;
+        }
+
+        .mentor-card:nth-child(2) {
+            transform: scale(0.97) translateY(8px);
+            z-index: -1;
+        }
+
+        .mentor-card:nth-child(3) {
+            transform: scale(0.94) translateY(16px);
+            z-index: -2;
+        }
+
+        .mentor-card img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 4px solid var(--accent-primary);
+            margin: 0 auto 1.5rem;
+            display: block;
+        }
+
+        .mentor-card h3 {
+            font-size: 1.8rem;
+            color: var(--accent-primary);
+            margin: 0 0 0.5rem;
+            text-align: center;
+        }
+
+        .mentor-card p {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin: 0 0 1rem;
+            text-align: center;
+        }
+
+        .mentor-card .subject {
+            font-size: 1.2rem;
+            color: var(--accent-secondary);
+            font-weight: 500;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .mentor-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            justify-content: center;
+        }
+
+        .mentor-card .tag {
+            background: var(--accent-primary);
+            color: #fff;
+            padding: 0.4rem 1rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .swipe-stamp {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-20deg);
+            font-size: 2.5rem;
+            font-weight: 700;
+            padding: 0.6rem 1.2rem;
+            border: 4px solid;
+            border-radius: 12px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .swipe-stamp.like {
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        .swipe-stamp.nope {
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .swipe-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            background: var(--accent-primary);
+            color: #fff;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-btn:hover {
+            background: var(--accent-secondary);
+            transform: scale(1.1);
+        }
+
+        .action-btn svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+        }
+
+        .undo-btn {
+            background: none;
+            border: none;
+            color: var(--accent-primary);
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+
+        .match-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .match-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .match-modal-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.7);
+            transition: transform 0.3s ease;
+        }
+
+        .match-modal.active .match-modal-content {
+            transform: scale(1);
+        }
+
+        .match-modal-content h3 {
+            font-size: 1.6rem;
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+
+        .match-modal-content p {
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
+        }
+
+        .match-modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--text-color);
+            min-width: 44px;
+            min-height: 44px;
+        }
+
+        .btn-animated {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.8rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            animation: pulseButton 2s ease infinite;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-animated::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.4s ease, height 0.4s ease;
+        }
+
+        .btn-animated:hover::after {
+            width: 250px;
+            height: 250px;
+        }
+
+        .btn-animated:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px var(--shadow);
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 15px;
+            background: var(--card-bg);
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            display: none;
+            z-index: 3000;
+            transition: var(--transition);
+        }
+
+        .notification.active {
+            display: block;
+            animation: slideInRight 0.5s ease;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        footer {
+            background: var(--navbar-bg);
+            padding: 1.2rem;
+            text-align: center;
+            margin-top: auto;
+            box-shadow: 0 -2px 8px var(--shadow);
+        }
+
+        footer p {
+            color: var(--text-color);
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        footer a:hover {
+            color: var(--accent-secondary);
+        }
+
+        @keyframes pulseLogo {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes pulseButton {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .animate-slide-in {
+            animation: slideIn 0.6s ease;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+
+        @media (max-width: 1200px) {
+            .matched-list {
+                width: 200px;
+            }
+
+            .main-content {
+                padding: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .matching-container {
+                height: calc(100vh - 170px);
+            }
+
+            .card-stack {
+                max-width: 400px;
+                height: 500px;
+            }
+
+            .mentor-card img {
+                width: 180px;
+                height: 180px;
+            }
+
+            .mentor-card h3 {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .matched-list {
+                width: 180px;
+                padding: 1.2rem;
+            }
+
+            .main-content {
+                padding: 1.8rem;
+            }
+
+            .swipe-area {
+                padding: 1.5rem;
+            }
+
+            .mentor-card img {
+                width: 160px;
+                height: 160px;
+            }
+
+            .mentor-card h3 {
+                font-size: 1.5rem;
+            }
+
+            .mentor-card p {
+                font-size: 0.95rem;
+            }
+
+            .mentor-card .subject {
+                font-size: 1.1rem;
+            }
+
+            .mentor-card .tag {
+                font-size: 0.85rem;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+
+            .card-stack {
+                max-width: 350px;
+                height: 450px;
+            }
+
+            .action-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .action-btn svg {
+                width: 26px;
+                height: 26px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.6rem 1rem;
+            }
+
+            nav {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--navbar-bg);
+                flex-direction: column;
+                padding: 0.8rem;
+                box-shadow: 0 4px 15px var(--shadow);
+                z-index: 998;
+            }
+
+            nav.show {
+                display: flex;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .logo {
+                height: 45px;
+            }
+
+            .brand-name {
+                font-size: 1.2rem;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .matching-container {
+                flex-direction: column;
+                height: auto;
+                min-height: calc(100vh - 160px);
+            }
+
+            .matched-list {
+                width: 100%;
+                max-height: 0;
+                padding: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease, padding 0.3s ease;
+            }
+
+            .matched-list.active {
+                max-height: 180px;
+                padding: 1rem;
+            }
+
+            .matched-toggle {
+                display: block;
+            }
+
+            .swipe-area {
+                min-height: 450px;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .mentor-card img {
+                width: 140px;
+                height: 140px;
+            }
+
+            .mentor-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .mentor-card p {
+                font-size: 0.9rem;
+            }
+
+            .mentor-card .subject {
+                font-size: 1rem;
+            }
+
+            .mentor-card .tag {
+                font-size: 0.8rem;
+            }
+
+            .action-btn {
+                width: 50px;
+                height: 50px;
+            }
+
+            .action-btn svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            .notification {
+                top: 70px;
+                right: 10px;
+            }
+
+            .card-stack {
+                max-width: 300px;
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .matched-list.active {
+                max-height: 150px;
+            }
+
+            .swipe-area {
+                min-height: 400px;
+            }
+
+            .mentor-card img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .mentor-card h3 {
+                font-size: 1.3rem;
+            }
+
+            .mentor-card p {
+                font-size: 0.85rem;
+            }
+
+            .mentor-card .subject {
+                font-size: 0.95rem;
+            }
+
+            .mentor-card .tag {
+                font-size: 0.75rem;
+            }
+
+            .action-btn {
+                width: 45px;
+                height: 45px;
+            }
+
+            .action-btn svg {
+                width: 22px;
+                height: 22px;
+            }
+
+            .swipe-stamp {
+                font-size: 2rem;
+            }
+
+            .match-modal-content {
+                padding: 1.5rem;
+            }
+
+            .card-stack {
+                max-width: 280px;
+                height: 350px;
+            }
+
+            footer {
+                padding: 1rem;
+            }
+
+            footer p {
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo {
+                height: 40px;
+            }
+
+            .brand-name {
+                font-size: 1.1rem;
+            }
+
+            .nav-link {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.5rem;
+            }
+
+            .auth-btn, .profile-btn {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-toggle svg {
+                width: 18px;
+                height: 18px;
+            }
+
+            .section-title {
+                font-size: 1.4rem;
+            }
+
+            .mentor-card img {
+                width: 100px;
+                height: 100px;
+            }
+
+            .mentor-card h3 {
+                font-size: 1.2rem;
+            }
+
+            .mentor-card p {
+                font-size: 0.8rem;
+            }
+
+            .mentor-card .subject {
+                font-size: 0.9rem;
+            }
+
+            .mentor-card .tag {
+                font-size: 0.7rem;
+            }
+
+            .action-btn {
+                width: 40px;
+                height: 40px;
+            }
+
+            .action-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            .match-modal-content {
+                padding: 1.2rem;
+            }
+
+            .card-stack {
+                max-width: 260px;
+                height: 320px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header>
+        <div class="header-content max-width">
+            <a href="/dashboard.html" class="brand">
+                <img src="/static/Imagens/logo.png" alt="Logótipo Study Link" class="logo">
+                <span class="brand-name">Study Link</span>
+            </a>
+            <nav>
+                <a href="/dashboard.html" class="nav-link active">Dashboard</a>
+                <a href="/matching.html" class="nav-link">Matching</a>
+                <a href="/disciplinas.html" class="nav-link">Disciplinas</a>
+                <a href="/recursos.html" class="nav-link">Recursos</a>
+                <a href="/comunidade.html" class="nav-link">Comunidade</a>
+                <a href="/conversa.html" class="nav-link">Mensagens</a>
+                <button class="theme-toggle" onclick="toggleTheme()" aria-label="Alternar tema">
+                    <svg class="theme-icon" viewBox="0 0 24 24">
+                        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                </button>
+                <a href="/conta.html" class="profile-btn btn-animated">Conta</a>
+                <button class="auth-btn btn-animated" onclick="logout()">Sair</button>
+            </nav>
+            <button class="menu-btn" onclick="toggleMenu()" aria-label="Alternar menu">
+                <span class="menu-icon"></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+
+
+{% block title %}Matching | Study Link{% endblock %}
+
+{% block content %}
+<main class="main-content">
+    <section class="animate-slide-in">
+        <h2 class="section-title">Encontra o Mentor Ideal</h2>
+
+        <button class="matched-toggle" onclick="toggleMatchedList()" aria-label="Alternar lista de mentores combinados">
+            Ver Mentores Combinados
+        </button>
+
+        <div class="matching-container">
+            <!-- Lista de mentores combinados -->
+            <aside class="matched-list">
+                <div class="search-bar">
+                    <input type="text" placeholder="Procurar mentor..." oninput="searchMatchedMentors(this.value)" aria-label="Procurar mentor combinado">
+                </div>
+                <div id="matchedMentors"></div>
+            </aside>
+
+            <!-- Área de Swipe -->
+            <div class="swipe-area">
+                <div class="card-stack" id="cardStack">
+                    {% if mentors %}
+                        {% for mentor in mentors %}
+                       
+            <div class="mentor-card" 
+                 data-id="{{ mentor.mentor_id }}" 
+                 data-mentor="{{ mentor.name }}" 
+                 data-subject="{{ mentor.subject_name }}">
+                            <img src="/{{ mentor.profile_pic }}" alt="Mentor {{ mentor.name }}" onerror="this.src='/static/uploads/ProfilePics/default.jpg';">
+                            <h3>{{ mentor.name }}</h3>
+                            <div class="subject">{{ mentor.subject_name }}</div>
+                            <p>{{ mentor.bio or "Este mentor ainda não adicionou uma descrição." }}</p>
+                            <div class="tags">
+                                <span class="tag">{{ mentor.subject_name }}</span>
+                            </div>
+                            <div class="swipe-stamp like">Like</div>
+                            <div class="swipe-stamp nope">Nope</div>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="mentor-card">
+                            <h3>Sem mentores disponíveis 😕</h3>
+                            <p>Adiciona disciplinas no teu perfil em que desejas ser mentorado para começar a ver combinações!</p>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="swipe-actions">
+                    <button class="action-btn reject" onclick="swipeCard('left')" aria-label="Rejeitar mentor">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                    <button class="action-btn like" onclick="swipeCard('right')" aria-label="Combinar com mentor">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button class="undo-btn" onclick="undoSwipe()" aria-label="Desfazer swipe">Desfazer</button>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- Modal de Match -->
+<div class="match-modal" id="matchModal">
+    <div class="match-modal-content">
+        <button class="match-modal-close" onclick="closeMatchModal()" aria-label="Fechar modal">×</button>
+        <h3>Parabéns, é um Match!</h3>
+        <p>Combinaste com <span id="matchMentorName"></span> em <span id="matchMentorSubject"></span>!</p>
+        <button class="btn-animated" onclick="connectWithMentor()" aria-label="Conectar com mentor">Conectar</button>
+    </div>
+</div>
+
+<!-- Notificação -->
+<div class="notification" id="notification">
+    <p>Ação realizada com sucesso!</p>
+</div>
+{% endblock %}
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Study Link. Todos os direitos reservados. Licenciado sob a <a href="https://opensource.org/licenses/MIT" target="_blank">Licença MIT</a>.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+   <script>
+// === Theme Toggle ===
+function toggleTheme() {
+    const body = document.body;
+    const toggleIcon = document.querySelector('.theme-icon');
+    body.classList.toggle('dark-mode');
+    toggleIcon.innerHTML = body.classList.contains('dark-mode')
+        ? '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />'
+        : '<path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />';
+    localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+    showNotification('Tema alterado!');
+}
+if (localStorage.getItem('theme') === 'dark') {
+    document.body.classList.add('dark-mode');
+    document.querySelector('.theme-icon').innerHTML = '<path d="M12 3a9 9 0 009 9 9 9 0 00-9 9 9 9 0 00-9-9 9 9 0 009-9z" />';
+}
+
+// === Notification ===
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    notification.querySelector('p').textContent = message;
+    notification.classList.add('active');
+    setTimeout(() => notification.classList.remove('active'), 3000);
+}
+
+// === Swipe Cards ===
+const cardStack = document.getElementById('cardStack');
+let mentors = Array.from(document.querySelectorAll('.mentor-card'));
+let lastSwiped = null;
+
+function updateCardStack() {
+    mentors.forEach((card, index) => {
+        card.style.zIndex = mentors.length - index;
+        card.style.transform = index === 0 ? 'none' : `scale(${1 - index * 0.03}) translateY(${index * 8}px)`;
+        card.style.pointerEvents = index === 0 ? 'auto' : 'none';
+    });
+}
+
+function swipeCard(direction) {
+    const card = mentors[0];
+    if (!card) return;
+
+    const isLike = direction === 'right';
+    const stamp = card.querySelector(isLike ? '.swipe-stamp.like' : '.swipe-stamp.nope');
+    const xPos = isLike ? 600 : -600;
+    const rotation = isLike ? 25 : -25;
+
+    gsap.to(stamp, { opacity: 1, duration: 0.3 });
+    gsap.to(card, {
+        x: xPos,
+        rotate: rotation,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'power2.out',
+        onComplete: () => {
+            lastSwiped = { card, direction };
+
+        const id = card.getAttribute('data-id');
+        const name = card.getAttribute('data-mentor');
+        const subject = card.getAttribute('data-subject');
+        const profilePic = card.querySelector('img').getAttribute('src');
+
+        if (id) {
+            showMatchModal(id, name, subject);
+        } else {
+            console.error("⚠️ Mentor card missing data-id attribute.");
+        }
+            card.remove();
+            mentors.shift();
+
+            if (isLike) {
+                showMatchModal(id, name, subject);
+            }
+            updateCardStack();
+            gsap.set(stamp, { opacity: 0 });
+            showNotification(isLike ? 'Mentor combinado!' : 'Mentor rejeitado!');
+        }
+    });
+}
+
+
+function showMatchModal(id, name, subject) {
+    const modal = document.getElementById('matchModal');
+    console.log("Setting mentor ID:", id);
+    modal.setAttribute('data-mentor-id', id);  // store mentor ID for later
+    document.getElementById('matchMentorName').textContent = name;
+    document.getElementById('matchMentorSubject').textContent = subject;
+    modal.classList.add('active');
+}
+
+
+function closeMatchModal() {
+    document.getElementById('matchModal').classList.remove('active');
+}
+
+
+
+function connectWithMentor() {
+    const modal = document.getElementById('matchModal');
+    const mentorId = parseInt(modal.getAttribute('data-mentor-id'), 10);
+    console.log("Connecting with mentor ID:", mentorId);
+
+    if (!mentorId || isNaN(mentorId)) {
+        alert("Erro: mentor não encontrado.");
+        return;
+    }
+
+ 
+const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+fetch('/start_conversation', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': csrfToken
+    },
+    body: JSON.stringify({ mentor_id: mentorId })
+})
+
+    .then(res => res.json())
+    .then(data => {
+        console.log("Response from server:", data);
+        if (data.status === 'success') {
+            window.location.href = `/conversa/${data.conversation_id}`;
+        } else {
+            alert("Erro ao iniciar conversa: " + data.message);
+        }
+    })
+    .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("Erro ao comunicar com o servidor.");
+    });
+}
+
+
+
+// === Drag Events for Swipe ===
+let isDragging = false;
+let startX = 0;
+let currentX = 0;
+
+function handleDragStart(e) {
+    const card = mentors[0];
+    if (!card) return;
+    isDragging = true;
+    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    card.style.transition = 'none';
+    e.preventDefault();
+}
+
+function handleDragMove(e) {
+    if (!isDragging) return;
+    const card = mentors[0];
+    if (!card) return;
+    currentX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    const deltaX = currentX - startX;
+    const rotation = deltaX / 8;
+    card.style.transform = `translateX(${deltaX}px) rotate(${rotation}deg)`;
+    card.style.opacity = 1 - Math.abs(deltaX) / 400;
+    card.style.border = deltaX > 0 ? '3px solid #28a745' : '3px solid #dc3545';
+    const stamp = card.querySelector(deltaX > 0 ? '.swipe-stamp.like' : '.swipe-stamp.nope');
+    gsap.set(stamp, { opacity: Math.abs(deltaX) / 150 });
+}
+
+function handleDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const card = mentors[0];
+    if (!card) return;
+    card.style.transition = 'transform 0.6s ease, opacity 0.6s ease';
+    const deltaX = currentX - startX;
+    if (Math.abs(deltaX) > 120) {
+        swipeCard(deltaX > 0 ? 'right' : 'left');
+    } else {
+        gsap.to(card, { x: 0, rotate: 0, opacity: 1, duration: 0.3 });
+        card.style.border = 'none';
+        gsap.set(card.querySelectorAll('.swipe-stamp'), { opacity: 0 });
+    }
+}
+
+cardStack.addEventListener('mousedown', handleDragStart);
+cardStack.addEventListener('mousemove', handleDragMove);
+cardStack.addEventListener('mouseup', handleDragEnd);
+cardStack.addEventListener('mouseleave', handleDragEnd);
+cardStack.addEventListener('touchstart', handleDragStart);
+cardStack.addEventListener('touchmove', handleDragMove);
+cardStack.addEventListener('touchend', handleDragEnd);
+
+updateCardStack();
+</script></body>
+</html>
