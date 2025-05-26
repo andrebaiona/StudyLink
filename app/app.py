@@ -577,9 +577,11 @@ def get_messages(conversation_id):
         private_key = serialization.load_pem_private_key(private_key_pem, password=None)
 
         # === Step 2: Fetch messages, include both encrypted key fields ===
+        
         cursor.execute("""
             SELECT m.id, m.sender_id, u.username, m.timestamp, m.encrypted_message, 
-                   m.encrypted_file_key_sender, m.encrypted_file_key_recipient
+                   m.encrypted_file_key_sender, m.encrypted_file_key_recipient,
+                   m.file_name, m.file_data, m.file_mime
             FROM messages m
             JOIN users u ON u.id = m.sender_id
             WHERE m.conversation_id = %s
