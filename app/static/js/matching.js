@@ -54,16 +54,18 @@ function swipeCard(direction) {
         onComplete: () => {
             lastSwiped = { card, direction };
 
-        const id = card.getAttribute('data-id');
-        const name = card.getAttribute('data-mentor');
-        const subject = card.getAttribute('data-subject');
-        const profilePic = card.querySelector('img').getAttribute('src');
 
-        if (id) {
-            showMatchModal(id, name, subject);
-        } else {
-            console.error("⚠️ Mentor card missing data-id attribute.");
-        }
+            const id = card.getAttribute('data-id');
+            const name = card.getAttribute('data-mentor');
+            const subject = card.getAttribute('data-subject');
+            const profilePic = card.querySelector('img').getAttribute('src');
+
+            if (isLike && id) {
+                showMatchModal(id, name, subject);
+            } else if (!id) {
+                console.error("⚠️ Mentor card missing data-id attribute.");
+            }
+
             card.remove();
             mentors.shift();
 
