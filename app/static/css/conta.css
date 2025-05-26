@@ -1,175 +1,260 @@
-/* General container styling */
-.container {
-    padding: 20px 10%;
-    flex-grow: 1;
+.main-content {
+    flex: 1;
+    padding: 2.5rem;
+    margin-top: 60px;
+    background: var(--bg-color);
+    transition: var(--transition);
 }
 
-/* Account section styling */
-.account-section {
-    background: #fff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
+.section-title {
+    font-size: 2.2rem;
+    color: var(--accent-primary);
+    text-align: left;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 80px;
+    height: 4px;
+    background: var(--accent-secondary);
+}
+
+.account-container {
+    max-width: 800px;
     margin: 0 auto;
-    text-align: center;
+    background: var(--card-bg);
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 4px 15px var(--shadow);
+    transition: var(--transition);
 }
 
-.account-section h2 {
-    color: #a0522d;
-    margin-bottom: 20px;
-    font-size: 1.8em;
+.form-group {
+    margin-bottom: 1.5rem;
 }
 
-/* Profile picture styling */
-.profile-image {
+.form-group label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--accent-primary);
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--accent-primary);
+    border-radius: 10px;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    transition: var(--transition);
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: var(--accent-secondary);
+    outline: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.form-group input:disabled {
+    background: rgba(0, 0, 0, 0.1);
+    cursor: not-allowed;
+}
+
+.profile-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
-    background-color: #e1d9ce;
-    margin: 0 auto 20px;
-    overflow: hidden;
+    margin-bottom: 1rem;
+    border: 2px solid var(--accent-primary);
+}
+
+.file-upload {
+    position: relative;
+}
+
+.file-upload input {
+    display: none;
+}
+
+.file-upload label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--accent-primary);
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.file-upload label:hover {
+    background: var(--accent-secondary);
+    transform: scale(1.02);
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: #fff;
+    border: none;
+    padding: 0.8rem 1.8rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition);
+    animation: pulseButton 2s ease infinite;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.profile-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px var(--shadow);
 }
-
-/* Form labels styling */
-.account-section label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
-    color: #333;
-    font-size: 1em;
-}
-
-/* Input styling */
-.account-section input,
-.account-section textarea,
-.account-section select {
-    padding: 10px;
-    width: 80%;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1em;
-    background: #f9f9f9;
-    color: #333;
-    margin-bottom: 10px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.account-section textarea {
-    resize: none;
-    height: 100px;
-    text-align: center;
-}
-
-.account-section select {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    cursor: pointer;
-    background: #f9f9f9 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%23333" d="M7 10l5 5 5-5z"/></svg>') no-repeat right 10px center;
-    background-size: 20px;
-    padding-right: 30px;
-    text-align: left;
-}
-
-/* Hover and focus effects */
-.account-section input:focus,
-.account-section textarea:focus,
-.account-section select:focus {
-    outline: none;
-    border-color: #a0522d;
-    box-shadow: 0 0 5px rgba(160, 82, 45, 0.5);
-}
-
-/* Button styling */
-.account-section button {
-    padding: 15px 20px;
-    background: linear-gradient(145deg, #a0522d, #8b4513);
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    font-size: 1.2em;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-.account-section button:hover {
-    background: #8b4513;
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-}
-
-/* Flash messages styling */
-.message {
-    margin-bottom: 15px;
-    padding: 10px;
-    border-radius: 5px;
-}
-
-.message.success {
-    background: #d4edda;
-    color: #155724;
-}
-
-.message.error {
-    background: #f8d7da;
-    color: #721c24;
-}   -webkit
 
 .flash-messages {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto 20px auto;
-    padding: 10px;
-    text-align: center;
+    margin-bottom: 1.5rem;
 }
 
-/* Success message style */
+.flash-message {
+    padding: 0.8rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+}
+
 .flash-message.success {
-    background-color: #4caf50;
+    background: #28a745;
     color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    animation: fadeOut 5s ease-in forwards;
 }
 
-/* Error message style */
-.flash-message.danger {
-    background-color: #e74c3c;
+.flash-message.error {
+    background: #dc3545;
     color: #fff;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    animation: fadeOut 5s ease-in forwards;
 }
 
-/* Optional: Fade out effect */
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
+.animate-slide-in {
+    animation: slideIn 0.6s ease;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+    .main-content {
+        padding: 2rem;
     }
-    90% {
-        opacity: 1;
+
+    .section-title {
+        font-size: 2rem;
     }
-    100% {
-        opacity: 0;
-        display: none;
+}
+
+@media (max-width: 992px) {
+    .main-content {
+        padding: 1.8rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        padding: 1.5rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .account-container {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .main-content {
+        padding: 1rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .account-container {
+        padding: 1.2rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .file-upload label {
+        padding: 0.7rem;
+        font-size: 0.9rem;
+    }
+
+    .submit-btn {
+        padding: 0.7rem 1.5rem;
+        font-size: 0.9rem;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+@media (max-width: 400px) {
+    .section-title {
+        font-size: 1.4rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .file-upload label {
+        padding: 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .submit-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .profile-img {
+        width: 70px;
+        height: 70px;
     }
 }
