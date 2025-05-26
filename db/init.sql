@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(100) NOT NULL UNIQUE,
     email VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
-    public_key TEXT, -- For end-to-end encryption
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -26,6 +25,20 @@ CREATE TABLE IF NOT EXISTS user_settings (
     bio TEXT,
     class_year INT DEFAULT NULL,
     course VARCHAR(255) DEFAULT '',
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- ====================
+-- USER KEYS TABLE (4096-bit RSA support)
+-- ====================
+
+CREATE TABLE IF NOT EXISTS user_keys (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    public_key TEXT NOT NULL,
+    private_key TEXT NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -97,7 +110,8 @@ CREATE TABLE IF NOT EXISTS messages (
     sender_id INT NOT NULL,
     encrypted_message TEXT NOT NULL,
     file_path VARCHAR(255),
-    encrypted_file_key TEXT, -- If file encryption uses a separate symmetric key
+    encrypted_file_key_sender TEXT NOT NULL,
+    encrypted_file_key_recipient TEXT NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE

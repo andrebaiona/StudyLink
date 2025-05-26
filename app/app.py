@@ -2,16 +2,25 @@ from flask import Flask, request, render_template, redirect, url_for, session, f
 from flask_wtf.csrf import CSRFProtect
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from flask_socketio import SocketIO, emit, join_room
 from jinja2 import TemplateNotFound
-import mysql.connector
-from argon2 import PasswordHasher, exceptions as argon2_exceptions
 from werkzeug.utils import secure_filename
-from cryptography.fernet import Fernet
+
 from dotenv import load_dotenv
 load_dotenv()
+
+from argon2 import PasswordHasher, exceptions as argon2_exceptions
 import bleach
 import secrets
 import os
+import base64
+
+import mysql.connector
+from cryptography.fernet import Fernet
+from cryptography.hazmat.primitives import serialization, hashes
+from cryptography.hazmat.primitives.asymmetric import padding, rsa
+from flask_socketio import SocketIO, emit, join_room
+
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -35,11 +44,12 @@ limiter = Limiter(get_remote_address, app=app, default_limits=["200 per minute"]
 ph = PasswordHasher()
 
 # --- DB Connection ---
+
 db = mysql.connector.connect(
-    host="studylink_mysql_db",
-    user="root",
-    password="root",
-    database="studylink",
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER"),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_NAME"),
     charset='utf8mb4',
     collation='utf8mb4_unicode_ci'
 )
@@ -105,18 +115,38 @@ def register():
             flash("As passwords não coincidem.", "error")
             return redirect(url_for('registo_page'))
 
-        cursor = db.cursor()
-        cursor.execute("SELECT * FROM users WHERE username = %s OR email = %s", (username, email))
-        if cursor.fetchone():
-            flash("Nome de utilizador ou email já estão registados!", "error")
-            return redirect(url_for('registo_page'))
-        cursor.close()
-
+        
         hashed_password = ph.hash(password)
+        from cryptography.hazmat.primitives.asymmetric import rsa
 
+# Generate RSA key pair
+        private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
+        public_key = private_key.public_key()
+
+# Serialize keys
+        private_pem = private_key.private_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PrivateFormat.PKCS8,
+            encryption_algorithm=serialization.NoEncryption()
+        )
+        public_pem = public_key.public_bytes(
+            encoding=serialization.Encoding.PEM,
+            format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+
+# Save user with keys
         cursor = db.cursor()
-        cursor.execute("INSERT INTO users (name, username, email, password) VALUES (%s, %s, %s, %s)",
-                       (name, username, email, hashed_password))
+        
+        cursor.execute("""
+            INSERT INTO users (name, username, email, password)
+            VALUES (%s, %s, %s, %s)
+        """, (name, username, email, hashed_password))
+        user_id = cursor.lastrowid
+
+        cursor.execute("""
+            INSERT INTO user_keys (user_id, public_key, private_key)
+            VALUES (%s, %s, %s)
+        """, (user_id, public_pem.decode(), private_pem.decode()))
         user_id = cursor.lastrowid
         cursor.execute("""
             INSERT INTO user_settings (user_id, profile_pic, bio, class_year, course)
@@ -249,6 +279,38 @@ def conta():
         return redirect(url_for('login_page'))
     finally:
         cursor.close()
+
+
+@app.route('/generate_keys', methods=['POST'])
+def generate_user_keys():
+    if 'user_id' not in session:
+        return redirect(url_for('login_page'))
+
+    user_id = session['user_id']
+
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    public_key = private_key.public_key()
+
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+    public_pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+
+    cursor = db.cursor()
+    cursor.execute("""
+    INSERT INTO user_keys (user_id, public_key, private_key)
+    VALUES (%s, %s, %s)
+""", (user_id, public_pem.decode(), private_pem.decode()))
+    db.commit()
+    cursor.close()
+
+    flash("Chaves regeneradas com sucesso!", "success")
+    return redirect(url_for('conta'))
 
 
 @app.route('/update_profile', methods=['POST'])
@@ -393,9 +455,6 @@ def get_units_by_course():
     return {'units': units}
 
 
-
-
-
 @app.route('/send_message', methods=['POST'])
 def send_message():
     if 'user_id' not in session:
@@ -403,36 +462,94 @@ def send_message():
 
     data = request.json
     conversation_id = data.get('conversation_id')
-    message = data.get('message')
+    plain_message = data.get('message')
 
-    if not conversation_id or not message:
+    if not conversation_id or not plain_message:
         return {'status': 'error', 'message': 'Missing fields'}, 400
 
-    encrypted_message = fernet.encrypt(message.encode())
-
     try:
-        cursor = db.cursor()
+        sender_id = session['user_id']
+        cursor = db.cursor(dictionary=True)
+
+        # Get recipient ID
         cursor.execute("""
-            INSERT INTO messages (conversation_id, sender_id, encrypted_message)
-            VALUES (%s, %s, %s)
-        """, (conversation_id, session['user_id'], encrypted_message))
+            SELECT user_id FROM conversation_members
+            WHERE conversation_id = %s AND user_id != %s
+            LIMIT 1
+        """, (conversation_id, sender_id))
+        recipient = cursor.fetchone()
+        if not recipient:
+            return {'status': 'error', 'message': 'Recipient not found'}, 404
+        recipient_id = recipient['user_id']
+
+        # Get sender's public key
+        cursor.execute("""
+            SELECT public_key FROM user_keys
+            WHERE user_id = %s AND is_active = TRUE
+            ORDER BY created_at DESC LIMIT 1
+        """, (sender_id,))
+        sender_row = cursor.fetchone()
+        sender_public_key = serialization.load_pem_public_key(sender_row['public_key'].encode())
+
+        # Get recipient's public key
+        cursor.execute("""
+            SELECT public_key FROM user_keys
+            WHERE user_id = %s AND is_active = TRUE
+            ORDER BY created_at DESC LIMIT 1
+        """, (recipient_id,))
+        recipient_row = cursor.fetchone()
+        recipient_public_key = serialization.load_pem_public_key(recipient_row['public_key'].encode())
+
+        # Encrypt message with Fernet
+        fernet_key = Fernet.generate_key()
+        fernet = Fernet(fernet_key)
+        encrypted_message = fernet.encrypt(plain_message.encode())
+        encrypted_message_b64 = base64.b64encode(encrypted_message).decode()
+
+        # Encrypt Fernet key for both sender and recipient
+        encrypted_fernet_key_sender = sender_public_key.encrypt(
+            fernet_key,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+        encrypted_fernet_key_recipient = recipient_public_key.encrypt(
+            fernet_key,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+        encrypted_key_sender_b64 = base64.b64encode(encrypted_fernet_key_sender).decode()
+        encrypted_key_recipient_b64 = base64.b64encode(encrypted_fernet_key_recipient).decode()
+
+        # Save to database
+        cursor.execute("""
+            INSERT INTO messages (conversation_id, sender_id, encrypted_message, encrypted_file_key_sender, encrypted_file_key_recipient)
+            VALUES (%s, %s, %s, %s, %s)
+        """, (conversation_id, sender_id, encrypted_message_b64, encrypted_key_sender_b64, encrypted_key_recipient_b64))
         db.commit()
 
+        # Emit event
         from datetime import datetime
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
-        # Emit real-time event
         socketio.emit('new_message', {
             'conversation_id': conversation_id,
-            'sender_id': session['user_id'],
-            'message': message,
+            'sender_id': sender_id,
+            'message': plain_message,
             'timestamp': timestamp
         }, room=f'conversation_{conversation_id}')
 
         cursor.close()
         return {'status': 'success'}
-    except mysql.connector.Error as err:
-        return {'status': 'error', 'message': str(err)}, 500
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 500
+
+
 
 
 @app.route('/get_messages/<int:conversation_id>', methods=['GET'])
@@ -440,30 +557,99 @@ def get_messages(conversation_id):
     if 'user_id' not in session:
         return {'status': 'error', 'message': 'Not authenticated'}, 401
 
+    user_id = session['user_id']
     cursor = db.cursor(dictionary=True)
-    cursor.execute("""
-        SELECT m.id, m.sender_id, u.username, m.timestamp, m.encrypted_message
-        FROM messages m
-        JOIN users u ON u.id = m.sender_id
-        WHERE m.conversation_id = %s
-        ORDER BY m.timestamp ASC
-    """, (conversation_id,))
-    raw_messages = cursor.fetchall()
-    cursor.close()
 
-    decrypted = [
-        {
-            'id': m['id'],
-            'sender_id': m['sender_id'],
-            'sender': m['username'],
-            'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
-            'message': fernet.decrypt(m['encrypted_message'].encode()).decode()
-        }
-        for m in raw_messages
-    ]
+    try:
+        # === Step 1: Get user's private key ===
+        cursor.execute("""
+            SELECT private_key FROM user_keys
+            WHERE user_id = %s AND is_active = TRUE
+            ORDER BY created_at DESC LIMIT 1
+        """, (user_id,))
+        row = cursor.fetchone()
+        if not row or not row.get('private_key'):
+            return {'status': 'error', 'message': 'No private key found'}, 400
 
-    return {'messages': decrypted}
+        private_key_pem = row['private_key'].encode()
+        private_key = serialization.load_pem_private_key(private_key_pem, password=None)
 
+        # === Step 2: Fetch messages, include both encrypted key fields ===
+        cursor.execute("""
+            SELECT m.id, m.sender_id, u.username, m.timestamp, m.encrypted_message, 
+                   m.encrypted_file_key_sender, m.encrypted_file_key_recipient
+            FROM messages m
+            JOIN users u ON u.id = m.sender_id
+            WHERE m.conversation_id = %s
+            ORDER BY m.timestamp ASC
+        """, (conversation_id,))
+        raw_messages = cursor.fetchall()
+        cursor.close()
+
+        decrypted_messages = []
+        for m in raw_messages:
+            try:
+                # Decide which encrypted key to use
+                if m['sender_id'] == user_id:
+                    encrypted_key_b64 = m['encrypted_file_key_sender']
+                else:
+                    encrypted_key_b64 = m['encrypted_file_key_recipient']
+
+                encrypted_key = base64.b64decode(encrypted_key_b64)
+                fernet_key = private_key.decrypt(
+                    encrypted_key,
+                    padding.OAEP(
+                        mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                        algorithm=hashes.SHA256(),
+                        label=None
+                    )
+                )
+                fernet = Fernet(fernet_key)
+                decrypted_text = fernet.decrypt(base64.b64decode(m['encrypted_message'])).decode()
+
+            except Exception:
+                decrypted_text = '[Erro ao decifrar a mensagem]'
+
+            decrypted_messages.append({
+                'id': m['id'],
+                'sender_id': m['sender_id'],
+                'sender': m['username'],
+                'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
+                'message': decrypted_text
+            })
+
+        return {'messages': decrypted_messages}
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 500
+
+
+@app.route('/get_user_conversations', methods=['GET'])
+def get_user_conversations():
+    if 'user_id' not in session:
+        return {'status': 'error', 'message': 'Not authenticated'}, 401
+
+    user_id = session['user_id']
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        cursor.execute("""
+            SELECT c.id AS conversation_id, u.id AS other_user_id, u.username, u.name,
+                   IFNULL(us.profile_pic, 'static/uploads/ProfilePics/default.jpg') AS profile_pic
+            FROM conversations c
+            JOIN conversation_members cm1 ON cm1.conversation_id = c.id
+            JOIN conversation_members cm2 ON cm2.conversation_id = c.id AND cm2.user_id != %s
+            JOIN users u ON u.id = cm2.user_id
+            LEFT JOIN user_settings us ON us.user_id = u.id
+            WHERE cm1.user_id = %s
+        """, (user_id, user_id))
+        conversations = cursor.fetchall()
+        cursor.close()
+
+        return {'status': 'success', 'conversations': conversations}
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 500
 
 
 @app.route('/conversa/<int:conversation_id>')
@@ -522,9 +708,6 @@ def conversa(conversation_id):
 
 
 
-
-
-
 @app.route('/start_conversation', methods=['POST'])
 def start_conversation():
     if 'user_id' not in session:
@@ -533,6 +716,7 @@ def start_conversation():
     data = request.get_json()
     user_id = session['user_id']
     mentor_id = data.get('mentor_id')
+    first_message = data.get('first_message', '').strip()
 
     if not mentor_id:
         return {'status': 'error', 'message': 'Missing mentor_id'}, 400
@@ -543,9 +727,9 @@ def start_conversation():
         return {'status': 'error', 'message': 'Invalid mentor_id'}, 400
 
     try:
-        cursor = db.cursor()
+        cursor = db.cursor(dictionary=True)
 
-        # Check if a conversation already exists between both users
+        # Check if conversation already exists
         cursor.execute("""
             SELECT c.id
             FROM conversations c
@@ -557,7 +741,7 @@ def start_conversation():
         existing = cursor.fetchone()
 
         if existing:
-            conversation_id = existing[0]
+            conversation_id = existing['id']
         else:
             # Create new conversation
             cursor.execute("INSERT INTO conversations () VALUES ()")
@@ -566,14 +750,63 @@ def start_conversation():
             cursor.execute("INSERT INTO conversation_members (conversation_id, user_id) VALUES (%s, %s)", (conversation_id, mentor_id))
             db.commit()
 
+        # OPTIONAL: Insert first message if provided
+        if first_message:
+            # Get both public keys
+            cursor.execute("""
+                SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1
+            """, (user_id,))
+            sender_row = cursor.fetchone()
+            sender_public_key = serialization.load_pem_public_key(sender_row['public_key'].encode())
+
+            cursor.execute("""
+                SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1
+            """, (mentor_id,))
+            recipient_row = cursor.fetchone()
+            recipient_public_key = serialization.load_pem_public_key(recipient_row['public_key'].encode())
+
+            # Encrypt with Fernet
+            fernet_key = Fernet.generate_key()
+            fernet = Fernet(fernet_key)
+            encrypted_message = fernet.encrypt(first_message.encode())
+            encrypted_message_b64 = base64.b64encode(encrypted_message).decode()
+
+            # Encrypt Fernet key for both
+            encrypted_fernet_key_sender = sender_public_key.encrypt(
+                fernet_key,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+            encrypted_fernet_key_recipient = recipient_public_key.encrypt(
+                fernet_key,
+                padding.OAEP(
+                    mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                    algorithm=hashes.SHA256(),
+                    label=None
+                )
+            )
+            encrypted_key_sender_b64 = base64.b64encode(encrypted_fernet_key_sender).decode()
+            encrypted_key_recipient_b64 = base64.b64encode(encrypted_fernet_key_recipient).decode()
+
+            cursor.execute("""
+                INSERT INTO messages (conversation_id, sender_id, encrypted_message, encrypted_file_key_sender, encrypted_file_key_recipient)
+                VALUES (%s, %s, %s, %s, %s)
+            """, (conversation_id, user_id, encrypted_message_b64, encrypted_key_sender_b64, encrypted_key_recipient_b64))
+            db.commit()
+
         cursor.close()
         return {'status': 'success', 'conversation_id': conversation_id}
 
     except Exception as e:
         return {'status': 'error', 'message': str(e)}, 500
+
+
 # --- RUN ---
 
-from flask_socketio import SocketIO, emit, join_room
+
 
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 
@@ -581,6 +814,25 @@ socketio = SocketIO(app, cors_allowed_origins="*", async_mode='eventlet')
 def handle_join(data):
     join_room(f"conversation_{data['conversation_id']}")
 
+def generate_keys():
+    private_key = rsa.generate_private_key(
+        public_exponent=65537,
+        key_size=2048,
+    )
+    public_key = private_key.public_key()
+
+    private_pem = private_key.private_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PrivateFormat.PKCS8,
+        encryption_algorithm=serialization.NoEncryption()
+    )
+
+    public_pem = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+    )
+
+    return public_pem.decode(), private_pem.decode()
 if __name__ == '__main__':
     socketio.run(app, host='0.0.0.0', port=8000, debug=True)
 

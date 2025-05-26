@@ -2,3 +2,5 @@ node_modules
 __pycache__/
 *.py[cod]
 .env
+app/static/uploads/ProfilePics/*
+!app/static/uploads/ProfilePics/default.jpg
