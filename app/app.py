@@ -14,6 +14,8 @@ import bleach
 import secrets
 import os
 import base64
+from datetime import datetime
+from base64 import b64encode
 
 import mysql.connector
 from cryptography.fernet import Fernet
@@ -473,70 +475,44 @@ def send_message():
         sender_id = session['user_id']
         cursor = db.cursor(dictionary=True)
 
-        # Get recipient ID
-        cursor.execute("""
-            SELECT user_id FROM conversation_members
-            WHERE conversation_id = %s AND user_id != %s
-            LIMIT 1
-        """, (conversation_id, sender_id))
-        recipient = cursor.fetchone()
-        if not recipient:
-            return {'status': 'error', 'message': 'Recipient not found'}, 404
-        recipient_id = recipient['user_id']
+        cursor.execute("SELECT user_id FROM conversation_members WHERE conversation_id = %s", (conversation_id,))
+        members = cursor.fetchall()
 
-        # Get sender's public key
-        cursor.execute("""
-            SELECT public_key FROM user_keys
-            WHERE user_id = %s AND is_active = TRUE
-            ORDER BY created_at DESC LIMIT 1
-        """, (sender_id,))
-        sender_row = cursor.fetchone()
-        sender_public_key = serialization.load_pem_public_key(sender_row['public_key'].encode())
+        cursor.execute("SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1", (sender_id,))
+        sender_key_row = cursor.fetchone()
+        sender_public_key = serialization.load_pem_public_key(sender_key_row['public_key'].encode())
 
-        # Get recipient's public key
-        cursor.execute("""
-            SELECT public_key FROM user_keys
-            WHERE user_id = %s AND is_active = TRUE
-            ORDER BY created_at DESC LIMIT 1
-        """, (recipient_id,))
-        recipient_row = cursor.fetchone()
-        recipient_public_key = serialization.load_pem_public_key(recipient_row['public_key'].encode())
-
-        # Encrypt message with Fernet
         fernet_key = Fernet.generate_key()
         fernet = Fernet(fernet_key)
         encrypted_message = fernet.encrypt(plain_message.encode())
         encrypted_message_b64 = base64.b64encode(encrypted_message).decode()
 
-        # Encrypt Fernet key for both sender and recipient
-        encrypted_fernet_key_sender = sender_public_key.encrypt(
-            fernet_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
+        encrypted_keys = {}
+        for member in members:
+            uid = member['user_id']
+            if uid == sender_id:
+                continue
+            cursor.execute("SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1", (uid,))
+            row = cursor.fetchone()
+            if not row:
+                continue
+            pub_key = serialization.load_pem_public_key(row['public_key'].encode())
+            encrypted_key = pub_key.encrypt(
+                fernet_key,
+                padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
             )
-        )
-        encrypted_fernet_key_recipient = recipient_public_key.encrypt(
-            fernet_key,
-            padding.OAEP(
-                mgf=padding.MGF1(algorithm=hashes.SHA256()),
-                algorithm=hashes.SHA256(),
-                label=None
-            )
-        )
-        encrypted_key_sender_b64 = base64.b64encode(encrypted_fernet_key_sender).decode()
-        encrypted_key_recipient_b64 = base64.b64encode(encrypted_fernet_key_recipient).decode()
+            encrypted_keys[str(uid)] = base64.b64encode(encrypted_key).decode()
 
-        # Save to database
-        cursor.execute("""
-            INSERT INTO messages (conversation_id, sender_id, encrypted_message, encrypted_file_key_sender, encrypted_file_key_recipient)
-            VALUES (%s, %s, %s, %s, %s)
-        """, (conversation_id, sender_id, encrypted_message_b64, encrypted_key_sender_b64, encrypted_key_recipient_b64))
+        encrypted_key_sender = sender_public_key.encrypt(
+            fernet_key,
+            padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+        )
+        encrypted_key_sender_b64 = base64.b64encode(encrypted_key_sender).decode()
+
+        cursor.execute("INSERT INTO messages (conversation_id, sender_id, encrypted_message, encrypted_file_key_sender, encrypted_keys_json) VALUES (%s, %s, %s, %s, %s)",
+                       (conversation_id, sender_id, encrypted_message_b64, encrypted_key_sender_b64, json.dumps(encrypted_keys)))
         db.commit()
 
-        # Emit event
-        from datetime import datetime
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         socketio.emit('new_message', {
             'conversation_id': conversation_id,
@@ -831,7 +807,6 @@ def start_conversation():
         return {'status': 'error', 'message': str(e)}, 500
 
 
-
 @app.route('/upload_file', methods=['POST'])
 def upload_file():
     if 'user_id' not in session:
@@ -903,6 +878,21 @@ def upload_file():
             file.filename, encrypted_file, file.mimetype
         ))
         db.commit()
+
+        import time
+        time.sleep(0.2) 
+
+        from datetime import datetime
+        socketio.emit('new_message', {
+            'conversation_id': conversation_id,
+            'sender_id': sender_id,
+            'message': '[Encrypted file]',
+            'is_file': True,
+            'file_name': file.filename,
+            'file_mime': file.mimetype,
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        }, room=f'conversation_{conversation_id}')
+
         return {'status': 'success'}
 
     except Exception as e:
@@ -911,6 +901,8 @@ def upload_file():
 
     finally:
         cursor.close()
+
+
 
 @app.route('/download_file/<int:message_id>', methods=['GET'])
 def download_file(message_id):
@@ -980,6 +972,37 @@ def download_file(message_id):
     except Exception as e:
         return {'status': 'error', 'message': str(e)}, 500
 
+
+@app.route('/create_group', methods=['POST'])
+def create_group():
+    if 'user_id' not in session:
+        return {'status': 'error', 'message': 'Not authenticated'}, 401
+
+    data = request.get_json()
+    group_name = data.get('name')
+    member_ids = data.get('members')  # List of user IDs
+
+    if not group_name or not member_ids or not isinstance(member_ids, list):
+        return {'status': 'error', 'message': 'Invalid input'}, 400
+
+    try:
+        cursor = db.cursor()
+        cursor.execute("INSERT INTO conversations (name, is_group) VALUES (%s, TRUE)", (group_name,))
+        conversation_id = cursor.lastrowid
+
+        # Add creator and members
+        cursor.execute("INSERT INTO conversation_members (conversation_id, user_id) VALUES (%s, %s)",
+                       (conversation_id, session['user_id']))
+        for uid in member_ids:
+            cursor.execute("INSERT INTO conversation_members (conversation_id, user_id) VALUES (%s, %s)",
+                           (conversation_id, uid))
+
+        db.commit()
+        cursor.close()
+        return {'status': 'success', 'conversation_id': conversation_id}
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 500
 # --- RUN ---
 
 

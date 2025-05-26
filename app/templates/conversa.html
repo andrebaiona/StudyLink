@@ -1507,7 +1507,7 @@
             notification.classList.add('active');
             setTimeout(() => {
                 notification.classList.remove('active');
-            }, 3000);
+            }, 5000);
         }
 
         // Animações GSAP
@@ -1672,35 +1672,30 @@ async function loadMessages() {
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
-        // Enviar resposta rápida
-        function sendQuickReply(text) {
-            const messageArea = document.getElementById('messageArea');
-            const newMessage = document.createElement('div');
-            newMessage.className = 'message sent';
-            newMessage.innerHTML = `
-                <div class="message-content">
-                    ${text}
-                    <div class="message-time">${new Date().toLocaleString()}</div>
-                    <button class="pin-btn" onclick="pinMessage(this, '${text}')">Fixar</button>
-                </div>
-            `;
-            messageArea.appendChild(newMessage);
-            messageArea.scrollTop = messageArea.scrollHeight;
-            showNotification('Resposta rápida enviada!');
-            // Simular resposta do mentor
-            setTimeout(() => {
-                const response = document.createElement('div');
-                response.className = 'message received';
-                response.innerHTML = `
-                    <div class="message-content">
-                        De nada, Maria! Alguma dúvida?
-                        <div class="message-time">${new Date().toLocaleString()}</div>
-                    </div>
-                `;
-                messageArea.appendChild(response);
-                messageArea.scrollTop = messageArea.scrollHeight;
-            }, 1500);
+
+function sendQuickReply(text) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+    fetch('/send_message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({
+            conversation_id: CONVERSATION_ID,
+            message: text
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status !== 'success') {
+            showNotification('Erro ao enviar resposta rápida.');
         }
+    })
+    .catch(() => showNotification('Erro de rede ao enviar resposta.'));
+}
+
 
         // Fixar mensagem
         function pinMessage(button, text) {
@@ -1858,26 +1853,53 @@ async function loadMessages() {
         if (window.innerWidth < 768) {
             document.querySelector('.mentor-list').classList.remove('active');
         }
-        const socket = io();
 
-          // Join conversation room
-          socket.emit('join', { conversation_id: CONVERSATION_ID });
 
-          socket.on('new_message', data => {
-              if (data.conversation_id === CONVERSATION_ID) {
-                  const messageArea = document.getElementById('messageArea');
-                  const msgDiv = document.createElement('div');
-                  msgDiv.className = `message ${data.sender_id === USER_ID ? 'sent' : 'received'}`;
-                  msgDiv.innerHTML = `
-                      <div class="message-content">
-                          ${data.message}
-                          <div class="message-time">${data.timestamp}</div>
-                      </div>
-                  `;
-                  messageArea.appendChild(msgDiv);
-                  messageArea.scrollTop = messageArea.scrollHeight;
-              }
-          });
-    </script>
+
+window.addEventListener('DOMContentLoaded', () => {
+    const socket = io();
+
+    socket.emit('join', { conversation_id: CONVERSATION_ID });
+
+    socket.on('new_message', (data) => {
+        console.log("📩 Socket received:", data);
+
+        if (data.conversation_id !== CONVERSATION_ID) return;
+
+        if (data.is_file) {
+            console.log("📎 File received, loading messages...");
+            // ✅ Wait just a bit so the file can be fetched
+            setTimeout(() => {
+                if (typeof loadMessages === 'function') {
+                    loadMessages();
+                } else {
+                    console.error("❌ loadMessages() is not defined!");
+                }
+            }, 300);
+            return;
+        }
+
+        // 📨 Normal message render
+        const messageArea = document.getElementById('messageArea');
+        const isOwn = data.sender_id === USER_ID;
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isOwn ? 'sent' : 'received'}`;
+
+        const contentDiv = document.createElement('div');
+        contentDiv.className = 'message-content';
+        contentDiv.textContent = data.message;
+
+        const time = document.createElement('div');
+        time.className = 'message-time';
+        time.textContent = data.timestamp;
+
+        contentDiv.appendChild(time);
+        messageDiv.appendChild(contentDiv);
+        messageArea.appendChild(messageDiv);
+        messageArea.scrollTop = messageArea.scrollHeight;
+    });
+});
+
+</script>
 </body>
 </html>
