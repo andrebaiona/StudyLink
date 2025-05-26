@@ -21,6 +21,8 @@ from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric import padding, rsa
 from flask_socketio import SocketIO, emit, join_room
 
+from flask import send_file
+import io
 
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
@@ -586,15 +588,12 @@ def get_messages(conversation_id):
         raw_messages = cursor.fetchall()
         cursor.close()
 
+
         decrypted_messages = []
+
         for m in raw_messages:
             try:
-                # Decide which encrypted key to use
-                if m['sender_id'] == user_id:
-                    encrypted_key_b64 = m['encrypted_file_key_sender']
-                else:
-                    encrypted_key_b64 = m['encrypted_file_key_recipient']
-
+                encrypted_key_b64 = m['encrypted_file_key_sender'] if m['sender_id'] == user_id else m['encrypted_file_key_recipient']
                 encrypted_key = base64.b64decode(encrypted_key_b64)
                 fernet_key = private_key.decrypt(
                     encrypted_key,
@@ -605,18 +604,44 @@ def get_messages(conversation_id):
                     )
                 )
                 fernet = Fernet(fernet_key)
-                decrypted_text = fernet.decrypt(base64.b64decode(m['encrypted_message'])).decode()
+
+                if m['encrypted_message'] == '[Encrypted file]' and m.get('file_data'):
+                    decrypted_file = fernet.decrypt(m['file_data'])
+                    file_base64 = base64.b64encode(decrypted_file).decode()
+
+                    decrypted_messages.append({
+                        'id': m['id'],
+                        'sender_id': m['sender_id'],
+                        'sender': m['username'],
+                        'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
+                        'message': None,
+                        'is_file': True,
+                        'file_name': m['file_name'],
+                        'file_mime': m['file_mime'],
+                        'file_data': file_base64
+                    })
+                else:
+                    decrypted_text = fernet.decrypt(base64.b64decode(m['encrypted_message'])).decode()
+                    decrypted_messages.append({
+                        'id': m['id'],
+                        'sender_id': m['sender_id'],
+                        'sender': m['username'],
+                        'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
+                        'message': decrypted_text,
+                        'is_file': False
+                    })
 
             except Exception:
-                decrypted_text = '[Erro ao decifrar a mensagem]'
+                decrypted_messages.append({
+                    'id': m['id'],
+                    'sender_id': m['sender_id'],
+                    'sender': m['username'],
+                    'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
+                    'message': '[Erro ao decifrar a mensagem]',
+                    'is_file': m['encrypted_message'] == '[Encrypted file]'
+                })
 
-            decrypted_messages.append({
-                'id': m['id'],
-                'sender_id': m['sender_id'],
-                'sender': m['username'],
-                'timestamp': m['timestamp'].strftime('%Y-%m-%d %H:%M:%S'),
-                'message': decrypted_text
-            })
+
 
         return {'messages': decrypted_messages}
 
@@ -803,6 +828,155 @@ def start_conversation():
     except Exception as e:
         return {'status': 'error', 'message': str(e)}, 500
 
+
+
+@app.route('/upload_file', methods=['POST'])
+def upload_file():
+    if 'user_id' not in session:
+        return {'status': 'error', 'message': 'Not authenticated'}, 401
+
+    conversation_id = request.form.get('conversation_id')
+    file = request.files.get('file')
+
+    if not file or not conversation_id:
+        return {'status': 'error', 'message': 'Missing file or conversation ID'}, 400
+
+    sender_id = session['user_id']
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        # Get recipient ID
+        cursor.execute("""
+            SELECT user_id FROM conversation_members
+            WHERE conversation_id = %s AND user_id != %s
+            LIMIT 1
+        """, (conversation_id, sender_id))
+        recipient = cursor.fetchone()
+        if not recipient:
+            return {'status': 'error', 'message': 'Recipient not found'}, 404
+        recipient_id = recipient['user_id']
+
+        # Get sender & recipient public keys
+        cursor.execute("SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1", (sender_id,))
+        sender_key = cursor.fetchone()
+        cursor.execute("SELECT public_key FROM user_keys WHERE user_id = %s AND is_active = TRUE ORDER BY created_at DESC LIMIT 1", (recipient_id,))
+        recipient_key = cursor.fetchone()
+
+        sender_pub = serialization.load_pem_public_key(sender_key['public_key'].encode())
+        recipient_pub = serialization.load_pem_public_key(recipient_key['public_key'].encode())
+
+        # Generate Fernet key for the file
+        fernet_key = Fernet.generate_key()
+        fernet = Fernet(fernet_key)
+
+        # Encrypt file data
+        file_data = file.read()
+        encrypted_file = fernet.encrypt(file_data)
+
+        # Encrypt Fernet key for both users
+        encrypted_key_sender = base64.b64encode(
+            sender_pub.encrypt(
+                fernet_key,
+                padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+            )
+        ).decode()
+        encrypted_key_recipient = base64.b64encode(
+            recipient_pub.encrypt(
+                fernet_key,
+                padding.OAEP(mgf=padding.MGF1(algorithm=hashes.SHA256()), algorithm=hashes.SHA256(), label=None)
+            )
+        ).decode()
+
+        # Store file in DB with [Encrypted file] marker
+        cursor.execute("""
+            INSERT INTO messages (
+                conversation_id, sender_id, encrypted_message,
+                encrypted_file_key_sender, encrypted_file_key_recipient,
+                file_name, file_data, file_mime
+            )
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (
+            conversation_id, sender_id, '[Encrypted file]',
+            encrypted_key_sender, encrypted_key_recipient,
+            file.filename, encrypted_file, file.mimetype
+        ))
+        db.commit()
+        return {'status': 'success'}
+
+    except Exception as e:
+        db.rollback()
+        return {'status': 'error', 'message': str(e)}, 500
+
+    finally:
+        cursor.close()
+
+@app.route('/download_file/<int:message_id>', methods=['GET'])
+def download_file(message_id):
+    if 'user_id' not in session:
+        return {'status': 'error', 'message': 'Not authenticated'}, 401
+
+    user_id = session['user_id']
+    cursor = db.cursor(dictionary=True)
+
+    try:
+        # Get user's private key
+        cursor.execute("""
+            SELECT private_key FROM user_keys
+            WHERE user_id = %s AND is_active = TRUE
+            ORDER BY created_at DESC LIMIT 1
+        """, (user_id,))
+        row = cursor.fetchone()
+        if not row or not row.get('private_key'):
+            return {'status': 'error', 'message': 'No private key found'}, 400
+
+        private_key_pem = row['private_key'].encode()
+        private_key = serialization.load_pem_private_key(private_key_pem, password=None)
+
+        # Get message details
+        cursor.execute("""
+            SELECT sender_id, file_path, encrypted_file_key_sender, encrypted_file_key_recipient
+            FROM messages
+            WHERE id = %s
+        """, (message_id,))
+        msg = cursor.fetchone()
+        cursor.close()
+
+        if not msg or not msg['file_path']:
+            return {'status': 'error', 'message': 'File not found'}, 404
+
+        # Decide which encrypted key to use
+        if msg['sender_id'] == user_id:
+            encrypted_key_b64 = msg['encrypted_file_key_sender']
+        else:
+            encrypted_key_b64 = msg['encrypted_file_key_recipient']
+
+        encrypted_key = base64.b64decode(encrypted_key_b64)
+        fernet_key = private_key.decrypt(
+            encrypted_key,
+            padding.OAEP(
+                mgf=padding.MGF1(algorithm=hashes.SHA256()),
+                algorithm=hashes.SHA256(),
+                label=None
+            )
+        )
+        fernet = Fernet(fernet_key)
+
+        # Load and decrypt file
+        with open(msg['file_path'], 'rb') as f:
+            encrypted_file_data = f.read()
+        decrypted_file_data = fernet.decrypt(encrypted_file_data)
+
+        # Prepare file for sending
+        filename = os.path.basename(msg['file_path'])
+        return send_file(
+            io.BytesIO(decrypted_file_data),
+            mimetype='application/octet-stream',
+            as_attachment=True,
+            download_name=filename
+        )
+
+    except Exception as e:
+        return {'status': 'error', 'message': str(e)}, 500
 
 # --- RUN ---
 

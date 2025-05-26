@@ -4,3 +4,4 @@ __pycache__/
 # .env
 app/static/uploads/ProfilePics/*
 !app/static/uploads/ProfilePics/default.jpg
+app/static/uploads/files/*

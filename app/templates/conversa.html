@@ -1406,10 +1406,7 @@
 </div>
 <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 <script>
-    window.conversationId = {{ conversation_id }};
-    window.onload = () => {
-        loadMessages(window.conversationId);
-    };
+
 </script>
 
 {% endblock %}
@@ -1697,70 +1694,44 @@ async function loadMessages() {
         }
 
         // Manipular upload de ficheiros
-        function handleFileUpload(files) {
-            const file = files[0];
-            if (!file) return;
-            if (file.size > 10 * 1024 * 1024) {
-                showNotification('Ficheiro demasiado grande! Máximo 10MB.');
-                return;
-            }
-            const messageArea = document.getElementById('messageArea');
-            const fileType = file.type;
-            let fileContent = '';
+        
 
-            document.getElementById('uploadProgress').classList.add('active');
-            setTimeout(() => {
-                document.getElementById('uploadProgress').classList.remove('active');
-                document.getElementById('dropZone').classList.remove('active');
+      function handleFileUpload(files) {
+          const file = files[0];
+          if (!file) {
+              showNotification('No file selected.');
+              return;
+          }
 
-                if (fileType.startsWith('image/')) {
-                    fileContent = `
-                        <div class="message-file" onclick="previewFile('${URL.createObjectURL(file)}')">
-                            <img src="${URL.createObjectURL(file)}" alt="${file.name}">
-                            <a href="${URL.createObjectURL(file)}" download="${file.name}">${file.name}</a>
-                        </div>`;
-                } else if (fileType === 'application/pdf') {
-                    fileContent = `
-                        <div class="message-file">
-                            <img src="/static/Imagens/pdf-icon.png" alt="PDF">
-                            <a href="${URL.createObjectURL(file)}" download="${file.name}">${file.name}</a>
-                        </div>`;
-                } else if (fileType === 'text/plain') {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const text = e.target.result;
-                        const message = document.createElement('div');
-                        message.className = 'message sent';
-                        message.innerHTML = `
-                            <div class="message-content">
-                                <pre><code class="language-text">${text}</code></pre>
-                                <div class="message-time">${new Date().toLocaleString()}</div>
-                                <button class="pin-btn" onclick="pinMessage(this, '${text}')">Fixar</button>
-                            </div>
-                        `;
-                        messageArea.appendChild(message);
-                        hljs.highlightAll();
-                        messageArea.scrollTop = messageArea.scrollHeight;
-                        showNotification('Ficheiro de texto enviado!');
-                    };
-                    reader.readAsText(file);
-                    return;
-                } else {
-                    showNotification('Formato de ficheiro não suportado!');
-                    return;
-                }
+          const formData = new FormData();
+          formData.append('file', file);
+          formData.append('conversation_id', CONVERSATION_ID);
 
-                const message = document.createElement('div');
-                message.className = 'message sent';
-                message.innerHTML = `
-                    ${fileContent}
-                    <div class="message-time">${new Date().toLocaleString()}</div>
-                `;
-                messageArea.appendChild(message);
-                messageArea.scrollTop = messageArea.scrollHeight;
-                showNotification('Ficheiro enviado!');
-            }, 1500);
-        }
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+          fetch('/upload_file', {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-CSRFToken': csrfToken  // <-- Add this line
+              }
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  showNotification('File sent successfully!');
+                  loadMessages(CONVERSATION_ID);
+              } else {
+                  showNotification('Error: ' + data.message);
+              }
+          })
+          .catch(err => {
+              console.error(err);
+              showNotification('Upload failed.');
+          });
+      }
+
+
 
         // Pré-visualizar ficheiro
         function previewFile(url) {

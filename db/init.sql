@@ -104,14 +104,17 @@ CREATE TABLE IF NOT EXISTS conversation_members (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE IF NOT EXISTS messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     conversation_id INT NOT NULL,
     sender_id INT NOT NULL,
     encrypted_message TEXT NOT NULL,
-    file_path VARCHAR(255),
     encrypted_file_key_sender TEXT NOT NULL,
     encrypted_file_key_recipient TEXT NOT NULL,
+    file_name VARCHAR(255),
+    file_data LONGBLOB,
+    file_mime VARCHAR(100),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE,
     FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE CASCADE
