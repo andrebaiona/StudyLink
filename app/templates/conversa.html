@@ -1673,35 +1673,30 @@ async function loadMessages() {
 }
 
         // Enviar resposta rápida
-        function sendQuickReply(text) {
-            const messageArea = document.getElementById('messageArea');
-            const newMessage = document.createElement('div');
-            newMessage.className = 'message sent';
-            newMessage.innerHTML = `
-                <div class="message-content">
-                    ${text}
-                    <div class="message-time">${new Date().toLocaleString()}</div>
-                    <button class="pin-btn" onclick="pinMessage(this, '${text}')">Fixar</button>
-                </div>
-            `;
-            messageArea.appendChild(newMessage);
-            messageArea.scrollTop = messageArea.scrollHeight;
-            showNotification('Resposta rápida enviada!');
-            // Simular resposta do mentor
-            setTimeout(() => {
-                const response = document.createElement('div');
-                response.className = 'message received';
-                response.innerHTML = `
-                    <div class="message-content">
-                        De nada, Maria! Alguma dúvida?
-                        <div class="message-time">${new Date().toLocaleString()}</div>
-                    </div>
-                `;
-                messageArea.appendChild(response);
-                messageArea.scrollTop = messageArea.scrollHeight;
-            }, 1500);
-        }
+       
+      function sendQuickReply(text) {
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+          fetch('/send_message', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify({
+                  conversation_id: CONVERSATION_ID,
+                  message: text
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  showNotification('Resposta rápida enviada!');
+              } else {
+                  showNotification('Erro ao enviar mensagem rápida.');
+              }
+          });
+      }
         // Fixar mensagem
         function pinMessage(button, text) {
             const pinnedMessage = document.getElementById('pinnedMessage');
