@@ -76,6 +76,9 @@ def sanitize_input(data):
 @app.route("/")
 def home():
     return render_template("index.html")
+@app.route("/index.html")
+def index_html_redirect():
+    return redirect(url_for("home"), code=301)
 
 @app.route('/<page>.html')
 def html_redirect(page):
