@@ -46,24 +46,15 @@ O emparelhamento entre alunos é realizado por um **algoritmo de matching inteli
 - 📋 Seleção de dificuldades e áreas de interesse
 - 🤖 Emparelhamento automático entre mentor e mentorado
 - 💬 Sistema de mensagens seguro para comunicação direta
-- ...
 
 ---
 
 ## 👥 Equipa de Desenvolvimento
 
+- 👤 [André Baiona] - Project Manager & Server Administrator
 - 👤 [Henrique Dias] - Head of Development & Security
 - 👤 [Alexandre Sorochenko] - Full Stack Developer
-- 👤 [André Baiona] - Project Manager & DBA 
-- 👤 [Rodrigo Caracol] - 
-- 👤 [Francisco Subtil] - 
 
-
----
-
-## 📫 Contacto
-
-...
 
 
 
