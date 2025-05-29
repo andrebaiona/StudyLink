@@ -73,6 +73,9 @@ def sanitize_input(data):
 # --- ROUTES ---
 
 # HTML Redirects
+@app.route("/")
+def home():
+    return render_template("index.html")
 
 @app.route('/<page>.html')
 def html_redirect(page):
@@ -81,7 +84,6 @@ def html_redirect(page):
         return redirect(url_for('conversa', conversation_id=0), code=301)
 
     page_map = {
-        'index': 'index',    
         'login': 'login_page',
         'registo': 'registo_page',
         'conta': 'conta',
