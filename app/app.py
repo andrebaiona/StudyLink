@@ -81,6 +81,7 @@ def html_redirect(page):
         return redirect(url_for('conversa', conversation_id=0), code=301)
 
     page_map = {
+        'index': 'index',    
         'login': 'login_page',
         'registo': 'registo_page',
         'conta': 'conta',
