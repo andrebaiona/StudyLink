@@ -296,7 +296,7 @@ def generate_user_keys():
 
     user_id = session['user_id']
 
-    private_key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
+    private_key = rsa.generate_private_key(public_exponent=65537, key_size=4096)
     public_key = private_key.public_key()
 
     private_pem = private_key.private_bytes(
@@ -999,7 +999,7 @@ def handle_join(data):
 def generate_keys():
     private_key = rsa.generate_private_key(
         public_exponent=65537,
-        key_size=2048,
+        key_size=4096,
     )
     public_key = private_key.public_key()
 
