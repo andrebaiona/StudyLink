@@ -1672,31 +1672,31 @@ async function loadMessages() {
     messageArea.scrollTop = messageArea.scrollHeight;
 }
 
+        // Enviar resposta rápida
+       
+      function sendQuickReply(text) {
+          const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-function sendQuickReply(text) {
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-
-    fetch('/send_message', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrfToken
-        },
-        body: JSON.stringify({
-            conversation_id: CONVERSATION_ID,
-            message: text
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.status !== 'success') {
-            showNotification('Erro ao enviar resposta rápida.');
-        }
-    })
-    .catch(() => showNotification('Erro de rede ao enviar resposta.'));
-}
-
-
+          fetch('/send_message', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': csrfToken
+              },
+              body: JSON.stringify({
+                  conversation_id: CONVERSATION_ID,
+                  message: text
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.status === 'success') {
+                  showNotification('Resposta rápida enviada!');
+              } else {
+                  showNotification('Erro ao enviar mensagem rápida.');
+              }
+          });
+      }
         // Fixar mensagem
         function pinMessage(button, text) {
             const pinnedMessage = document.getElementById('pinnedMessage');
